@@ -1,0 +1,32 @@
+%% Template: Integrasi antar modul (Master → Transaksi)
+flowchart LR
+    subgraph MASTER["Modul Master"]
+        direction TB
+        M1([Setup data]) --> M2["Simpan mapping"]
+    end
+
+    subgraph APP["Aplikasi / Transaksi"]
+        direction TB
+        T1["Buat transaksi"] --> T2{"Lookup Master?"}
+        T3["Error: mapping tidak ada"]
+        T4["Lanjut proses"]
+    end
+
+    subgraph EXT["Approval Eksternal"]
+        direction TB
+        E1["Kirim email/OTP"] --> E2{"Disetujui?"}
+    end
+
+    M2 -.->|"Data tersedia"| T2
+    T2 -->|"Tidak ada"| T3
+    T2 -->|"Ada"| T4
+    T4 --> E1
+    E2 -->|"Ya"| T9([Selesai])
+    E2 -->|"Tidak"| T1
+
+    style M1 fill:#C8E6C9,stroke:#388E3C,color:#333
+    style T9 fill:#B2DFDB,stroke:#00796B,color:#333
+    style T2 fill:#FFE0B2,stroke:#F57C00,color:#333
+    style MASTER fill:#FFF9C4,stroke:#FBC02D,color:#333
+    style APP fill:#E3F2FD,stroke:#1976D2,color:#333
+    style EXT fill:#F3E5F5,stroke:#7B1FA2,color:#333

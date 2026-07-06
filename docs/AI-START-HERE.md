@@ -44,7 +44,7 @@ AI **dilarang** mengisi FSD dengan asumsi. Ikuti aturan ini:
 | 5 | **Tabel** — gunakan kolom standar (lihat STANDARD §D) | Jangan pakai HTML table |
 | 6 | **Path gambar** — relatif `screenshots/...`, bukan `C:\Users\...` | — |
 | 7 | **Versi & tanggal** — dari metadata dokumen, bukan ditebak | Ambil dari tabel Atribut |
-| 8 | **Mermaid** — hanya jika alur/ERD sudah dikonfirmasi | Jangan diagram fiktif |
+| 8 | **Mermaid / Swimlane** — hanya jika alur dikonfirmasi dari spec; Bab 2/9 wajib swimlane multi-lane | Jangan diagram fiktif; jangan flowchart 1 kolom untuk multi-role |
 | 9 | **Setelah tulis MD** — jalankan `py build.py` | Jika gagal, perbaiki — jangan klaim selesai |
 | 10 | **Bandingkan output** dengan `modules/item-spec/output/` | Cover + tabel hijau + font Calibri |
 
@@ -134,9 +134,11 @@ py build.py
 
 Output: `output/FSD_MyModule_v1.0.docx`
 
-1. Buka Word → **F9** (update TOC)
+1. Buka Word → **F9** (update TOC jika field belum ter-update otomatis)
 2. Cek halaman 1–2 cover Kalbe
-3. Cek tabel header hijau `#D9EAD3`
+3. Cek **Daftar Gambar** / **Daftar Tabel** sebelum bab 1 (nomor halaman terisi)
+4. Cek caption gambar/tabel: center + italic
+5. Cek tabel header hijau `#D9EAD3`
 
 ### Langkah 6 — Daftarkan modul
 
@@ -209,6 +211,63 @@ MermaidHandler(
 4. Jika tidak ada handler → runner otomatis buat `{slug}_diagram_N.png`
 
 **Tanpa handler khusus:** kosongkan `mermaid_handlers=[]` — semua diagram tetap di-render generik.
+
+---
+
+## Swimlane (Cross-Functional Flowchart)
+
+**Wajib** untuk Bab Business Flow & Approval jika ada ≥2 aktor (role/sistem/eksternal).
+
+### Layout
+
+```
+flowchart LR     ← lane menyamping (kolom role)
+  subgraph L1["Role A"]
+    direction TB ← alur turun dalam lane
+```
+
+### Sebelum diagram — tabel lane wajib
+
+| # | Lane ID | Label | Tipe | Sumber |
+|---|---------|-------|------|--------|
+| 1 | L1 | {Role} | User | `{path spec}` |
+
+### Template siap salin
+
+`docs/examples/swimlane/` — termasuk golden reference `restaurant-poc-mermaid.mmd`
+
+### Render PoC
+
+```powershell
+py scripts/render_swimlane_poc.py
+```
+
+### PlantUML (disarankan — kolom swimlane klasik)
+
+PoC: `py scripts/render_swimlane_poc.py` — PlantUML paling mirip gambar referensi (lane menyamping).
+
+````markdown
+```plantuml
+@startuml
+|Role A|
+start
+:Langkah;
+|Role B|
+:Langkah lain;
+stop
+@enduml
+```
+````
+
+Tambahkan `plantuml_handlers` di `build.py` (struktur sama dengan `mermaid_handlers`).
+
+### Mermaid (modul existing / ERD)
+
+`flowchart LR` + `subgraph` — dipakai Item Spec v1.2. Kadang lane tampil sebagai baris, bukan kolom.
+
+Build otomatis deteksi swimlane → lebar gambar **17 cm** di DOCX.
+
+Detail: `docs/STANDARD-FSD-GENERATION.md` §F
 
 ---
 

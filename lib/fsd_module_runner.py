@@ -3,13 +3,14 @@ Generic FSD module build runner — cover merge + Kroki + Pandoc + post-process.
 
 Usage from modules/{slug}/build.py:
 
-    from fsd_module_runner import build_fsd_module, ModuleBuildConfig
+    from fsd_module_runner import build_fsd_module, ModuleBuildConfig, MermaidHandler
 
     build_fsd_module(ModuleBuildConfig(
         slug='item-registration',
         md_filename='FSD_Item_Registration_v1.0.md',
         output_filename='FSD_Item_Registration_v1.0.docx',
-        mermaid_handlers=[...],  # optional list of (predicate, png_path, label)
+        mermaid_handlers=[...],
+        plantuml_handlers=[...],  # optional
     ))
 """
 from __future__ import annotations
@@ -26,7 +27,17 @@ from fsd_cover_merge import (
     merge_cover_and_content,
 )
 from fsd_paths import TMP_DIR, engine_root_from_script
-from fsd_build import render_kroki, run_pandoc, postprocess_docx
+from fsd_build import (
+    render_kroki,
+    render_kroki_plantuml,
+    is_swimlane_mermaid,
+    is_swimlane_plantuml,
+    inject_plantuml_swimlane_style,
+    run_pandoc,
+    postprocess_docx,
+)
+from fsd_captions import preprocess_captions
+from fsd_word_fields import update_word_fields
 
 
 @dataclass
@@ -37,13 +48,20 @@ class MermaidHandler:
     caption: str = ''
 
 
+# Alias — same structure for PlantUML swimlane blocks
+PlantumlHandler = MermaidHandler
+
+
 @dataclass
 class ModuleBuildConfig:
     slug: str
     md_filename: str
     output_filename: str
     mermaid_handlers: list[MermaidHandler] = field(default_factory=list)
+    plantuml_handlers: list[PlantumlHandler] = field(default_factory=list)
     cover_defaults: dict | None = None
+    swimlane_image_width_cm: float = 17.0
+    default_image_width_cm: float = 15.0
 
 
 def _rel(script_dir: str, path: str) -> str:
@@ -76,10 +94,14 @@ def build_fsd_module(config: ModuleBuildConfig, script_file: str):
 
     meta = parse_md_cover_meta(raw, defaults=config.cover_defaults)
     text = strip_md_for_body(raw)
+    has_swimlane = False
 
-    blocks = list(re.finditer(r'```mermaid\s*\n(.*?)```', text, flags=re.DOTALL))
-    for i, match in enumerate(blocks):
+    # --- Mermaid ---
+    mermaid_blocks = list(re.finditer(r'```mermaid\s*\n(.*?)```', text, flags=re.DOTALL))
+    for i, match in enumerate(mermaid_blocks):
         code = match.group(1).strip()
+        if is_swimlane_mermaid(code):
+            has_swimlane = True
         handled = False
         for h in config.mermaid_handlers:
             if h.match(code):
@@ -90,29 +112,73 @@ def build_fsd_module(config: ModuleBuildConfig, script_file: str):
             generic = os.path.join(screenshots, f'{config.slug}_diagram_{i + 1}.png')
             render_kroki(code, generic, f'Diagram-{i + 1}')
 
-    counter = [0]
+    mermaid_counter = [0]
 
     def replace_mermaid(m):
         code = m.group(1).strip()
-        counter[0] += 1
+        mermaid_counter[0] += 1
         for h in config.mermaid_handlers:
             if h.match(code):
                 cap = h.caption or h.label
                 if os.path.exists(h.png_path):
                     return f'\n![{cap}]({_rel(script_dir, h.png_path)})\n'
                 return f'\n> *[{cap} – diagram tidak dapat di-render]*\n'
-        generic = os.path.join(screenshots, f'{config.slug}_diagram_{counter[0]}.png')
+        generic = os.path.join(screenshots, f'{config.slug}_diagram_{mermaid_counter[0]}.png')
         if os.path.exists(generic):
-            return f'\n![Diagram {counter[0]}]({_rel(script_dir, generic)})\n'
-        return f'\n> *[Diagram {counter[0]} – tidak dapat di-render]*\n'
+            return f'\n![Diagram {mermaid_counter[0]}]({_rel(script_dir, generic)})\n'
+        return f'\n> *[Diagram {mermaid_counter[0]} – tidak dapat di-render]*\n'
 
     text = re.sub(r'```mermaid\s*\n(.*?)```', replace_mermaid, text, flags=re.DOTALL)
+
+    # --- PlantUML (opsional) ---
+    plantuml_blocks = list(re.finditer(r'```plantuml\s*\n(.*?)```', text, flags=re.DOTALL))
+    for i, match in enumerate(plantuml_blocks):
+        code = match.group(1).strip()
+        if is_swimlane_plantuml(code):
+            has_swimlane = True
+        handled = False
+        for h in config.plantuml_handlers:
+            if h.match(code):
+                render_kroki_plantuml(inject_plantuml_swimlane_style(code), h.png_path, h.label)
+                handled = True
+                break
+        if not handled:
+            generic = os.path.join(screenshots, f'{config.slug}_plantuml_{i + 1}.png')
+            render_kroki_plantuml(inject_plantuml_swimlane_style(code), generic, f'PlantUML-{i + 1}')
+
+    plantuml_counter = [0]
+
+    def replace_plantuml(m):
+        code = m.group(1).strip()
+        plantuml_counter[0] += 1
+        for h in config.plantuml_handlers:
+            if h.match(code):
+                cap = h.caption or h.label
+                if os.path.exists(h.png_path):
+                    return f'\n![{cap}]({_rel(script_dir, h.png_path)})\n'
+                return f'\n> *[{cap} – diagram tidak dapat di-render]*\n'
+        generic = os.path.join(screenshots, f'{config.slug}_plantuml_{plantuml_counter[0]}.png')
+        if os.path.exists(generic):
+            return f'\n![Diagram {plantuml_counter[0]}]({_rel(script_dir, generic)})\n'
+        return f'\n> *[Diagram {plantuml_counter[0]} – tidak dapat di-render]*\n'
+
+    text = re.sub(r'```plantuml\s*\n(.*?)```', replace_plantuml, text, flags=re.DOTALL)
+
+    text, _registry = preprocess_captions(text)
+    print(f'   [Caption] {len(_registry.figures)} gambar, {len(_registry.tables)} tabel')
+
+    if has_swimlane:
+        print('   [Swimlane] terdeteksi — lebar gambar max {:.0f} cm'.format(
+            config.swimlane_image_width_cm))
+
     with open(md_tmp, 'w', encoding='utf-8') as f:
         f.write(text)
 
     run_pandoc(md_tmp, docx_content, [script_dir, screenshots], script_dir)
     merge_cover_and_content(docx_content, docx_out, meta)
-    postprocess_docx(docx_out)
+    img_width = config.swimlane_image_width_cm if has_swimlane else config.default_image_width_cm
+    postprocess_docx(docx_out, max_width_cm=img_width)
+    update_word_fields(docx_out)
 
     for tmp in (md_tmp, docx_content):
         if os.path.exists(tmp):

@@ -31,7 +31,16 @@ COVER_DEFAULTS = {
   # 'pid_no': '2026.SHP-PID.0000',
 }
 
-# Opsional: mapping Mermaid → PNG (tambah handler per diagram)
+# Opsional: mapping PlantUML swimlane (disarankan Bab 2/9 — kolom klasik)
+PLANTUML_HANDLERS = [
+    # PlantumlHandler(
+    #     lambda c: '|Customer|' in c or '|{Role A}|' in c,
+    #     os.path.join(SCREENSHOTS, 'diagram_flow_swimlane.png'),
+    #     'Swimlane', 'Swimlane – {NAMA_MODUL}',
+    # ),
+]
+
+# Opsional: mapping Mermaid → PNG (ERD, modul legacy)
 MERMAID_HANDLERS = [
     # Contoh ERD:
     # MermaidHandler(
@@ -53,5 +62,6 @@ if __name__ == '__main__':
         md_filename=MD_FILE,
         output_filename=OUTPUT_DOCX,
         mermaid_handlers=MERMAID_HANDLERS,
+        plantuml_handlers=PLANTUML_HANDLERS,
         cover_defaults=COVER_DEFAULTS or None,
     ), __file__)

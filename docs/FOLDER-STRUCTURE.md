@@ -18,7 +18,8 @@ FSD Generator Engine/
 │   ├── MODULE-INDEX.md
 │   ├── FOLDER-STRUCTURE.md   ← file ini
 │   ├── COVER-STANDARD.md
-│   └── PANDUAN_SCREENSHOT.md
+│   ├── PANDUAN_SCREENSHOT.md
+│   └── examples/swimlane/    ← template cross-functional swimlane
 │
 ├── lib/                      # Python shared
 │   ├── fsd_paths.py

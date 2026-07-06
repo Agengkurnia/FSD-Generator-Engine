@@ -1,16 +1,19 @@
 """Shared build helpers for FSD Generator Engine modules."""
 import base64
 import os
+import re
 import subprocess
 import urllib.request
 import zlib
 
 from docx import Document
+from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.shared import Pt, Cm
 from docx.oxml.ns import qn
 from docx.oxml import OxmlElement
 
 from fsd_cover_merge import content_start_index, COVER_TABLE_COUNT
+from fsd_captions import caption_number_from_text
 from fsd_paths import REFERENCE_DOCX
 
 HEADER_BG = 'D9EAD3'
@@ -21,10 +24,18 @@ FONT_SIZE_TABLE = 9
 
 
 def render_kroki(mermaid_code: str, output_path: str, label: str) -> bool:
+    return _render_kroki(mermaid_code, output_path, label, 'mermaid')
+
+
+def render_kroki_plantuml(plantuml_code: str, output_path: str, label: str) -> bool:
+    return _render_kroki(plantuml_code, output_path, label, 'plantuml')
+
+
+def _render_kroki(code: str, output_path: str, label: str, engine: str) -> bool:
     try:
-        compressed = zlib.compress(mermaid_code.strip().encode('utf-8'), 9)
+        compressed = zlib.compress(code.strip().encode('utf-8'), 9)
         b64 = base64.urlsafe_b64encode(compressed).decode('ascii')
-        url = f'https://kroki.io/mermaid/png/{b64}'
+        url = f'https://kroki.io/{engine}/png/{b64}'
         req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
         with urllib.request.urlopen(req, timeout=60) as resp:
             data = resp.read()
@@ -36,6 +47,54 @@ def render_kroki(mermaid_code: str, output_path: str, label: str) -> bool:
     except Exception as e:
         print(f'   [{label}] FAIL: {e}')
         return False
+
+
+def is_swimlane_mermaid(code: str) -> bool:
+    """True if Mermaid code uses 2+ subgraph lanes (cross-functional swimlane)."""
+    return len(re.findall(r'^\s*subgraph\s+', code, flags=re.MULTILINE)) >= 2
+
+
+def is_swimlane_plantuml(code: str) -> bool:
+    """True if PlantUML activity diagram uses swimlane separators (|Role|)."""
+    return len(re.findall(r'^\s*\|[^|]+\|\s*$', code, flags=re.MULTILINE)) >= 2
+
+
+PLANTUML_SWIMLANE_SKINPARAM = """
+skinparam partition {
+  BackgroundColor #D9EAD3
+  BorderColor #000000
+  FontStyle bold
+  BorderThickness 2
+}
+skinparam activity {
+  BackgroundColor #FFFFFF
+  BorderColor #000000
+  StartColor #C8E6C9
+  EndColor #B2DFDB
+}
+""".strip()
+
+
+def inject_plantuml_swimlane_style(code: str) -> str:
+    """Inject standard swimlane skinparam after @startuml when missing."""
+    if not is_swimlane_plantuml(code):
+        return code
+    if re.search(r'skinparam\s+partition\b', code, flags=re.I):
+        return code
+    m = re.search(r'(@startuml[^\n]*\n)', code, flags=re.I)
+    if not m:
+        return code
+    insert_at = m.end()
+    return code[:insert_at] + PLANTUML_SWIMLANE_SKINPARAM + '\n' + code[insert_at:]
+
+
+def body_content_start_index(doc, marker: str = '1. Pendahuluan') -> int:
+    """First body paragraph: Daftar Gambar (if any) else chapter 1."""
+    for i, p in enumerate(doc.paragraphs):
+        t = (p.text or '').strip()
+        if t == 'Daftar Gambar':
+            return i
+    return content_start_index(doc, marker)
 
 
 def run_pandoc(md_tmp: str, docx_out: str, resource_dirs: list[str], cwd: str):
@@ -97,9 +156,75 @@ def _apply_font(run, size_pt: int, bold=None):
         run.bold = bold
 
 
+def _add_bookmark(para, bookmark_name: str, bookmark_id: int):
+    start = OxmlElement('w:bookmarkStart')
+    start.set(qn('w:id'), str(bookmark_id))
+    start.set(qn('w:name'), bookmark_name)
+    end = OxmlElement('w:bookmarkEnd')
+    end.set(qn('w:id'), str(bookmark_id))
+    para._p.insert(0, start)
+    para._p.append(end)
+
+
+def _set_paragraph_pageref(para, bookmark_name: str):
+    for child in list(para._p):
+        para._p.remove(child)
+    fld = OxmlElement('w:fldSimple')
+    fld.set(qn('w:instr'), f'PAGEREF {bookmark_name} \\h')
+    run = OxmlElement('w:r')
+    t = OxmlElement('w:t')
+    t.text = '?'
+    run.append(t)
+    fld.append(run)
+    para._p.append(fld)
+
+
+def _is_daftar_table(table) -> bool:
+    if not table.rows:
+        return False
+    cells = [c.text.strip().lower() for c in table.rows[0].cells]
+    return len(cells) >= 3 and cells[0] == 'no.' and 'judul' in cells[1] and 'halaman' in cells[2]
+
+
+def postprocess_captions(doc, content_start: int):
+    bookmark_id = 1
+    pageref_re = re.compile(r'\{PAGEREF:([a-zA-Z0-9_]+)\}')
+
+    for i, para in enumerate(doc.paragraphs):
+        if i < content_start:
+            continue
+        raw = (para.text or '').strip()
+        if not raw:
+            continue
+        info = caption_number_from_text(raw)
+        if not info:
+            continue
+        _, bookmark_name = info
+        para.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        for run in para.runs:
+            run.italic = True
+            _apply_font(run, FONT_SIZE_BODY)
+        _add_bookmark(para, bookmark_name, bookmark_id)
+        bookmark_id += 1
+
+    for table in doc.tables:
+        if not _is_daftar_table(table):
+            continue
+        for row in table.rows[1:]:
+            if len(row.cells) < 3:
+                continue
+            cell = row.cells[2]
+            m = pageref_re.search(cell.text or '')
+            if not m:
+                continue
+            bookmark_name = m.group(1)
+            para = cell.paragraphs[0] if cell.paragraphs else cell.add_paragraph()
+            _set_paragraph_pageref(para, bookmark_name)
+
+
 def postprocess_docx(docx_path: str, max_width_cm: float = 15.0):
     doc = Document(docx_path)
-    content_start = content_start_index(doc)
+    content_start = body_content_start_index(doc)
     try:
         doc.styles['Normal'].font.name = FONT_NAME
         doc.styles['Normal'].font.size = Pt(FONT_SIZE_BODY)
@@ -142,4 +267,5 @@ def postprocess_docx(docx_path: str, max_width_cm: float = 15.0):
                         cy = int(int(extent.get('cy', 0)) * ratio)
                         extent.set('cx', str(max_w.emu))
                         extent.set('cy', str(cy))
+    postprocess_captions(doc, content_start)
     doc.save(docx_path)

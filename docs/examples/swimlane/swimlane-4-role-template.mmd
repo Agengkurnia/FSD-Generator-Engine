@@ -1,0 +1,38 @@
+%% Template: 4-lane swimlane — ganti {PLACEHOLDER}
+flowchart LR
+    subgraph L1["{Role A — User}"]
+        direction TB
+        A0([Mulai]) --> A1["{Langkah A1}"]
+        A1 --> A9([Selesai])
+    end
+
+    subgraph L2["{Role B — User}"]
+        direction TB
+        B1["{Langkah B1}"] --> B2{"{Keputusan?}"}
+        B2 --> B3["{Langkah B3}"]
+    end
+
+    subgraph L3["{Sistem Aplikasi}"]
+        direction TB
+        S1["{Proses sistem}"] --> S2["{Simpan / trigger}"]
+    end
+
+    subgraph L4["{ERP / Eksternal}"]
+        direction TB
+        E1["{Integrasi}"] --> E2{"{Berhasil?}"}
+    end
+
+    A1 --> B1
+    B2 -->|"Ya"| S1
+    B2 -->|"Tidak"| A9
+    S2 --> E1
+    E2 -->|"Ya"| A9
+    E2 -->|"Tidak"| B3
+
+    style A0 fill:#C8E6C9,stroke:#388E3C,color:#333
+    style A9 fill:#B2DFDB,stroke:#00796B,color:#333
+    style B2 fill:#FFE0B2,stroke:#F57C00,color:#333
+    style L1 fill:#FFF9C4,stroke:#FBC02D,color:#333
+    style L2 fill:#E3F2FD,stroke:#1976D2,color:#333
+    style L3 fill:#FCE4EC,stroke:#C62828,color:#333
+    style L4 fill:#E8F5E9,stroke:#388E3C,color:#333

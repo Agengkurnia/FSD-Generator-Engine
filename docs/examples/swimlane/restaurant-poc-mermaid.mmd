@@ -1,0 +1,51 @@
+%% Golden reference — Cross-Functional Swimlane (Mermaid)
+%% Lane menyamping (LR), alur turun (TB per subgraph)
+%% Acuan visual: docs/examples/swimlane/README.md
+
+flowchart LR
+    subgraph L1["Customer"]
+        direction TB
+        C0([Start]) --> C1["Placing an Order"]
+        C1 --> C2["Paying for the Order"]
+        C2 --> C3["Receiving the Food"]
+        C3 --> C9([End])
+    end
+
+    subgraph L2["Clerk"]
+        direction TB
+        K1["Greet"] --> K2["Taking an Order"]
+        K2 --> K3["Recording the Order"]
+        K3 --> K4["Confirming the Order"]
+        K4 --> K5{"Do Myself?"}
+        K5 --> K6["Delivering the Food"]
+    end
+
+    subgraph L3["Point of Sale Terminal"]
+        direction TB
+        P1["Storing the Order"]
+    end
+
+    subgraph L4["Kitchen"]
+        direction TB
+        H1["Accessing the Order"] --> H2["Making the Food"]
+        H2 --> H3["Preparing the Order"]
+    end
+
+    C0 --> K1
+    C1 --> K2
+    K3 --> P1
+    P1 --> H1
+    K4 --> C2
+    C2 --> K5
+    K5 -->|"Ya"| P1
+    K5 -->|"Tidak"| K6
+    H3 --> K6
+    K6 --> C3
+
+    style C0 fill:#C8E6C9,stroke:#388E3C,color:#333
+    style C9 fill:#B2DFDB,stroke:#00796B,color:#333
+    style K5 fill:#FFE0B2,stroke:#F57C00,color:#333
+    style L1 fill:#FFF9C4,stroke:#FBC02D,color:#333
+    style L2 fill:#E3F2FD,stroke:#1976D2,color:#333
+    style L3 fill:#FCE4EC,stroke:#C62828,color:#333
+    style L4 fill:#E8F5E9,stroke:#388E3C,color:#333

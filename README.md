@@ -37,6 +37,7 @@ Setelah generate: buka DOCX → tekan **F9** untuk update Table of Contents.
 | [docs/MODULE-INDEX.md](docs/MODULE-INDEX.md) | Katalog modul + perintah build |
 | [docs/FOLDER-STRUCTURE.md](docs/FOLDER-STRUCTURE.md) | Aturan penempatan file |
 | [docs/COVER-STANDARD.md](docs/COVER-STANDARD.md) | Cover + revision/approval (2 halaman pertama) |
+| [docs/examples/swimlane/](docs/examples/swimlane/) | Template swimlane cross-functional |
 | [modules/_template/](modules/_template/) | Skeleton modul baru — salin & edit |
 
 Salin `docs/AI-START-HERE.md` + `docs/STANDARD-FSD-GENERATION.md` ke AI IDE lain sebagai konteks proyek.

@@ -161,6 +161,8 @@ Selain konten, dokumen **harus** mengikuti standar berikut agar MD dan DOCX hasi
 
 > **TOC di engine:** Modul standar memakai cover template Kalbe — TOC dihasilkan field Word di template (tekan **F9** di Word). Daftar Isi manual di MD opsional.
 
+**Daftar Gambar & Daftar Tabel (otomatis di build):** Jangan tulis manual di MD sumber. Pipeline `lib/fsd_captions.py` menghasilkan kedua section **sebelum** `## 1. Pendahuluan` pada MD processed, dengan kolom No. | Judul | Halaman. Nomor halaman diisi via field Word `PAGEREF` (di-update saat build jika `pywin32` tersedia, atau tekan **F9** di Word).
+
 ### C. Tabel Metadata & Riwayat Revisi
 
 **Tabel atribut dokumen** — selalu 2 kolom, label kiri **Bold**:
@@ -219,44 +221,162 @@ Selain konten, dokumen **harus** mengikuti standar berikut agar MD dan DOCX hasi
 
 | Aspek | Standar |
 |-------|---------|
-| Caption (`alt text`) | Bahasa Indonesia, deskriptif |
+| Caption (`alt text`) | Bahasa Indonesia, deskriptif — **tanpa** prefix `Gambar N` (penomoran otomatis di build) |
+| Caption di DOCX | Baris terpisah **center + italic**: `Gambar 3.1 — Judul` di bawah gambar; `Tabel 6.2.1 — Judul` di atas tabel |
+| Penomoran | Per bab: `Gambar {bab}.{n}`; `Tabel {bab}.{sub}.{n}` jika di bawah `### N.M`, else `Tabel {bab}.{n}` |
 | Baris sebelum gambar | Bold label: `**Tampilan Halaman Index:**` |
+| Judul tabel (caption) | Baris bold tepat di atas tabel (`**Tabel Fields ...**`); fallback: header kolom pertama |
 | Path | Relatif dari folder modul, **bukan** path absolut |
-| Urutan | Narasi konteks → label tampilan → gambar → tabel field |
-| Lebar di DOCX | Auto-scale max **15 cm** (17 cm untuk grid lebar — diatur build script) |
-| Diagram | Render PNG via Kroki; caption: `![ERD – Modul](screenshots/diagram_erd.png)` |
+| Urutan | Narasi konteks → label tampilan → gambar → caption otomatis → tabel field |
+| Lebar di DOCX | Auto-scale max **15 cm** (17 cm untuk grid lebar / swimlane — diatur build script) |
+| Diagram | Render PNG via Kroki; alt text = judul caption |
 | Penamaan file | `ss_{2digit}_{deskripsi_snake}.png` |
 
 Detail capture: [PANDUAN_SCREENSHOT.md](PANDUAN_SCREENSHOT.md)
 
-### F. Diagram Mermaid (sebelum di-render ke PNG)
+### F. Cross-Functional Swimlane Diagram (WAJIB untuk alur multi-aktor)
 
-**Flow bisnis — swimlane per role** (wajib untuk Bab Business Flow):
+**Format standar:** Swimlane menyamping (kolom = role/sistem), alur turun ke bawah di dalam tiap lane — seperti cross-functional flowchart klasik.
+
+```
+┌──────────┬──────────┬─────────────┬──────────┐
+│ Role A   │ Role B   │ Sistem      │ Eksternal│  ← lane (kolom)
+├──────────┼──────────┼─────────────┼──────────┤
+│  Start   │  …       │             │          │
+│    ↓     │    ↓     │      ↓      │    ↓     │  ← alur TB per lane
+│   End    │          │             │          │
+└──────────┴──────────┴─────────────┴──────────┘
+```
+
+**Library template:** [docs/examples/swimlane/](examples/swimlane/) — golden reference + template siap salin.
+
+#### F.1 Kapan wajib swimlane
+
+| Bab | Wajib swimlane? |
+|-----|-----------------|
+| 2 — Business Flow | **Ya** jika ≥2 aktor (role / sistem / eksternal) |
+| 3 — Integrasi antar modul | **Ya** |
+| 9 — Approval / Workflow | **Ya** |
+| Status machine 1 aktor | Flowchart linear boleh |
+| 10 — ERD | Tetap `erDiagram` (bukan swimlane) |
+
+#### F.2 Metadata lane (WAJIB sebelum diagram)
+
+Setiap diagram swimlane harus didahului **tabel lane** dengan sumber verifikasi:
+
+```markdown
+**Lane (urutan kiri → kanan):**
+
+| # | Lane ID | Label | Tipe | Sumber |
+|---|---------|-------|------|--------|
+| 1 | L1 | Admin KMMD | User | `rbac-prototype.js` |
+| 2 | L2 | Sistem KDS | System | `Docs/.../07-workflow.md` |
+| 3 | L3 | Owner (Eksternal) | External | BRD A.3 |
+```
+
+**Aturan anti-halusinasi lane:**
+- Lane **hanya** dari RBAC / BRD / kode — jangan invent role
+- Setiap node **harus** di dalam satu lane
+- Maks **4–5 lane** per diagram; jika lebih → pecah (Overview + Detail)
+- Panah antar lane = hand-off → wajib 1 kalimat narasi penjelas
+
+#### F.3 Format Mermaid
+
+**Catatan layout:** Mermaid `flowchart LR` + `subgraph` kadang merender lane sebagai **baris horizontal** (bukan kolom vertikal). Untuk tampilan **kolom role menyamping** seperti cross-functional flowchart klasik, **disarankan PlantUML** (§F.5). Mermaid tetap dipakai jika modul sudah menggunakannya (contoh: Item Spec v1.2).
 
 ```mermaid
 flowchart LR
-    subgraph ROLE_A["Nama Role"]
+    subgraph L1["{Role A}"]
         direction TB
-        A1([Mulai]) --> A2["Aksi"]
+        A0([Mulai]) --> A1["Langkah 1"]
+        A1 --> A9([Selesai])
     end
-    subgraph ROLE_B["Role Lain"]
-        B1{"Keputusan?"}
+    subgraph L2["{Role B}"]
+        direction TB
+        B1["Langkah B"] --> B2{"Keputusan?"}
     end
-    A2 --> B1
-    style ROLE_A fill:#FFF9C4,stroke:#FBC02D,color:#333
+    subgraph L3["{Sistem}"]
+        direction TB
+        S1["Simpan data"]
+    end
+    A1 --> B1
+    B2 -->|"Ya"| S1
+    S2 --> A9
+    style A0 fill:#C8E6C9,stroke:#388E3C,color:#333
+    style A9 fill:#B2DFDB,stroke:#00796B,color:#333
+    style B2 fill:#FFE0B2,stroke:#F57C00,color:#333
+    style L1 fill:#FFF9C4,stroke:#FBC02D,color:#333
+    style L2 fill:#E3F2FD,stroke:#1976D2,color:#333
+    style L3 fill:#FCE4EC,stroke:#C62828,color:#333
 ```
 
 | Aspek | Standar |
 |-------|---------|
-| Arah flow utama | `flowchart LR` (horizontal) untuk swimlane |
-| Subgraph | Satu subgraph per role/departemen |
-| Node keputusan | `{"Teks?"}` diamond |
-| Node start/end | `([Mulai])` stadium shape |
-| Warna subgraph | `style SUBGRAPH fill:#...,stroke:#...,color:#333` |
-| ERD | `erDiagram` dengan field `{tipe nama PK/FK}` per entitas |
-| Panah relasi | `\|\|--o{`, `}o--\|\|` sesuai kardinalitas |
+| Layout lane | `flowchart LR` — lane = kolom menyamping |
+| Alur dalam lane | `direction TB` di dalam setiap `subgraph` |
+| Subgraph | Satu subgraph per role/departemen/sistem |
+| Start / End | `([Mulai])`, `([Selesai])` — oval stadium |
+| Proses | `["Teks aksi"]` — kotak |
+| Keputusan | `{"Teks?"}` — diamond oranye |
+| Hand-off | Panah lintas subgraph + label di panah jika perlu |
+| ERD (terpisah) | `erDiagram` — bukan swimlane |
 
-Build script merender via **Kroki.io** → PNG di `screenshots/` atau `diagrams/`. Lihat [AI-START-HERE.md § Mermaid Handler](AI-START-HERE.md).
+#### F.4 Palet warna lane (konsisten semua modul)
+
+| Tipe lane | Fill | Stroke | Node Start | Node End | Decision |
+|-----------|------|--------|------------|----------|----------|
+| User / bisnis | `#FFF9C4` | `#FBC02D` | `#C8E6C9` | `#B2DFDB` | `#FFE0B2` |
+| Sistem aplikasi | `#E3F2FD` | `#1976D2` | — | — | — |
+| Approval | `#E8F5E9` | `#388E3C` | — | — | — |
+| ERP / integrasi | `#FCE4EC` | `#C62828` | — | — | — |
+| Eksternal | `#F3E5F5` | `#7B1FA2` | — | — | — |
+
+Acuan emas: `modules/item-spec/source/FSD_ItemSpec_RM_v1.2.md` §2.2 · `docs/examples/swimlane/restaurant-poc-mermaid.mmd`
+
+#### F.5 Format PlantUML (disarankan untuk kolom swimlane klasik)
+
+PoC engine (`py scripts/render_swimlane_poc.py`) menunjukkan PlantUML menghasilkan **kolom role vertikal** (Customer | Clerk | Sistem | …) yang paling mirip cross-functional flowchart referensi.
+
+````markdown
+```plantuml
+@startuml
+skinparam partition {
+  BackgroundColor #D9EAD3
+  BorderColor #000000
+  FontStyle bold
+  BorderThickness 2
+}
+skinparam activity {
+  BackgroundColor #FFFFFF
+  BorderColor #000000
+  StartColor #C8E6C9
+  EndColor #B2DFDB
+}
+|{Role A}|
+start
+:{Langkah 1};
+|{Role B}|
+:{Langkah 2};
+if ({Keputusan?}) then (ya)
+  |{Sistem}|
+  :{Proses};
+else (tidak)
+endif
+stop
+@enduml
+```
+````
+
+> **Catatan PlantUML:** `skinparam partition` mewarnai seluruh kolom lane (bukan hanya baris header) — limitasi renderer PlantUML. Build otomatis menyisipkan blok skinparam ini jika belum ada (`inject_plantuml_swimlane_style` di `lib/fsd_build.py`).
+
+Acuan: `docs/examples/swimlane/restaurant-poc-plantuml.puml`
+
+#### F.6 Render & lebar gambar di DOCX
+
+- Render via **Kroki.io** → PNG di `screenshots/` atau `diagrams/`
+- Jika swimlane terdeteksi (≥2 subgraph / ≥2 `|Role|`), build otomatis pakai lebar max **17 cm** (bukan 15 cm)
+- Handler diagram: [AI-START-HERE.md § Mermaid Handler](AI-START-HERE.md)
+- PoC visual: `py scripts/render_swimlane_poc.py`
 
 ### G. Code Block & Pseudo-logic
 
@@ -284,6 +404,7 @@ Konstanta **wajib** sama dengan `lib/fsd_build.py`:
 | **Border tabel** | Hitam `#000000`, single, sz=8 | Semua sisi sel |
 | **Style tabel Word** | `Table Grid` | Diterapkan post-process |
 | **Max lebar gambar** | 15 cm | Proporsional, tidak distorsi |
+| **Caption gambar/tabel** | Center + italic, Calibri 11 pt | Diterapkan post-process (`postprocess_captions`) |
 | **Cover** | 2 halaman pertama | Template `FSD_Cover_Template.docx` — lihat [COVER-STANDARD.md](COVER-STANDARD.md) |
 | **Reference template** | `templates/reference.docx` | Font heading & margin body |
 
@@ -295,20 +416,24 @@ Konstanta **wajib** sama dengan `lib/fsd_build.py`:
 flowchart LR
     A[MD_full] --> B[parse_md_cover_meta]
     A --> C[strip_md_for_body]
-    C --> D[Kroki_Mermaid]
-    D --> E[Pandoc_no_TOC]
-    E --> F[merge_cover]
-    F --> G[postprocess]
-    G --> H[DOCX_final]
+    C --> D[Kroki_Mermaid_PlantUML]
+    D --> E[preprocess_captions]
+    E --> F[Pandoc_no_TOC]
+    F --> G[merge_cover]
+    G --> H[postprocess]
+    H --> I[update_word_fields]
+    I --> J[DOCX_final]
 ```
 
 **Langkah (`fsd_module_runner` / `modules/_template/build.py`):**
 
 1. **Preprocess:** `COVER_META = parse_md_cover_meta(raw)`; `text = strip_md_for_body(raw)`
-2. **Mermaid:** render blok ` ```mermaid ` → PNG (Kroki, timeout ~45s)
-3. **Pandoc:** `MD_TMP` → `_tmp/{slug}_content.docx` — **tanpa** `--toc` (TOC dari cover template)
-4. **Cover:** `merge_cover_and_content(content, output, COVER_META)`
-5. **Post-process:** Calibri 11pt, tabel border hitam header `#D9EAD3`, gambar max 15cm — **skip 2 tabel cover**
+2. **Mermaid / PlantUML:** render blok diagram → PNG (Kroki); PlantUML swimlane otomatis dapat `skinparam partition`
+3. **Caption:** `preprocess_captions(text)` — nomor gambar/tabel + inject Daftar Gambar/Tabel
+4. **Pandoc:** `MD_TMP` → `_tmp/{slug}_content.docx` — **tanpa** `--toc` (TOC dari cover template)
+5. **Cover:** `merge_cover_and_content(content, output, COVER_META)`
+6. **Post-process:** Calibri 11pt, tabel border hitam header `#D9EAD3`, gambar max 15cm, caption center+italic + bookmark
+7. **Fields:** `update_word_fields(output)` — nomor halaman Daftar Gambar/Tabel (Windows + pywin32)
 
 **Perintah Pandoc (internal):**
 
@@ -344,7 +469,9 @@ Urutan operasi di `lib/fsd_build.py`:
    - Baris lain → font 9pt regular
    - Semua sel → border hitam semua sisi
 4. Loop semua inline images → scale max width 15cm
-5. Save DOCX final
+5. `postprocess_captions` → caption center+italic, bookmark, PAGEREF di Daftar Gambar/Tabel
+6. Save DOCX final
+7. `update_word_fields` (opsional, Windows) → isi nomor halaman
 
 ### K. Penamaan File Output
 
@@ -424,15 +551,21 @@ Template lengkap: `modules/_template/source/FSD_TEMPLATE.md`
 - [ ] Border tabel: hitam semua sisi
 - [ ] Cover halaman 1–2 sesuai template Kalbe
 - [ ] **F9** di Word untuk update TOC
-- [ ] Gambar max 15cm, tidak blur berlebihan
+- [ ] Gambar max 15cm (17cm untuk swimlane), tidak blur berlebihan
 - [ ] Tidak ada path absolut `C:\Users\...` di MD
 - [ ] Semua tabel pakai pipe format (bukan HTML)
 - [ ] Heading hierarchy konsisten (tidak loncat level)
 - [ ] Metadata & riwayat revisi lengkap
-- [ ] Caption screenshot bahasa Indonesia
+- [ ] Caption screenshot bahasa Indonesia (alt text); penomoran `Gambar N.M` otomatis di build
+- [ ] Caption DOCX: center + italic di bawah gambar / di atas tabel
+- [ ] **Daftar Gambar** dan **Daftar Tabel** ada sebelum bab 1, kolom Halaman terisi
 - [ ] Rule ID, field ID, DB column konsisten formatnya
 - [ ] `py build.py` sukses tanpa error
 - [ ] Entry di `docs/MODULE-INDEX.md` (modul baru)
+- [ ] **Swimlane:** Bab 2/3/9 memakai cross-functional swimlane (bukan flowchart 1 kolom)
+- [ ] **Swimlane:** Ada tabel lane + sumber spec sebelum diagram
+- [ ] **Swimlane:** Tiap node di dalam lane; hand-off antar lane dijelaskan
+- [ ] **Swimlane:** PlantUML partition border hitam, background lane `#D9EAD3` (via build inject)
 
 ---
 

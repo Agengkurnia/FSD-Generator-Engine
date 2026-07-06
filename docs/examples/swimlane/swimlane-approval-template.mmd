@@ -1,0 +1,33 @@
+%% Template: Approval workflow swimlane
+flowchart LR
+    subgraph INIT["Initiator"]
+        direction TB
+        I0([Mulai]) --> I1["Buat dokumen DRAFT"]
+        I1 --> I2["Submit"]
+    end
+
+    subgraph APR["Approver"]
+        direction TB
+        A1{"Review?"}
+        A2(["APPROVED"])
+        A3(["REJECTED"])
+        A1 -->|"Approve"| A2
+        A1 -->|"Reject"| A3
+    end
+
+    subgraph SYS["Sistem"]
+        direction TB
+        S1["Kirim notifikasi"] --> S2["Update status"]
+    end
+
+    I2 --> A1
+    A3 --> I1
+    A2 --> S1
+    S2 --> I9([Selesai])
+
+    style I0 fill:#C8E6C9,stroke:#388E3C,color:#333
+    style I9 fill:#B2DFDB,stroke:#00796B,color:#333
+    style A1 fill:#FFE0B2,stroke:#F57C00,color:#333
+    style INIT fill:#FFF9C4,stroke:#FBC02D,color:#333
+    style APR fill:#E8F5E9,stroke:#388E3C,color:#333
+    style SYS fill:#E3F2FD,stroke:#1976D2,color:#333

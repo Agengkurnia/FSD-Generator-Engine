@@ -30,6 +30,8 @@
 
 ---
 
+> **Catatan build:** Daftar Gambar, Daftar Tabel, dan caption bernomor dihasilkan otomatis oleh pipeline — jangan tulis manual di MD sumber.
+
 ## 1. Pendahuluan
 
 ### 1.1 Latar Belakang
@@ -58,19 +60,47 @@
 
 ## 2. Ringkasan Business Flow
 
-{Paragraf narasi alur bisnis end-to-end.}
+{Paragraf narasi alur bisnis end-to-end. Jelaskan hand-off antar role.}
+
+### 2.1 Lane Swimlane
+
+**Lane (urutan kiri → kanan):**
+
+| # | Lane ID | Label | Tipe | Sumber |
+|---|---------|-------|------|--------|
+| 1 | L1 | {Role A} | User | `{path spec/kode}` |
+| 2 | L2 | {Sistem} | System | `{path}` |
+| 3 | L3 | {Role B} | User/External | `{path}` |
+
+### 2.2 Swimlane — Alur {NAMA_PROSES}
 
 ```mermaid
 flowchart LR
-    subgraph USER["Role Utama"]
+    subgraph L1["{Role A}"]
         direction TB
-        A1([Mulai]) --> A2["Aksi utama"]
+        A0([Mulai]) --> A1["{Langkah A1}"]
+        A1 --> A9([Selesai])
     end
-    subgraph SYSTEM["Sistem"]
-        S1["Proses"]
+    subgraph L2["{Sistem}"]
+        direction TB
+        S1["{Proses sistem}"]
     end
-    A2 --> S1
+    subgraph L3["{Role B}"]
+        direction TB
+        B1["{Langkah B1}"] --> B2{"{Keputusan?}"}
+    end
+    A1 --> B1
+    B2 -->|"Ya"| S1
+    S1 --> A9
+    style A0 fill:#C8E6C9,stroke:#388E3C,color:#333
+    style A9 fill:#B2DFDB,stroke:#00796B,color:#333
+    style B2 fill:#FFE0B2,stroke:#F57C00,color:#333
+    style L1 fill:#FFF9C4,stroke:#FBC02D,color:#333
+    style L2 fill:#E3F2FD,stroke:#1976D2,color:#333
+    style L3 fill:#FCE4EC,stroke:#C62828,color:#333
 ```
+
+> Template lengkap: `docs/examples/swimlane/swimlane-4-role-template.mmd`
 
 ---
 
@@ -148,11 +178,37 @@ flowchart LR
 
 ## 7. Alur Persetujuan (jika ada)
 
+### 7.1 Lane Swimlane
+
+| # | Lane ID | Label | Tipe | Sumber |
+|---|---------|-------|------|--------|
+| 1 | L1 | {Initiator} | User | `{path}` |
+| 2 | L2 | {Approver} | User | `{path}` |
+
+### 7.2 Swimlane — Workflow Approval
+
 ```mermaid
 flowchart LR
-    A[Draft] --> B[Submitted]
-    B --> C[Approved]
+    subgraph INIT["{Initiator}"]
+        direction TB
+        I0([Mulai]) --> I1["Draft"] --> I2["Submit"]
+    end
+    subgraph APR["{Approver}"]
+        direction TB
+        A1{"Review?"} --> A2(["Approved"])
+        A1 --> A3(["Rejected"])
+    end
+    I2 --> A1
+    A3 --> I1
+    A2 --> I9([Selesai])
+    style I0 fill:#C8E6C9,stroke:#388E3C,color:#333
+    style I9 fill:#B2DFDB,stroke:#00796B,color:#333
+    style A1 fill:#FFE0B2,stroke:#F57C00,color:#333
+    style INIT fill:#FFF9C4,stroke:#FBC02D,color:#333
+    style APR fill:#E8F5E9,stroke:#388E3C,color:#333
 ```
+
+> Template: `docs/examples/swimlane/swimlane-approval-template.mmd`
 
 ---
 

@@ -45,7 +45,7 @@ Ganti `item-spec` dengan slug modul di tabel atas.
 |-------|--------|
 | `lib/fsd_cover_merge.py` | Cover Kalbe 2 halaman |
 | `lib/fsd_build.py` | Kroki, Pandoc, post-process |
-| `lib/fsd_module_runner.py` | Runner generik untuk modul baru |
+| `lib/fsd_module_runner.py` | Runner generik; deteksi swimlane + PlantUML |
 | `lib/fsd_paths.py` | Path template & engine root |
 
 ---
