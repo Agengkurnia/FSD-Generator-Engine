@@ -1,0 +1,46 @@
+flowchart TD
+    Start([START]) --> Step1[STEP 1: DOCUMENT<br/>Sample Reception]
+    
+    Step1 --> |• Receive sample from supplier<br/>• Document material details<br/>• Upload COA, MSDS<br/>• Generate Sample No| Step2[STEP 2: PURPOSE<br/>Sample Analysis]
+    
+    Step2 --> |• Define purpose category<br/>• Map to target products<br/>• Set expected benefits<br/>• Set analysis deadline| Step3[STEP 3: EVALUATION<br/>Technical Testing]
+    
+    Step3 --> |• Lab testing<br/>• Trial production<br/>• Quality scoring<br/>• Compliance check| Step4[STEP 4: DISPOSITION<br/>Final Decision]
+    
+    Step4 --> |Review all steps| Decision{Decision?}
+    
+    Decision -->|APPROVED| ApprovalCheck{Approval<br/>Required?}
+    Decision -->|REJECTED| EndReject([END])
+    Decision -->|ON HOLD| OnHold[Wait for<br/>Additional Info]
+    Decision -->|CANCEL| EndCancel([END])
+    
+    OnHold --> |Back to| Step3
+    
+    ApprovalCheck -->|YES| PendingApproval[Pending<br/>Approval]
+    ApprovalCheck -->|NO| Completed([Completed<br/>END])
+    
+    PendingApproval --> ApproverReview[Approver<br/>Review]
+    
+    ApproverReview --> ApprovalDecision{Approval<br/>Decision}
+    
+    ApprovalDecision -->|APPROVE| CompletedApproved([Completed<br/>END])
+    ApprovalDecision -->|REJECT| BackToStep4[Back to<br/>Step 4]
+    
+    BackToStep4 --> Step4
+    
+    style Start fill:#8CC63F,stroke:#009B4D,stroke-width:2px
+    style Step1 fill:#FFF3CD,stroke:#FFC107,stroke-width:2px
+    style Step2 fill:#D1ECF1,stroke:#17A2B8,stroke-width:2px
+    style Step3 fill:#E2E3E5,stroke:#6C757D,stroke-width:2px
+    style Step4 fill:#F8D7DA,stroke:#DC3545,stroke-width:2px
+    style Decision fill:#FFF3E0,stroke:#F7941E,stroke-width:3px
+    style ApprovalCheck fill:#FFF3E0,stroke:#F7941E,stroke-width:2px
+    style ApprovalDecision fill:#FFF3E0,stroke:#F7941E,stroke-width:2px
+    style OnHold fill:#E7F3FF,stroke:#0D6EFD,stroke-width:2px
+    style PendingApproval fill:#FFF9C4,stroke:#F57F17,stroke-width:2px
+    style ApproverReview fill:#F3E5F5,stroke:#7B1FA2,stroke-width:2px
+    style Completed fill:#C8E6C9,stroke:#388E3C,stroke-width:2px
+    style CompletedApproved fill:#C8E6C9,stroke:#388E3C,stroke-width:2px
+    style EndReject fill:#FFCDD2,stroke:#D32F2F,stroke-width:2px
+    style EndCancel fill:#FFCDD2,stroke:#D32F2F,stroke-width:2px
+    style BackToStep4 fill:#FFE0B2,stroke:#FF6F00,stroke-width:2px

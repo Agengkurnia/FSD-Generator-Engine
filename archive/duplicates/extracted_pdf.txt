@@ -1,0 +1,3253 @@
+Table of Contents 
+FUNCTIONAL SPECIFICATION DOCUMENT (FSD) ........................................................................................................... 2 
+NEW RM SAMPLE MANAGEMENT SYSTEM ............................................................................................................... 2 
+VERSI 1.8 - SIMPLIFIED WORKFLOW DIAGRAM ..................................................................................................... 2 
+INFORMASI DOKUMEN .......................................................................................................................................... 2 
+DAFTAR ISI ................................................................................................................................................................. 2 
+1. PENDAHULUAN ...................................................................................................................................................... 3 
+1.1 Tujuan Dokumen ............................................................................................................................................. 3 
+1.2 Ruang Lingkup .................................................................................................................................................. 3 
+1.3 Stakeholder ...................................................................................................................................................... 3 
+2. RINGKASAN BUSINESS FLOW ................................................................................................................................. 3 
+2.1 Proses As-Is (Legacy System) ........................................................................................................................... 3 
+2.2 Proses To-Be (New System) ............................................................................................................................. 3 
+3. SPESIFIKASI FUNGSIONAL ...................................................................................................................................... 6 
+Status Transition Diagram ..................................................................................................................................... 6 
+3.1 INDEX PAGE — Daftar New RM Sample .......................................................................................................... 6 
+3.2 DETAIL PAGE — Step 1: Document Sample ..................................................................................................... 9 
+3.3 DETAIL PAGE — Step 2: Sample Purpose ....................................................................................................... 14 
+3.4 DETAIL PAGE — Step 3: RM Evaluation ......................................................................................................... 17 
+3.5 DETAIL PAGE — Step 4: Disposition ............................................................................................................... 21 
+3.6 MODALS ......................................................................................................................................................... 23 
+4. STRUKTUR DATABASE .......................................................................................................................................... 24 
+4.1 Konvensi Penamaan ....................................................................................................................................... 24 
+4.2 Entity Relationship Diagram (ERD) ................................................................................................................ 25 
+4.3 Tabel Detail - Step 1: Document Sample ....................................................................................................... 25 
+4.4 Tabel Detail - Step 2: Sample Purpose ........................................................................................................... 28 
+4.5 Tabel Detail - Step 3: RM Evaluation ............................................................................................................. 29 
+4.6 Tabel Detail - Step 4: Disposition ................................................................................................................... 31 
+4.3 Tabel Existing yang Digunakan....................................................................................................................... 32 
+5. BUSINESS RULES .................................................................................................................................................. 35 
+5.1 General Rules ................................................................................................................................................. 35 
+5.2 Step-Specific Rules ......................................................................................................................................... 36 
+5.3 Workflow Rules .............................................................................................................................................. 36 
+5.4 Navigation Rules ............................................................................................................................................ 36 
+6. UI SPECIFICATIONS............................................................................................................................................... 36 
+6.1 Index Page (NewRMSampleIndex.html) ........................................................................................................ 36 
+
+6.2 Detail Page (NewRMSampleDetail.html) ....................................................................................................... 36 
+7. INTEGRATION POINTS .......................................................................................................................................... 37 
+7.1 Master Data Dependencies ........................................................................................................................... 37 
+7.2 File Storage .................................................................................................................................................... 37 
+7.3 User Session ................................................................................................................................................... 37 
+8. REPORTING .......................................................................................................................................................... 38 
+8.1 Sample Summary Report ............................................................................................................................... 38 
+8.2 Evaluation Report .......................................................................................................................................... 38 
+8.3 Approval History Report ................................................................................................................................ 38 
+9. LAMPIRAN ............................................................................................................................................................ 38 
+9.1 Screenshots.................................................................................................................................................... 38 
+9.2 Sample Data ................................................................................................................................................... 47 
+9.3 Change Log..................................................................................................................................................... 47 
+ 
+FUNCTIONAL SPECIFICATION DOCUMENT (FSD) 
+NEW RM SAMPLE MANAGEMENT SYSTEM 
+VERSI 1.8 - SIMPLIFIED WORKFLOW DIAGRAM 
+ 
+INFORMASI DOKUMEN 
+Item 
+Keterangan 
+Nama Modul 
+New RM Sample Management 
+Versi Dokumen 
+1.8 (Simplified Workflow Diagram) 
+Tanggal 
+19 Februari 2026 
+Status 
+Draft - Enhanced 
+Penyusun 
+Development Team 
+Perubahan v1.6 
+Updated Step 3 Parameter Table (Line No, Test Code LOV, Target LOV) 
+Perubahan v1.7 
+Implementasi LOV penuh di Step 1 via app.openLOV() modal injection system 
+Perubahan v1.8 
+Simplifikasi Detailed Workflow Flowchart menjadi lebih ringkas dan mudah dibaca 
+ 
+DAFTAR ISI 
+1. Pendahuluan 
+2. Ringkasan Business Flow 
+3. Spesifikasi Fungsional 
+4. Struktur Database 
+5. Business Rules 
+6. UI Specifications 
+
+7. Integration Points 
+8. Reporting 
+9. Lampiran 
+ 
+1. PENDAHULUAN 
+1.1 Tujuan Dokumen 
+Dokumen ini menjelaskan spesifikasi fungsional dari sistem New RM Sample Management yang merupakan 
+revamp dari tiga modul terpisah (Document Sample, Sample Purpose, dan RM Evaluation) menjadi satu sistem 
+terintegrasi dengan 4 tahapan proses. 
+1.2 Ruang Lingkup 
+Sistem ini mencakup: - Penerimaan dan dokumentasi sample RM dari supplier - Pendefinisian tujuan penggunaan 
+sample - Evaluasi teknis dan pengujian laboratorium - Keputusan disposisi akhir (Approve/Reject/On Hold) 
+1.3 Stakeholder 
+• 
+R&D Department: Pengguna utama untuk evaluasi sample 
+• 
+QA/QC Department: Reviewer hasil pengujian 
+• 
+Purchasing Department: Monitoring status sample untuk procurement 
+• 
+Management: Approval keputusan akhir 
+ 
+2. RINGKASAN BUSINESS FLOW 
+2.1 Proses As-Is (Legacy System) 
+Sistem lama menggunakan 3 form terpisah: 1. Document Sample: Input data penerimaan sample 2. Sample 
+Purpose: Definisi tujuan penggunaan 3. RM Evaluation: Evaluasi teknis dan hasil lab 
+Masalah: - Data terpisah-pisah - Duplikasi input - Tracking progress sulit - Tidak ada workflow approval terintegrasi 
+2.2 Proses To-Be (New System) 
+2.2.1 Simplified Flow Diagram 
+ 
+
+2.2.2 Detailed Workflow Flowchart 
+
+
+Keuntungan: - Single entry point - Progress tracking real-time - Workflow approval terintegrasi - Data consistency 
+terjaga 
+ 
+3. SPESIFIKASI FUNGSIONAL 
+Format: Setiap form/halaman didokumentasikan dengan 4 komponen wajib: 1. Deskripsi — Nama 
+form, tujuan, dan navigation path 2. Screenshot — Tampilan visual halaman 3. Functional Description 
+— Detail setiap element UI beserta data source 4. Business Rules & Validation — RBAC, status 
+permission, field validation, dan business logic 
+Status Transition Diagram 
+Semua form dalam modul ini mengikuti alur status berikut: 
+ 
+ 
+3.1 INDEX PAGE — Daftar New RM Sample 
+3.1.1 Deskripsi 
+Navigation: Sidebar > RM Selection > New RM Sample 
+Halaman ini menampilkan daftar seluruh data New RM Sample dalam bentuk DataTable, dilengkapi dashboard 
+summary cards untuk monitoring status secara real-time. User dapat melakukan pencarian, filter, dan aksi 
+(View/Edit/Delete) pada setiap record. 
+
+3.1.2 Screenshot 
+ 
+Index - Dashboard View 
+ 
+Index - DataTable View 
+3.1.3 Functional Description 
+No 
+Element 
+Type 
+Action / Behavior 
+Data Source 
+
+No 
+Element 
+Type 
+Action / Behavior 
+Data Source 
+1 
+Summary Cards 
+Display 
+Menampilkan jumlah: Total, Pending, 
+Approved, Rejected, On Hold 
+Query COUNT GROUP BY 
+status dari 
+trRMSample_Header 
+2 
+Btn New 
+Button 
+Buka halaman detail baru, status = Draft 
+- 
+3 
+Search - Date Range 
+DatePicker 
+Filter data berdasarkan range tanggal sample 
+Field dtSampleDate 
+4 
+Search - Status 
+Dropdown 
+Filter data berdasarkan status 
+Field intStatusId 
+5 
+Search - Supplier 
+Text Input 
+Filter berdasarkan nama supplier 
+Field txtSupplierName 
+6 
+Search - Material 
+Text Input 
+Filter berdasarkan nama material 
+Field txtMaterialName 
+7 
+DataTable 
+Grid 
+Menampilkan list data dengan paging, sorting 
+API: /api/NewRMSample/List 
+8 
+Btn View 
+Button (per-
+row) 
+Buka detail dalam mode read-only 
+Navigate ke Detail page by 
+intId 
+9 
+Btn Edit 
+Button (per-
+row) 
+Buka detail dalam mode edit 
+Navigate ke Detail page by 
+intId 
+10 
+Btn Delete 
+Button (per-
+row) 
+Confirm dialog → soft delete (bitActive = 0) 
+API: 
+/api/NewRMSample/Delete/{i
+d} 
+Kolom DataTable: 
+No 
+Column 
+Description 
+Sortable 
+Searchable 
+1 
+Sample No 
+Nomor sample (SMPL-YYYY-
+XXXX) 
+Ya 
+Ya 
+2 
+Material Name 
+Nama material dari supplier 
+Ya 
+Ya 
+3 
+Supplier Name 
+Nama supplier 
+Ya 
+Ya 
+4 
+Sample Date 
+Tanggal penerimaan sample 
+Ya 
+Ya 
+5 
+Status 
+Badge status 
+(Draft/Pending/Approved/Reject
+ed) 
+Ya 
+Ya 
+6 
+Progress 
+Step terakhir yang diselesaikan 
+(1-4) 
+Ya 
+Tidak 
+7 
+Actions 
+Buttons: View, Edit, Delete 
+Tidak 
+Tidak 
+3.1.4 Business Rules & Validation 
+A. RBAC & Status Permission 
+Role 
+Aksi 
+Kondisi 
+RA (Regulatory Affairs) 
+New, View, Edit, Delete 
+Status = Draft 
+RA 
+View 
+Status selain Draft 
+PCD 
+View 
+Semua status 
+PCD 
+Approve, Reject 
+Status = Waiting Approval 
+Admin 
+Full Access 
+Semua status 
+B. Business Logic 
+No 
+Condition 
+Action 
+1 
+User klik Btn Delete 
+Tampilkan SweetAlert confirm: “Apakah 
+Anda yakin menghapus data ini?” 
+
+No 
+Condition 
+Action 
+2 
+Status = Approved/Rejected 
+Btn Edit dan Btn Delete di-hide pada row 
+tersebut 
+3 
+DataTable load pertama kali 
+Default filter: 30 hari terakhir, semua 
+status 
+ 
+3.2 DETAIL PAGE — Step 1: Document Sample 
+3.2.1 Deskripsi 
+Navigation: Sidebar > RM Selection > New RM Sample > Klik New / Edit > Step 1 
+Halaman detail step 1 untuk mendokumentasikan penerimaan sample dari supplier. Berisi header information 
+(Type Document, Currency, UOM, PIC), material details, allergen checklist, carry over BTP table, dan document 
+upload section. Halaman ini merupakan step pertama dari wizard 4-step. 
+
+3.2.2 Screenshot 
+ 
+Step 1 - Header & Basic Information 
+Step 1 - Material Details 
+Step 1 - Material Details 
+
+Step 1 - Allergen Checklist 
+Step 1 - Allergen Checklist 
+Step 1 - Carry Over BTP Table 
+Step 1 - Carry Over BTP Table 
+Step 1 - Document Upload Section 
+Step 1 - Document Upload Section 
+3.2.3 Functional Description 
+Implementasi v1.7: Semua tombol LOV di Step 1 menggunakan mekanisme app.openLOV(modalId, 
+renderFn) yang meng-inject modal ke DOM secara dinamis, bypassing konflik Bootstrap data-toggle. 
+A. Header Information 
+No 
+Element 
+Type 
+Action / Behavior 
+Data Source 
+1 
+Sample No 
+Display 
+(auto) 
+Auto-generate saat pertama kali save: SMPL-
+YYYY-XXXX 
+Sequence dari 
+trRMSample_Header 
+2 
+Sample Date 
+DatePicker 
+Pilih tanggal sample 
+- 
+3 
+LOV Type 
+Document 
+LOV Modal 
+Klik   → app.openLOV('lovTypeModal') → 
+buka modal, pilih row, auto-fill nama ke 
+txtTypeDocument 
+mAppParam.docTypes (static, 
+extendable ke DB) 
+4 
+Date of Receipt 
+DatePicker 
+Pilih tanggal penerimaan sample 
+- 
+B. Supplier & Material Information 
+No 
+Element 
+Type 
+Action / Behavior 
+Data Source 
+5 
+Material Name 
+Text Input 
+Input manual, max 200 char 
+- 
+6 
+LOV Supplier 
+LOV Modal 
+Klik   → app.openLOV('lovSupplierModal') 
+→ pilih row → auto-fill 
+DocumentSample_intSupplierId + 
+DocumentSample_txtSupplierName 
+Table: mSupplier WHERE 
+bitActive = 1 
+7 
+Principal 
+Text Input 
+Input manual 
+- 
+8 
+LOV Country of 
+Origin 
+LOV Modal 
+Klik   → app.openLOV('lovCountryModal') 
+→ pilih row → auto-fill 
+DocumentSample_intCountryId + 
+DocumentSample_txtCountryName 
+Table: mCountry WHERE 
+bitActive = 1 
+9 
+Plant Site 
+Text Input 
+Input manual, opsional 
+- 
+C. Pricing & Packaging 
+No 
+Element 
+Type 
+Action / Behavior 
+Data Source 
+10 
+LOV Currency 
+LOV Modal 
+Klik   → app.openLOV('lovCurrencyModal') 
+→ auto-fill code + nama 
+Table: mCurrency WHERE 
+bitActive = 1 
+11 
+Price 
+Decimal 
+Input 
+Input harga per UOM, opsional 
+- 
+12 
+LOV UOM 
+LOV Modal 
+Klik   → app.openLOV('lovUOMModal') → 
+auto-fill code + nama 
+Table: mUOM WHERE 
+bitActive = 1 
+13 
+Net Weight 
+Number 
+Input 
+Berat bersih, opsional 
+- 
+14 
+Packaging 
+Text Input 
+Input manual 
+- 
+
+D. Storage & Shelf Life 
+No 
+Element 
+Type 
+Action / Behavior 
+Data Source 
+15 
+LOV Storage 
+Condition 
+LOV Modal 
+Klik   → app.openLOV('lovStorageModal', 
+'renderStorageLOV') → render & pilih → 
+auto-fill 
+DocumentSample_intStorageSampleId + 
+DocumentSample_txtStorageCondition 
+app.storageLOVData (static 
+list) / Table: mStorage 
+16 
+Shelf Life (Months) 
+Number 
+Input 
+Input manual, numeric > 0 
+- 
+17 
+Shipping Method 
+Text Input 
+Input manual, opsional 
+- 
+E. Halal, GMO & PHO 
+No 
+Element 
+Type 
+Action / Behavior 
+Data Source 
+18 
+LOV Halal Category 
+LOV Modal 
+Klik   → app.openLOV('lovHalalCatModal', 
+'renderHalalCatLOV') → pilih → auto-fill 
+Halal_txtHalalCode + Halal_txtHalalDesc 
+app.halalCatData / Table: 
+mHalalCategory 
+19 
+LOV Halal Body 
+LOV Modal 
+Klik   → 
+app.openLOV('lovHalalBodyModal', 
+'renderHalalBodyLOV') → pilih → auto-fill 
+Halal_txtHalalBodyId + 
+Halal_txtHalalBodyInst 
+app.halalBodyData / Table: 
+mHalalBody 
+20 
+LOV GMO Status 
+LOV Modal 
+Klik   → 
+app.openLOV('lovGMOStatusModal', 
+'renderGmoStatusLOV') → pilih → auto-fill 
+Halal_txtGMOStatusCode + 
+Halal_txtGMOStatusDesc 
+app.gmoStatusData (static: 
+GMO / Non-GMO / N/A) 
+21 
+Contains PHO 
+Select 
+Dropdown: Yes / No 
+Static 
+F. LOV PIC 
+No 
+Element 
+Type 
+Action / Behavior 
+Data Source 
+22 
+LOV PIC 
+LOV Modal 
+(Disabled) 
+Auto-filled dari session user login. Field & 
+tombol di-disable untuk data integrity 
+Table: mPegawai WHERE 
+bitActive = 1 
+C. Allergen Checklist 
+No 
+Element 
+Type 
+Action / Behavior 
+Data Source 
+23 
+Allergen 
+Checkboxes (14 
+item) 
+Checkbox 
+Group 
+Multiple select. Jika “Not contain allergen” di-
+check, checkbox lain di-uncheck secara 
+otomatis 
+Static list: 14 allergen types 
+24 
+Btn Select All 
+Button 
+Check semua allergen kecuali “Not contain 
+allergen” 
+- 
+25 
+Btn Clear All 
+Button 
+Uncheck semua allergen 
+- 
+D. Carry Over BTP Table 
+No 
+Element 
+Type 
+Action / Behavior 
+Data Source 
+26 
+Btn Add Row 
+Button 
+Tambah row baru ke table BTP 
+- 
+27 
+BTP Name 
+Text Input 
+(per-row) 
+Input nama BTP 
+- 
+
+No 
+Element 
+Type 
+Action / Behavior 
+Data Source 
+28 
+Function 
+Text Input 
+(per-row) 
+Input fungsi BTP 
+- 
+29 
+Percentage (ppm) 
+Decimal 
+Input (per-
+row) 
+Input persentase, format decimal 
+- 
+30 
+Btn Delete Row 
+Button (per-
+row) 
+Hapus row dari table. Confirm dialog 
+- 
+E. Document Upload 
+No 
+Element 
+Type 
+Action / Behavior 
+Data Source 
+31 
+Btn Add Document 
+Button 
+Buka modal addAttachmentModal 
+- 
+32 
+Document List 
+Table 
+Grid 
+Tampilkan list dokumen yang sudah diupload 
+Child table: 
+trDocumentSample_Documen
+t 
+33 
+Btn Download 
+Button (per-
+row) 
+Download file attachment 
+File storage path 
+34 
+Btn Delete 
+Document 
+Button (per-
+row) 
+Hapus dokumen. Confirm dialog 
+- 
+F. Navigation Buttons (Footer) 
+No 
+Element 
+Type 
+Action / Behavior 
+Data Source 
+35 
+Btn Previous 
+Button 
+Disabled di Step 1 
+- 
+36 
+Btn Save Draft 
+Button 
+Simpan data sebagai Draft tanpa validasi 
+wajib 
+API: 
+/api/NewRMSample/SaveDraf
+t 
+37 
+Btn Next 
+Button 
+Validasi field wajib → jika lolos, pindah ke 
+Step 2 
+- 
+3.2.4 Business Rules & Validation 
+A. RBAC & Status Permission 
+Role 
+Draft 
+Waiting Approval 
+Approved 
+Rejected 
+RA 
+View, Edit, 
+Save, Next 
+View only 
+View only 
+View, Edit (re-submit) 
+PCD 
+View only 
+View, Approve, Reject 
+View only 
+View only 
+Admin 
+Full Access 
+Full Access 
+Full Access 
+Full Access 
+B. Field Validation (on Next / Submit) 
+No 
+Field 
+Rule 
+Error Message 
+1 
+Type Document 
+Required 
+“Type Document wajib dipilih” 
+2 
+Material Name 
+Required, max 200 
+char 
+“Material Name wajib diisi” 
+3 
+Principal Name 
+Required 
+“Principal Name wajib diisi” 
+4 
+Supplier Name 
+Required 
+“Supplier Name wajib diisi” 
+5 
+Shelf Life 
+Required, numeric, > 
+0 
+“Shelf Life harus angka lebih dari 0” 
+
+No 
+Field 
+Rule 
+Error Message 
+6 
+Packaging 
+Required 
+“Packaging wajib diisi” 
+7 
+Storage Condition 
+Required 
+“Storage Condition wajib dipilih” 
+8 
+Position 
+Required 
+“Position wajib dipilih” 
+9 
+Halal Category 
+Required 
+“Halal Category wajib dipilih” 
+10 
+Halal Body 
+Required 
+“Halal Body wajib dipilih” 
+11 
+Date Receipt 
+Required, format 
+date 
+“Date Receipt wajib diisi” 
+12 
+Currency 
+Required 
+“Currency wajib dipilih” 
+13 
+UOM 
+Required 
+“UOM wajib dipilih” 
+14 
+PIC 
+Required 
+“PIC wajib dipilih” 
+15 
+GMO Status 
+Required 
+“GMO Status wajib dipilih” 
+16 
+Country of Origin 
+Required 
+“Country of Origin wajib dipilih” 
+17 
+Allergen 
+Min 1 item checked 
+“Pilih minimal 1 allergen atau ‘Not contain allergen’” 
+C. Business Logic 
+No 
+Condition 
+Action 
+1 
+User check “Not contain allergen” 
+Semua allergen checkbox lainnya di-
+uncheck dan di-disable 
+2 
+User uncheck “Not contain allergen” 
+Semua allergen checkbox kembali enabled 
+3 
+Type Document = “RM(BTP)” 
+BTP table wajib diisi minimal 1 row. 
+Tampilkan warning jika kosong saat Next 
+4 
+Btn Save Draft diklik 
+Simpan semua data tanpa validasi 
+required. Status tetap Draft 
+5 
+Btn Next diklik 
+Jalankan semua validasi field. Jika gagal, 
+scroll ke field pertama yang error 
+6 
+Upload dokumen 
+File max 10 MB. Format: PDF, DOC, DOCX, 
+XLS, XLSX, JPG, PNG 
+7 
+PIC field 
+Auto-filled dari session user saat form 
+pertama kali dibuka. Bisa di-override 
+ 
+3.3 DETAIL PAGE — Step 2: Sample Purpose 
+3.3.1 Deskripsi 
+Navigation: Sidebar > RM Selection > New RM Sample > Detail > Step 2 
+Halaman step 2 untuk mendefinisikan tujuan penggunaan sample, mapping ke kategori RM, item code, dan produk 
+target. User harus menentukan purpose type, objective, dan mapping product yang akan menggunakan material 
+ini. 
+
+3.3.2 Screenshot 
+ 
+Step 2 - Category & Purpose 
+Step 2 - Item Mapping 
+Step 2 - Item Mapping 
+Step 2 - Apply To Product Table 
+Step 2 - Apply To Product Table 
+3.3.3 Functional Description 
+No 
+Element 
+Type 
+Action / Behavior 
+Data Source 
+1 
+Sample No 
+Display 
+Read-only, dari Step 1 
+trRMSample_Header.txtSamp
+leNo 
+2 
+LOV Category Code 
+LOV Modal 
+Pilih kategori RM → auto-fill Category Name, 
+Sub Code, Sub Name 
+Table: mRMCategory WHERE 
+bitActive = 1 
+3 
+Category Name 
+Display 
+Auto-filled saat Category Code dipilih 
+mRMCategory.txtCategoryNa
+me 
+4 
+Sub Code 
+Display 
+Auto-filled 
+mRMCategory.txtSubCode 
+5 
+Sub Name 
+Display 
+Auto-filled 
+mRMCategory.txtSubName 
+6 
+Sample Purpose 
+Type 
+Dropdown 
+Pilih tipe: New Ingredients / Alternative / 
+Reformulation / Cost Saving 
+Static list 
+7 
+Item Trial 
+Text Input 
+Input kode item trial (untuk new ingredients) 
+- 
+8 
+Item Trial Desc 
+Text Input 
+Deskripsi item trial 
+- 
+
+No 
+Element 
+Type 
+Action / Behavior 
+Data Source 
+9 
+LOV Item Code 
+Existing 
+LOV Modal 
+Pilih item code existing → auto-fill 
+description 
+Table: item master (existing 
+system) 
+10 
+Item Description 
+Display 
+Auto-filled dari Item Code Existing 
+- 
+11 
+Objective 
+TextArea 
+Input tujuan penggunaan sample, max 500 
+char 
+- 
+12 
+Btn Add Product 
+Button 
+Tambah row ke Apply To Product table 
+- 
+13 
+LOV Group Product 
+Type 
+LOV Modal 
+(per-row) 
+Pilih group product → auto-fill nama 
+Table: product type master 
+14 
+LOV Child Product 
+Type 
+LOV Modal 
+(per-row) 
+Pilih child product, filtered by group 
+Table: product type master 
+(filtered) 
+15 
+LOV Variant 
+LOV Modal 
+(per-row) 
+Pilih variant, filtered by child 
+Table: variant master 
+(filtered) 
+16 
+BTP Calculation 
+Decimal 
+(per-row) 
+Input nilai carry over BTP calculation 
+- 
+17 
+Btn Delete Product 
+Button (per-
+row) 
+Hapus row dari product table. Confirm dialog 
+- 
+18 
+Btn Previous 
+Button 
+Kembali ke Step 1 
+- 
+19 
+Btn Save Draft 
+Button 
+Simpan tanpa validasi 
+API: 
+/api/NewRMSample/SaveDraf
+t 
+20 
+Btn Next 
+Button 
+Validasi → pindah ke Step 3 
+- 
+3.3.4 Business Rules & Validation 
+A. RBAC & Status Permission 
+Sama dengan Step 1 (lihat Section 3.2.4). 
+B. Field Validation (on Next) 
+No 
+Field 
+Rule 
+Error Message 
+1 
+Category Code 
+Required 
+“Category Code wajib dipilih” 
+2 
+Sample Purpose Type 
+Required 
+“Sample Purpose Type wajib dipilih” 
+3 
+Item Trial ATAU Item 
+Code Existing 
+Salah satu wajib diisi 
+“Item Trial atau Item Code Existing wajib diisi” 
+4 
+Objective 
+Required, max 500 
+char 
+“Objective wajib diisi” 
+5 
+Apply To Product 
+Min 1 row 
+“Tambahkan minimal 1 product” 
+C. Business Logic 
+No 
+Condition 
+Action 
+1 
+Purpose Type = “New Ingredients” 
+Field Item Trial aktif, Item Code Existing 
+di-disable 
+2 
+Purpose Type = “Alternative” 
+Field Item Code Existing aktif (LOV), Item 
+Trial di-disable 
+3 
+Group Product Type dipilih 
+Filter Child Product Type berdasarkan 
+group yang dipilih 
+4 
+Child Product Type dipilih 
+Filter Variant berdasarkan child yang 
+dipilih 
+
+ 
+3.4 DETAIL PAGE — Step 3: RM Evaluation 
+3.4.1 Deskripsi 
+Navigation: Sidebar > RM Selection > New RM Sample > Detail > Step 3 
+Halaman step 3 untuk evaluasi teknis dan hasil pengujian laboratorium. Terdiri dari 6 sub-tab: Organoleptic, 
+Nutrition & Physical, Microbiological, Heavy Metals, Other Contaminant, dan Food Category. Setiap tab memiliki 
+tabel parameter yang sama strukturnya. 
+3.4.2 Screenshot 
+ 
+Step 3 - Tab Organoleptic 
+Step 3 - Tab Nutrition 
+Step 3 - Tab Nutrition 
+
+ 
+Step 3 - Tab Microbiological 
+Step 3 - Tab Heavy Metals 
+Step 3 - Tab Heavy Metals 
+Step 3 - Tab Other Contaminant 
+Step 3 - Tab Other Contaminant 
+Step 3 - Tab Food Category 
+Step 3 - Tab Food Category 
+3.4.3 Functional Description 
+A. Main Form Information 
+No 
+Element 
+Type 
+Action / Behavior 
+Data Source 
+1 
+RM Evaluation No 
+Display 
+Auto-generated ID 
+trRMEvaluation.txtEvalNo 
+2 
+Eval Date 
+Date Picker 
+Tanggal evaluasi 
+- 
+3 
+Density 
+Decimal 
+Input density material 
+- 
+
+No 
+Element 
+Type 
+Action / Behavior 
+Data Source 
+4 
+Food Categories 
+Dropdown 
+(Multi) 
+Kategori pangan applicable 
+- 
+5 
+Status Organik 
+Dropdown 
+Status keorganikan: NON ORGANIK / 
+ORGANIK 
+Static list 
+6 
+Potensi EG DEG 
+Select2 
+(Multi) 
+Potensi kandungan EG/DEG: N/A, Gliserol, dll 
+Static list 
+7 
+Penyusun Bahan 
+Baku 
+TextArea 
+Deskripsi penyusun bahan baku 
+- 
+B. Tab Navigation 
+No 
+Tab Name 
+Deskripsi 
+1 
+Organoleptic 
+Parameter: Appearance, Color, Odor, Taste, Texture 
+2 
+Nutrition & Physical 
+Parameter: Protein, Fat, Moisture, Ash, pH, Water 
+Activity, dll 
+3 
+Microbiological 
+Parameter: TPC, E.coli, Salmonella, Yeast & Mold, 
+Coliform, dll 
+4 
+Heavy Metals 
+Parameter: Pb (Lead), Cd (Cadmium), Hg (Mercury), As 
+(Arsenic), Sn (Tin) 
+5 
+Other Contaminant 
+Parameter: Pesticide, Mycotoxin, Aflatoxin, Melamine, 
+dll 
+6 
+Food Category 
+Mapping ke kategori pangan (BPOM, FDA, dll) 
+B. Parameter Table (berlaku untuk Tab 1-5) 
+No 
+Element 
+Type 
+Action / Behavior 
+Data Source 
+1 
+Btn Add Parameter 
+Button 
+Tambah row parameter baru 
+- 
+2 
+Line No 
+Display 
+(per-row) 
+Auto-generated sequence number (1, 2, 3…) 
+- 
+3 
+Btn Select Test 
+Button (per-
+row) 
+Buka modal LOV parameter uji 
+- 
+4 
+Test Code 
+Text IO 
+(Read-only) 
+Auto-filled dari LOV Selection 
+Table: mParameter 
+5 
+Test Class 
+Text IO 
+(Read-only) 
+Auto-filled dari LOV Selection 
+mParameter.txtTestClass 
+6 
+Test Method 
+Text IO 
+(Read-only) 
+Auto-filled dari LOV Selection 
+mParameter.txtTestMethod 
+7 
+Test Unit 
+Text IO 
+(Read-only) 
+Auto-filled dari LOV Selection 
+mParameter.txtTestUnit 
+8 
+Regulation No 
+Text Input 
+(per-row) 
+Input nomor regulasi acuan 
+- 
+9 
+Regulation Min 
+Decimal 
+(per-row) 
+Batas minimum regulasi 
+- 
+10 
+Regulation Max 
+Decimal 
+(per-row) 
+Batas maximum regulasi 
+- 
+11 
+Spec Supplier 
+Min/Max 
+Decimal 
+(per-row) 
+Spesifikasi dari supplier (dari COA) 
+- 
+12 
+COA Result 
+Decimal 
+(per-row) 
+Hasil dari Certificate of Analysis 
+Input manual / import 
+
+No 
+Element 
+Type 
+Action / Behavior 
+Data Source 
+13 
+Analysis Result 
+Decimal 
+(per-row) 
+Hasil analisa laboratorium internal 
+Input manual 
+14 
+Spec SHP Min/Max 
+Decimal 
+(per-row) 
+Spesifikasi SHP 
+- 
+15 
+Target 
+Dropdown 
+(LOV) 
+Pilih: Conform / Not Conform / N/A 
+Static list 
+16 
+Btn Delete Row 
+Button (per-
+row) 
+Hapus parameter. Confirm dialog 
+- 
+17 
+Btn View COA & 
+Analysis 
+Button (per-
+row) 
+Buka modal perbandingan COA vs Analysis 
+Result 
+- 
+C. Food Category Tab (Tab 6) 
+No 
+Element 
+Type 
+Action / Behavior 
+Data Source 
+17 
+Btn Add Category 
+Button 
+Tambah row food category 
+- 
+18 
+LOV Food Category 
+LOV Modal 
+(per-row) 
+Pilih kategori pangan 
+Table: mFoodCategory 
+WHERE bitActive = 1 
+19 
+Category Name 
+Display 
+(per-row) 
+Auto-filled 
+mFoodCategory.txtCategoryN
+ame 
+20 
+Regulation Body 
+Display 
+(per-row) 
+Auto-filled: BPOM / FDA / dll 
+mFoodCategory.txtRegulation
+Body 
+21 
+Btn Delete 
+Button (per-
+row) 
+Hapus mapping. Confirm dialog 
+- 
+D. Navigation Buttons 
+No 
+Element 
+Type 
+Action / Behavior 
+Data Source 
+22 
+Btn Previous 
+Button 
+Kembali ke Step 2 
+- 
+23 
+Btn Save Draft 
+Button 
+Simpan tanpa validasi 
+API: 
+/api/NewRMSample/SaveDraf
+t 
+24 
+Btn Next 
+Button 
+Validasi → pindah ke Step 4 
+- 
+3.4.4 Business Rules & Validation 
+A. RBAC & Status Permission 
+Sama dengan Step 1 (lihat Section 3.2.4). 
+B. Field Validation (on Next) 
+No 
+Field 
+Rule 
+Error Message 
+1 
+Tab Organoleptic 
+Min 1 parameter 
+“Tambahkan minimal 1 parameter Organoleptic” 
+2 
+Tab Nutrition 
+Min 1 parameter 
+“Tambahkan minimal 1 parameter Nutrition” 
+3 
+COA Result (setiap row) 
+Numeric 
+“COA Result harus berupa angka” 
+4 
+Analysis Result (setiap 
+row) 
+Numeric 
+“Analysis Result harus berupa angka” 
+5 
+Food Category 
+Min 1 category 
+“Tambahkan minimal 1 Food Category” 
+C. Business Logic 
+
+No 
+Condition 
+Action 
+1 
+Parameter ditambahkan ke tab 
+Overall Score di-recalculate otomatis 
+2 
+Analysis Result > Regulation Max 
+Highlight row dengan warna merah 
+(warning) 
+3 
+Analysis Result < Regulation Min 
+Highlight row dengan warna merah 
+(warning) 
+4 
+COA Result dan Analysis Result keduanya diisi 
+Enable tombol “View COA & Analysis” 
+untuk perbandingan 
+5 
+Tab switch 
+Data pada tab sebelumnya otomatis di-
+preserve (tidak hilang) 
+ 
+3.5 DETAIL PAGE — Step 4: Disposition 
+3.5.1 Deskripsi 
+Navigation: Sidebar > RM Selection > New RM Sample > Detail > Step 4 
+Halaman step 4 (terakhir) untuk keputusan akhir terhadap sample. Menampilkan Overall Score dari evaluasi, field 
+rekomendasi, keputusan (Approved/Rejected/On Hold), dan workflow approval. Setelah submit, status sample 
+berubah sesuai keputusan. 
+3.5.2 Screenshot 
+ 
+Step 4 - Disposition Form 
+Step 4 - Action Buttons 
+Step 4 - Action Buttons 
+3.5.3 Functional Description 
+No 
+Element 
+Type 
+Action / Behavior 
+Data Source 
+1 
+Overall Score 
+Display 
+Read-only, calculated dari semua parameter 
+Step 3 
+Calculated field 
+
+No 
+Element 
+Type 
+Action / Behavior 
+Data Source 
+2 
+Recommendation 
+TextArea 
+Input rekomendasi evaluator, max 1000 char 
+- 
+3 
+Decision 
+Radio 
+Button 
+Pilih: Approved / Rejected / On Hold 
+- 
+4 
+Reason 
+TextArea 
+Input alasan keputusan 
+- 
+5 
+Approval Required 
+Checkbox 
+Centang jika memerlukan approval dari 
+atasan 
+- 
+6 
+LOV Approver 
+LOV Modal 
+Pilih approver. Hanya muncul jika Approval 
+Required = checked 
+Table: mPegawai WHERE 
+txtPositionCode IN 
+('MGR','GM') AND bitActive = 
+1 
+7 
+Approval Notes 
+TextArea 
+Catatan untuk approver (opsional) 
+- 
+8 
+Btn Previous 
+Button 
+Kembali ke Step 3 
+- 
+9 
+Btn Save Draft 
+Button 
+Simpan tanpa validasi 
+API: 
+/api/NewRMSample/SaveDraf
+t 
+10 
+Btn Next 
+Button 
+Disabled di Step 4 
+- 
+11 
+Btn Submit 
+Button 
+Visible hanya di Step 4. Submit final dengan 
+full validation 
+API: 
+/api/NewRMSample/Submit 
+3.5.4 Business Rules & Validation 
+A. RBAC & Status Permission 
+Role 
+Draft 
+Waiting Approval 
+Approved 
+Rejected 
+RA 
+View, Edit, 
+Save, Submit 
+View only 
+View only 
+View, Edit, Re-submit 
+PCD 
+View only 
+View, Approve, Reject 
+View only 
+View only 
+Admin 
+Full Access 
+Full Access 
+Full Access 
+Full Access 
+B. Field Validation (on Submit) 
+No 
+Field 
+Rule 
+Error Message 
+1 
+Recommendation 
+Required, max 1000 
+char 
+“Recommendation wajib diisi” 
+2 
+Decision 
+Required, pilih salah 
+satu 
+“Decision wajib dipilih” 
+3 
+Reason 
+Required jika 
+Decision = Rejected / 
+On Hold 
+“Reason wajib diisi untuk keputusan Rejected/On Hold” 
+4 
+Approver 
+Required jika 
+Approval Required = 
+checked 
+“Approver wajib dipilih jika Approval Required dicentang” 
+5 
+Step 1-3 
+Semua step harus 
+complete 
+“Lengkapi semua step sebelum submit” 
+C. Business Logic 
+No 
+Condition 
+Action 
+1 
+Decision = “Approved” + Approval Required = unchecked 
+Status langsung berubah ke Approved. 
+Kirim email notifikasi ke Creator 
+
+No 
+Condition 
+Action 
+2 
+Decision = “Approved” + Approval Required = checked 
+Status berubah ke Waiting Approval. 
+Kirim email notifikasi ke Approver 
+3 
+Decision = “Rejected” 
+Status berubah ke Rejected. Reason wajib 
+diisi. Kirim email ke Creator 
+4 
+Decision = “On Hold” 
+Status berubah ke On Hold. Reason wajib 
+diisi. Sample dikembalikan ke Step 3 untuk 
+evaluasi tambahan 
+5 
+Approver klik Approve (dari Index page) 
+Status berubah ke Approved. Kirim email 
+ke Creator 
+6 
+Approver klik Reject (dari Index page) 
+Status berubah ke Rejected. Wajib input 
+rejection notes. Kirim email ke Creator 
+7 
+Status = Rejected 
+RA dapat Edit dan Re-submit. Status 
+kembali ke Draft 
+ 
+3.6 MODALS 
+3.6.1 Modal — Add Document 
+Deskripsi: Modal untuk upload dokumen pendukung pada Step 1. Dipanggil dari Btn Add Document. 
+Functional Description: 
+No 
+Element 
+Type 
+Action / Behavior 
+Data Source 
+1 
+Document Type 
+Dropdown 
+Pilih tipe: Specification, COA, Halal 
+Certificate, Price List, Regulation, Flow 
+Process 
+Static list 
+2 
+Spec/Certificate No 
+Text Input 
+Nomor dokumen spesifikasi atau sertifikat 
+- 
+3 
+Expired Date 
+DatePicker 
+Tanggal kadaluarsa dokumen (untuk 
+sertifikat) 
+- 
+4 
+Remarks 
+TextArea 
+Catatan tambahan 
+- 
+5 
+File Attachment 
+File Input 
+Upload file. Max 10 MB. Format: PDF, DOC, 
+DOCX, XLS, XLSX, JPG, PNG 
+- 
+6 
+Btn Save 
+Button 
+Validasi → simpan dokumen ke list 
+- 
+7 
+Btn Cancel 
+Button 
+Tutup modal tanpa simpan 
+- 
+Validation: 
+No 
+Field 
+Rule 
+Error Message 
+1 
+Document Type 
+Required 
+“Document Type wajib dipilih” 
+2 
+File Attachment 
+Required 
+“File wajib di-upload” 
+3 
+File Size 
+Max 10 MB 
+“Ukuran file maksimal 10 MB” 
+4 
+File Extension 
+Hanya PDF, DOC, 
+DOCX, XLS, XLSX, 
+JPG, PNG 
+“Format file tidak didukung” 
+3.6.2 Modal — LOV Type Document 
+Deskripsi: Modal LOV untuk memilih jenis dokumen sample pada Step 1. 
+Modal LOV Type Document 
+
+Modal LOV Type Document 
+No 
+Element 
+Type 
+Action / Behavior 
+Data Source 
+1 
+Search Input 
+Text 
+Filter data berdasarkan keyword 
+- 
+2 
+DataTable 
+Grid 
+Tampilkan list type document 
+Table: mTypeDocument 
+WHERE bitActive = 1 
+3 
+Btn Select (per-row) 
+Button 
+Pilih row → auto-fill field Type Document di 
+parent form, tutup modal 
+- 
+4 
+Btn Close 
+Button 
+Tutup modal tanpa memilih 
+- 
+3.6.3 Modal — LOV Currency 
+Deskripsi: Modal LOV untuk memilih mata uang pada Step 1. 
+No 
+Element 
+Type 
+Action / Behavior 
+Data Source 
+1 
+Search Input 
+Text 
+Filter data berdasarkan keyword 
+- 
+2 
+DataTable 
+Grid 
+Tampilkan list currency (20+ mata uang) 
+Table: mCurrency WHERE 
+bitActive = 1 
+3 
+Btn Select (per-row) 
+Button 
+Pilih row → auto-fill Currency Code + Name di 
+parent form 
+- 
+4 
+Btn Close 
+Button 
+Tutup modal tanpa memilih 
+- 
+3.6.4 Modal — LOV UOM 
+Deskripsi: Modal LOV untuk memilih unit of measure pada Step 1. 
+No 
+Element 
+Type 
+Action / Behavior 
+Data Source 
+1 
+Search Input 
+Text 
+Filter data berdasarkan keyword 
+- 
+2 
+DataTable 
+Grid 
+Tampilkan list UOM 
+Table: mUOM WHERE 
+bitActive = 1 
+3 
+Btn Select (per-row) 
+Button 
+Pilih row → auto-fill UOM Code + Name di 
+parent form 
+- 
+4 
+Btn Close 
+Button 
+Tutup modal tanpa memilih 
+- 
+ 
+4. STRUKTUR DATABASE 
+4.1 Konvensi Penamaan 
+[!IMPORTANT] PK/FK Convention yang disepakati: - PK di tabel sendiri → intId (INT IDENTITY, auto-
+increment) + txtId (VARCHAR(50), GUID) - FK di tabel lain → nama descriptive, 
+e.g. intSampleHeaderId merujuk ke trRMSample_Header.intId (hanya intId, tanpa txtId) - Table 
+names: tr{ModuleName}_{Type} (contoh: trRMSample_Header) - Column names: Hungarian 
+notation dengan prefix int, txt, dec, dt, dtm, bit - Audit columns: txtCreatedBy, dtmCreatedDate, 
+txtUpdatedBy, dtmUpdatedDate, bitActive - Denormalized columns: LOV names disimpan bersama 
+ID-nya (e.g. intSupplierId + txtSupplierName) - Database: SQL Server (IDC_Formulation) - DDL Script: 
+idc-system/Database/Scripts/03_Step1_DocumentSample_DDL.sql 
+
+4.2 Entity Relationship Diagram (ERD) 
+ 
+Entity Relationship Diagram - New RM Sample Database 
+Mermaid Source Code (klik untuk expand) 
+ 
+4.3 Tabel Detail - Step 1: Document Sample 
+[!NOTE] Semua tabel di bawah sudah memiliki DDL script: idc-
+system/Database/Scripts/03_Step1_DocumentSample_DDL.sql 
+ 
+1. trRMSample_Header (NEW TABLE) - Main Unified Header 
+Column Name 
+Data Type 
+Nullable 
+Description 
+intId 
+INT IDENTITY 
+NOT NULL 
+PK, Auto-increment 
+txtId 
+VARCHAR(50) 
+NOT NULL 
+GUID, Unique 
+txtSampleNo 
+VARCHAR(50) 
+NOT NULL 
+Unique, Format: SMPL-YYYY-
+XXXX 
+intStatusId 
+INT 
+NOT NULL 
+0=Draft, 1=InProgress, 
+2=WaitingApproval, 
+3=Approved, 4=Rejected, 
+5=OnHold 
+
+Column Name 
+Data Type 
+Nullable 
+Description 
+intCurrentStep 
+INT 
+NOT NULL 
+Step aktif (1-4), default: 1 
+txtCreatedBy 
+VARCHAR(100) 
+NOT NULL 
+User pembuat 
+dtmCreatedDate 
+DATETIME 
+NOT NULL 
+Tanggal buat (default: 
+GETDATE()) 
+txtUpdatedBy 
+VARCHAR(100) 
+NULL 
+User pengubah 
+dtmUpdatedDate 
+DATETIME 
+NULL 
+Tanggal ubah 
+bitActive 
+BIT 
+NOT NULL 
+Soft delete flag, default: 1 
+ 
+2. trDocumentSample_Header (NEW TABLE) - Step 1: Document Sample 
+Column Name 
+Data Type 
+Nullable 
+Description 
+intId 
+INT IDENTITY 
+NOT NULL 
+PK, Auto-increment 
+txtId 
+VARCHAR(50) 
+NOT NULL 
+GUID, Unique 
+intSampleHeaderId 
+INT 
+NOT NULL 
+FK → trRMSample_Header.intId 
+dtSampleDate 
+DATE 
+NOT NULL 
+Tanggal pembuatan 
+intTypeDocumentId 
+INT 
+NOT NULL 
+FK → master type document 
+txtTypeDocumentName 
+VARCHAR(100) 
+NULL 
+Denormalized: nama type 
+document 
+txtMaterialName 
+VARCHAR(200) 
+NOT NULL 
+Nama material 
+txtProductionMethod 
+VARCHAR(200) 
+NULL 
+Metode produksi 
+txtPrincipalName 
+VARCHAR(200) 
+NOT NULL 
+Nama principal/manufacturer 
+intSupplierId 
+INT 
+NULL 
+FK → master supplier 
+txtSupplierName 
+VARCHAR(200) 
+NOT NULL 
+Nama supplier 
+intShelfLifeMonth 
+INT 
+NOT NULL 
+Masa simpan (bulan) 
+txtPackaging 
+VARCHAR(200) 
+NOT NULL 
+Kemasan 
+txtShippingMethod 
+VARCHAR(200) 
+NULL 
+Metode pengiriman 
+intStorageId 
+INT 
+NOT NULL 
+FK → mAppParam 
+(IDC_STORAGE_CONDITION) 
+txtStorageCondition 
+VARCHAR(200) 
+NULL 
+Denormalized: deskripsi storage 
+intPositionId 
+INT 
+NULL 
+FK → master position 
+txtPositionName 
+VARCHAR(200) 
+NULL 
+Denormalized: nama posisi 
+txtHalalCategoryCode 
+VARCHAR(10) 
+NOT NULL 
+Kode kategori halal 
+txtHalalCategoryName 
+VARCHAR(200) 
+NULL 
+Denormalized: nama kategori 
+halal 
+intHalalBodyId 
+INT 
+NOT NULL 
+FK → master halal body 
+txtHalalBodyName 
+VARCHAR(200) 
+NULL 
+Denormalized: nama lembaga 
+halal 
+dtDateReceipt 
+DATE 
+NOT NULL 
+Tanggal terima 
+txtCurrencyCode 
+VARCHAR(10) 
+NOT NULL 
+Kode mata uang (IDR, USD, EUR, 
+dll) 
+txtCurrencyName 
+VARCHAR(100) 
+NULL 
+Denormalized: nama currency 
+txtUOMCode 
+VARCHAR(10) 
+NOT NULL 
+Kode UOM (KG, LTR, dll) 
+txtUOMName 
+VARCHAR(100) 
+NULL 
+Denormalized: nama UOM 
+decPricePerUOM 
+DECIMAL(18,2) 
+NULL 
+Harga per UOM 
+
+Column Name 
+Data Type 
+Nullable 
+Description 
+decNetWeight 
+DECIMAL(18,4) 
+NULL 
+Berat bersih 
+intPegawaiId 
+INT 
+NOT NULL 
+FK → user/pegawai (PIC) 
+txtPegawaiName 
+VARCHAR(200) 
+NULL 
+Denormalized: nama PIC 
+txtGMOStatus 
+VARCHAR(50) 
+NOT NULL 
+Non GMO / GMO Free / PCR 
+Negative 
+intCountryId 
+VARCHAR(10) 
+NULL 
+Kode negara (ID, NZ, AU, dll) 
+txtCountryName 
+VARCHAR(100) 
+NULL 
+Denormalized: nama negara 
+bitContainPHO 
+BIT 
+NOT NULL 
+0=Tidak, 1=Mengandung PHO 
+txtCreatedBy 
+VARCHAR(100) 
+NOT NULL 
+User pembuat 
+dtmCreatedDate 
+DATETIME 
+NOT NULL 
+Tanggal buat 
+txtUpdatedBy 
+VARCHAR(100) 
+NULL 
+User pengubah 
+dtmUpdatedDate 
+DATETIME 
+NULL 
+Tanggal ubah 
+bitActive 
+BIT 
+NOT NULL 
+Soft delete flag 
+ 
+3. trDocumentSample_Allergen (NEW TABLE) - Allergen Information 
+Column Name 
+Data Type 
+Nullable 
+Description 
+intId 
+INT IDENTITY 
+NOT NULL 
+PK 
+txtId 
+VARCHAR(50) 
+NOT NULL 
+GUID, Unique 
+intSampleHeaderId 
+INT 
+NOT NULL 
+FK → trRMSample_Header.intId 
+intDocSampleHeaderId 
+INT 
+NOT NULL 
+FK → 
+trDocumentSample_Header.intId 
+txtAllergenCode 
+VARCHAR(50) 
+NOT NULL 
+Kode allergen (CEREAL_GLUTEN, 
+EGG, dll) 
+txtAllergenName 
+VARCHAR(200) 
+NOT NULL 
+Nama allergen 
+bitIsChecked 
+BIT 
+NOT NULL 
+0=Tidak, 1=Checked 
+txtCreatedBy 
+VARCHAR(100) 
+NOT NULL 
+User pembuat 
+dtmCreatedDate 
+DATETIME 
+NOT NULL 
+Tanggal buat 
+txtUpdatedBy 
+VARCHAR(100) 
+NULL 
+User pengubah 
+dtmUpdatedDate 
+DATETIME 
+NULL 
+Tanggal ubah 
+ 
+4. trDocumentSample_BTP (NEW TABLE) - Carry Over BTP 
+Column Name 
+Data Type 
+Nullable 
+Description 
+intId 
+INT IDENTITY 
+NOT NULL 
+PK 
+txtId 
+VARCHAR(50) 
+NOT NULL 
+GUID, Unique 
+intSampleHeaderId 
+INT 
+NOT NULL 
+FK → trRMSample_Header.intId 
+intDocSampleHeaderId 
+INT 
+NOT NULL 
+FK → 
+trDocumentSample_Header.intId 
+intLineNo 
+INT 
+NOT NULL 
+Nomor urut baris 
+txtBTPName 
+VARCHAR(200) 
+NOT NULL 
+Nama BTP 
+txtFunctionName 
+VARCHAR(200) 
+NOT NULL 
+Fungsi 
+decPercentagePPM 
+DECIMAL(18,4) 
+NOT NULL 
+Persentase dalam ppm 
+txtCreatedBy 
+VARCHAR(100) 
+NOT NULL 
+User pembuat 
+
+Column Name 
+Data Type 
+Nullable 
+Description 
+dtmCreatedDate 
+DATETIME 
+NOT NULL 
+Tanggal buat 
+txtUpdatedBy 
+VARCHAR(100) 
+NULL 
+User pengubah 
+dtmUpdatedDate 
+DATETIME 
+NULL 
+Tanggal ubah 
+ 
+5. trDocumentSample_Document (NEW TABLE) - Uploaded Documents 
+Column Name 
+Data Type 
+Nullable 
+Description 
+intId 
+INT IDENTITY 
+NOT NULL 
+PK 
+txtId 
+VARCHAR(50) 
+NOT NULL 
+GUID, Unique 
+intSampleHeaderId 
+INT 
+NOT NULL 
+FK → trRMSample_Header.intId 
+intDocSampleHeaderId 
+INT 
+NOT NULL 
+FK → 
+trDocumentSample_Header.intId 
+txtDocumentType 
+VARCHAR(50) 
+NOT NULL 
+Specification/COA/Halal 
+Certificate/Price 
+List/Regulation/Flow Process 
+txtFileName 
+VARCHAR(255) 
+NOT NULL 
+Nama file original 
+txtFilePath 
+VARCHAR(500) 
+NOT NULL 
+Path file di server 
+txtFileExtension 
+VARCHAR(10) 
+NULL 
+Ekstensi file (pdf, jpg, docx) 
+intFileSize 
+INT 
+NULL 
+Ukuran file (bytes) 
+txtSpecNumber 
+VARCHAR(100) 
+NULL 
+Nomor spesifikasi 
+txtCertificateNo 
+VARCHAR(100) 
+NULL 
+Nomor sertifikat 
+dtExpiredDate 
+DATE 
+NULL 
+Tanggal expired 
+txtRemarks 
+VARCHAR(MAX) 
+NULL 
+Keterangan 
+dtUploadDate 
+DATETIME 
+NOT NULL 
+Tanggal upload 
+txtCreatedBy 
+VARCHAR(100) 
+NOT NULL 
+User pembuat 
+dtmCreatedDate 
+DATETIME 
+NOT NULL 
+Tanggal buat 
+txtUpdatedBy 
+VARCHAR(100) 
+NULL 
+User pengubah 
+dtmUpdatedDate 
+DATETIME 
+NULL 
+Tanggal ubah 
+ 
+4.4 Tabel Detail - Step 2: Sample Purpose 
+[!NOTE] DDL Script: idc-system/Database/Scripts/04_Step2_SamplePurpose_DDL.sql 
+ 
+6. trSamplePurpose_Header (NEW TABLE) - Step 2: Sample Purpose 
+Column Name 
+Data Type 
+Nullable 
+Description 
+intId 
+INT IDENTITY 
+NOT NULL 
+PK 
+txtId 
+VARCHAR(50) 
+NOT NULL 
+GUID, Unique 
+intSampleHeaderId 
+INT 
+NOT NULL 
+FK → trRMSample_Header.intId 
+intRMCategoryId 
+INT 
+NULL 
+FK → master RM category 
+txtRMCategoryCode 
+VARCHAR(50) 
+NULL 
+Denormalized: kode kategori 
+txtRMCategoryName 
+VARCHAR(200) 
+NULL 
+Denormalized: nama kategori 
+txtRMSubCode 
+VARCHAR(50) 
+NULL 
+Denormalized: kode sub-kategori 
+
+Column Name 
+Data Type 
+Nullable 
+Description 
+txtRMSubName 
+VARCHAR(200) 
+NULL 
+Denormalized: nama sub-
+kategori 
+intSamplePurposeTypeId 
+INT 
+NULL 
+FK → master purpose type 
+txtSamplePurposeType 
+VARCHAR(100) 
+NULL 
+New Ingredients / Alternative / 
+etc 
+txtItemCodeTrial 
+VARCHAR(50) 
+NULL 
+Kode item trial 
+txtItemDescTrial 
+VARCHAR(200) 
+NULL 
+Deskripsi item trial 
+txtItemCodeExisting 
+VARCHAR(50) 
+NULL 
+Kode item existing 
+txtItemDescExisting 
+VARCHAR(200) 
+NULL 
+Deskripsi item existing (auto-
+filled) 
+txtObjective 
+VARCHAR(MAX) 
+NULL 
+Tujuan penggunaan sample 
+txtCreatedBy 
+VARCHAR(100) 
+NOT NULL 
+User pembuat 
+dtmCreatedDate 
+DATETIME 
+NOT NULL 
+Tanggal buat 
+txtUpdatedBy 
+VARCHAR(100) 
+NULL 
+User pengubah 
+dtmUpdatedDate 
+DATETIME 
+NULL 
+Tanggal ubah 
+bitActive 
+BIT 
+NOT NULL 
+Soft delete flag 
+ 
+7. trSamplePurpose_Product (NEW TABLE) - Apply To Product 
+Column Name 
+Data Type 
+Nullable 
+Description 
+intId 
+INT IDENTITY 
+NOT NULL 
+PK 
+txtId 
+VARCHAR(50) 
+NOT NULL 
+GUID, Unique 
+intSampleHeaderId 
+INT 
+NOT NULL 
+FK → trRMSample_Header.intId 
+intSamplePurposeHeaderId 
+INT 
+NOT NULL 
+FK → 
+trSamplePurpose_Header.intId 
+intLineNo 
+INT 
+NOT NULL 
+Nomor urut baris 
+intGroupProductTypeId 
+INT 
+NOT NULL 
+FK → master group product type 
+txtGroupProductTypeName 
+VARCHAR(200) 
+NULL 
+Denormalized 
+intChildProductTypeId 
+INT 
+NULL 
+FK → master child product type 
+txtChildProductTypeName 
+VARCHAR(200) 
+NULL 
+Denormalized 
+intVariantId 
+INT 
+NULL 
+FK → master variant 
+txtVariantName 
+VARCHAR(200) 
+NULL 
+Denormalized 
+decCarryOverBTP 
+DECIMAL(18,4) 
+NULL 
+Carry Over BTP calculation result 
+txtCreatedBy 
+VARCHAR(100) 
+NOT NULL 
+User pembuat 
+dtmCreatedDate 
+DATETIME 
+NOT NULL 
+Tanggal buat 
+txtUpdatedBy 
+VARCHAR(100) 
+NULL 
+User pengubah 
+dtmUpdatedDate 
+DATETIME 
+NULL 
+Tanggal ubah 
+ 
+4.5 Tabel Detail - Step 3: RM Evaluation 
+[!NOTE] DDL Script: idc-system/Database/Scripts/05_Step3_RMEvaluation_DDL.sql 
+ 
+
+8. trRMEvaluation_Header (NEW TABLE) - Step 3: Evaluation Summary 
+Column Name 
+Data Type 
+Nullable 
+Description 
+intId 
+INT IDENTITY 
+NOT NULL 
+PK 
+txtId 
+VARCHAR(50) 
+NOT NULL 
+GUID, Unique 
+intSampleHeaderId 
+INT 
+NOT NULL 
+FK → trRMSample_Header.intId 
+decOverallScore 
+DECIMAL(5,2) 
+NULL 
+Skor keseluruhan (0-100) 
+txtEvaluationStatus 
+VARCHAR(50) 
+NULL 
+Draft / Completed / Reviewed 
+txtEvaluationNotes 
+VARCHAR(MAX) 
+NULL 
+Catatan evaluasi 
+txtStatusOrganik 
+VARCHAR(50) 
+NULL 
+NON ORGANIK / ORGANIK 
+txtEgDegContent 
+VARCHAR(MAX) 
+NULL 
+Potensi EG/DEG (Multi-select) 
+txtMaterialComposition 
+VARCHAR(MAX) 
+NULL 
+Deskripsi penyusun bahan baku 
+txtCreatedBy 
+VARCHAR(100) 
+NOT NULL 
+User pembuat 
+dtmCreatedDate 
+DATETIME 
+NOT NULL 
+Tanggal buat 
+txtUpdatedBy 
+VARCHAR(100) 
+NULL 
+User pengubah 
+dtmUpdatedDate 
+DATETIME 
+NULL 
+Tanggal ubah 
+bitActive 
+BIT 
+NOT NULL 
+Soft delete flag 
+ 
+9. trRMEvaluation_Detail (NEW TABLE) - Step 3: Testing Parameters 
+Column Name 
+Data Type 
+Nullable 
+Description 
+intId 
+INT IDENTITY 
+NOT NULL 
+PK 
+txtId 
+VARCHAR(50) 
+NOT NULL 
+GUID, Unique 
+intSampleHeaderId 
+INT 
+NOT NULL 
+FK → trRMSample_Header.intId 
+intEvaluationHeaderId 
+INT 
+NOT NULL 
+FK → 
+trRMEvaluation_Header.intId 
+intLineNo 
+INT 
+NOT NULL 
+Nomor urut 
+txtTestCode 
+VARCHAR(50) 
+NOT NULL 
+Kode parameter uji 
+txtTestClass 
+VARCHAR(100) 
+NOT NULL 
+Organoleptic/Nutrition/Micro/H
+eavyMetal/Contaminant 
+txtTestName 
+VARCHAR(200) 
+NULL 
+Nama parameter uji 
+txtTestUnit 
+VARCHAR(20) 
+NULL 
+Satuan (%, ppm, cfu/g, mg/kg) 
+txtTestType 
+VARCHAR(50) 
+NULL 
+Tipe pengujian 
+txtRegulationNo 
+VARCHAR(100) 
+NULL 
+Nomor regulasi 
+decRegulationMin 
+DECIMAL(18,4) 
+NULL 
+Batas minimum regulasi 
+decRegulationMax 
+DECIMAL(18,4) 
+NULL 
+Batas maximum regulasi 
+decSpecSupplierMin 
+DECIMAL(18,4) 
+NULL 
+Spec supplier minimum 
+decSpecSupplierMax 
+DECIMAL(18,4) 
+NULL 
+Spec supplier maximum 
+decSpecSupplierTarget 
+DECIMAL(18,4) 
+NULL 
+Spec supplier target 
+txtCOAResult 
+VARCHAR(200) 
+NULL 
+Hasil dari COA document 
+txtAnalysisResult 
+VARCHAR(200) 
+NULL 
+Hasil analisa laboratorium 
+decSpecSHPMin 
+DECIMAL(18,4) 
+NULL 
+Spec SHP minimum 
+decSpecSHPMax 
+DECIMAL(18,4) 
+NULL 
+Spec SHP maximum 
+decTarget 
+DECIMAL(18,4) 
+NULL 
+Target value 
+txtCreatedBy 
+VARCHAR(100) 
+NOT NULL 
+User pembuat 
+
+Column Name 
+Data Type 
+Nullable 
+Description 
+dtmCreatedDate 
+DATETIME 
+NOT NULL 
+Tanggal buat 
+txtUpdatedBy 
+VARCHAR(100) 
+NULL 
+User pengubah 
+dtmUpdatedDate 
+DATETIME 
+NULL 
+Tanggal ubah 
+ 
+10. trRMEvaluation_FoodCategory (NEW TABLE) - Food Category Mapping 
+Column Name 
+Data Type 
+Nullable 
+Description 
+intId 
+INT IDENTITY 
+NOT NULL 
+PK 
+txtId 
+VARCHAR(50) 
+NOT NULL 
+GUID, Unique 
+intSampleHeaderId 
+INT 
+NOT NULL 
+FK → trRMSample_Header.intId 
+intEvaluationHeaderId 
+INT 
+NOT NULL 
+FK → 
+trRMEvaluation_Header.intId 
+intCategoryId 
+INT 
+NOT NULL 
+FK → master food category 
+txtCategoryCode 
+VARCHAR(50) 
+NULL 
+Denormalized: kode kategori 
+txtCategoryName 
+VARCHAR(200) 
+NOT NULL 
+Denormalized: nama kategori 
+txtRegulationRef 
+VARCHAR(200) 
+NULL 
+Referensi regulasi terkait 
+txtCreatedBy 
+VARCHAR(100) 
+NOT NULL 
+User pembuat 
+dtmCreatedDate 
+DATETIME 
+NOT NULL 
+Tanggal buat 
+txtUpdatedBy 
+VARCHAR(100) 
+NULL 
+User pengubah 
+dtmUpdatedDate 
+DATETIME 
+NULL 
+Tanggal ubah 
+ 
+4.6 Tabel Detail - Step 4: Disposition 
+[!NOTE] DDL Script: idc-system/Database/Scripts/06_Step4_RMDisposition_DDL.sql 
+ 
+11. trRMDisposition_Header (NEW TABLE) - Step 4: Disposition/Decision 
+Column Name 
+Data Type 
+Nullable 
+Description 
+intId 
+INT IDENTITY 
+NOT NULL 
+PK 
+txtId 
+VARCHAR(50) 
+NOT NULL 
+GUID, Unique 
+intSampleHeaderId 
+INT 
+NOT NULL 
+FK → trRMSample_Header.intId 
+txtRecommendation 
+VARCHAR(MAX) 
+NULL 
+Rekomendasi dari evaluator 
+txtDecision 
+VARCHAR(20) 
+NULL 
+Approved / Rejected / On Hold 
+txtDecisionReason 
+VARCHAR(MAX) 
+NULL 
+Alasan (wajib jika Rejected/On 
+Hold) 
+dtDecisionDate 
+DATETIME 
+NULL 
+Tanggal keputusan 
+bitApprovalRequired 
+BIT 
+NULL 
+0=Tidak, 1=Butuh approval 
+intApproverId 
+INT 
+NULL 
+FK → master pegawai/user 
+txtApproverName 
+VARCHAR(200) 
+NULL 
+Denormalized: nama approver 
+txtApprovalStatus 
+VARCHAR(20) 
+NULL 
+Pending / Approved / Rejected 
+dtApprovalDate 
+DATETIME 
+NULL 
+Tanggal approval 
+txtApprovalNotes 
+VARCHAR(MAX) 
+NULL 
+Catatan approver 
+txtCreatedBy 
+VARCHAR(100) 
+NOT NULL 
+User pembuat 
+
+Column Name 
+Data Type 
+Nullable 
+Description 
+dtmCreatedDate 
+DATETIME 
+NOT NULL 
+Tanggal buat 
+txtUpdatedBy 
+VARCHAR(100) 
+NULL 
+User pengubah 
+dtmUpdatedDate 
+DATETIME 
+NULL 
+Tanggal ubah 
+bitActive 
+BIT 
+NOT NULL 
+Soft delete flag 
+ 
+4.3 Tabel Existing yang Digunakan 
+[!NOTE] Tabel-tabel berikut adalah tabel existing dari legacy system yang tetap digunakan oleh new 
+RM Sample Management (sebagai FK reference). Tabel ini tidak diubah strukturnya. 
+ 
+1. mTypeDocument (EXISTING TABLE) - Jenis Dokumen Sample 
+Digunakan oleh: trDocumentSample_Header.intTypeDocumentID 
+Column Name 
+Data Type 
+Description 
+intTypeDocumentID 
+INT 
+PK 
+txtTypeDocumentName 
+VARCHAR(100) 
+Nama jenis: RM, RM(BTP), Vitamin & 
+Mineral 
+bitActive 
+BOOLEAN 
+Status aktif 
+ 
+2. mStorage (EXISTING TABLE) - Kondisi Penyimpanan 
+Digunakan oleh: trDocumentSample_Header.intStorageID 
+Column Name 
+Data Type 
+Description 
+intStorageID 
+INT 
+PK 
+txtStorageName 
+VARCHAR(100) 
+Nama kondisi penyimpanan 
+txtDescription 
+VARCHAR(500) 
+Keterangan 
+bitActive 
+BOOLEAN 
+Status aktif 
+ 
+3. mPosition (EXISTING TABLE) - Posisi/Lokasi 
+Digunakan oleh: trDocumentSample_Header.intPositionID 
+Column Name 
+Data Type 
+Description 
+intPositionID 
+INT 
+PK 
+txtPositionName 
+VARCHAR(100) 
+Nama posisi/lokasi 
+bitActive 
+BOOLEAN 
+Status aktif 
+ 
+4. mHalalCategory (EXISTING TABLE) - Kategori Halal 
+Digunakan oleh: trDocumentSample_Header.txtHalalCategoryCode 
+Column Name 
+Data Type 
+Description 
+
+Column Name 
+Data Type 
+Description 
+txtHalalCategoryCode 
+VARCHAR(10) 
+PK, Kode kategori (A, B, C, dll) 
+txtHalalCategoryName 
+VARCHAR(100) 
+Nama kategori halal 
+txtDescription 
+VARCHAR(500) 
+Keterangan 
+bitActive 
+BOOLEAN 
+Status aktif 
+ 
+5. mHalalBody (EXISTING TABLE) - Lembaga Sertifikasi Halal 
+Digunakan oleh: trDocumentSample_Header.intHalalBodyID 
+Column Name 
+Data Type 
+Description 
+intHalalBodyID 
+INT 
+PK 
+txtHalalBodyName 
+VARCHAR(200) 
+Nama lembaga (MUI, JAKIM, dll) 
+txtCountry 
+VARCHAR(100) 
+Negara lembaga 
+bitActive 
+BOOLEAN 
+Status aktif 
+ 
+6. mCurrency (EXISTING TABLE) - Mata Uang 
+Digunakan oleh: trDocumentSample_Header.txtCurrencyCode 
+Column Name 
+Data Type 
+Description 
+txtCurrencyCode 
+VARCHAR(10) 
+PK, Kode mata uang (IDR, USD, EUR, dll) 
+txtCurrencyName 
+VARCHAR(100) 
+Nama mata uang 
+bitActive 
+BOOLEAN 
+Status aktif 
+ 
+9. mRMCategory (EXISTING TABLE) - Kategori Raw Material 
+Digunakan oleh: trSamplePurpose_Header.intRMCategoryID 
+Column Name 
+Data Type 
+Description 
+intRMCategoryID 
+INT 
+PK 
+txtRMCategoryName 
+VARCHAR(100) 
+Nama kategori RM 
+bitActive 
+BOOLEAN 
+Status aktif 
+ 
+10. mRMSubGroup (EXISTING TABLE) - Sub Grup Raw Material 
+Digunakan oleh: Referensi di mRMCategory 
+Column Name 
+Data Type 
+Description 
+intRMSubGroupID 
+INT 
+PK 
+intRMCategoryID 
+INT 
+FK ke mRMCategory 
+txtRMSubGroupName 
+VARCHAR(100) 
+Nama sub grup 
+bitActive 
+BOOLEAN 
+Status aktif 
+ 
+
+11. mProductGroupType (EXISTING TABLE) - Grup Produk 
+Digunakan oleh: trSamplePurpose_Product.intGroupProductTypeID 
+Column Name 
+Data Type 
+Description 
+intGroupProductTypeID 
+INT 
+PK 
+txtGroupProductTypeName 
+VARCHAR(100) 
+Nama grup produk 
+bitActive 
+BOOLEAN 
+Status aktif 
+ 
+12. mProductChildType (EXISTING TABLE) - Sub Produk 
+Digunakan oleh: trSamplePurpose_Product.intChildProductTypeID 
+Column Name 
+Data Type 
+Description 
+intChildProductTypeID 
+INT 
+PK 
+intGroupProductTypeID 
+INT 
+FK ke mProductGroupType 
+txtChildProductTypeName 
+VARCHAR(100) 
+Nama sub produk 
+bitActive 
+BOOLEAN 
+Status aktif 
+ 
+13. mVariant (EXISTING TABLE) - Varian Produk 
+Digunakan oleh: trSamplePurpose_Product.intVariantID 
+Column Name 
+Data Type 
+Description 
+intVariantID 
+INT 
+PK 
+intChildProductTypeID 
+INT 
+FK ke mProductChildType 
+txtVariantName 
+VARCHAR(100) 
+Nama varian 
+bitActive 
+BOOLEAN 
+Status aktif 
+ 
+14. mFoodCategory (EXISTING TABLE) - Kategori Pangan 
+Digunakan oleh: trRMEvaluation_FoodCategory.intCategoryID 
+Column Name 
+Data Type 
+Description 
+intCategoryID 
+INT 
+PK 
+txtCategoryName 
+VARCHAR(200) 
+Nama kategori pangan 
+txtParentCategory 
+VARCHAR(200) 
+Kategori induk 
+txtRegulationRef 
+VARCHAR(200) 
+Referensi regulasi BPOM 
+bitActive 
+BOOLEAN 
+Status aktif 
+ 
+15. mStatus (EXISTING TABLE) - Status Workflow 
+Digunakan oleh: trRMSample_Header.intStatusID 
+Column Name 
+Data Type 
+Description 
+intStatusID 
+INT 
+PK 
+
+Column Name 
+Data Type 
+Description 
+txtStatusCode 
+VARCHAR(20) 
+Kode: DRAFT, PENDING, APPROVED, 
+REJECTED, ON_HOLD 
+txtStatusName 
+VARCHAR(100) 
+Nama status 
+txtModule 
+VARCHAR(50) 
+Nama modul (RM_SAMPLE) 
+bitActive 
+BOOLEAN 
+Status aktif 
+ 
+Ringkasan Tabel: New vs Existing 
+No 
+Nama Tabel 
+Status 
+Digunakan Di 
+1 
+trRMSample_Header 
+NEW TABLE 
+Main header 
+2 
+trDocumentSample_Header 
+NEW TABLE 
+Step 1 
+3 
+trDocumentSample_Allergen 
+NEW TABLE 
+Step 1 
+4 
+trDocumentSample_BTP 
+NEW TABLE 
+Step 1 
+5 
+trDocumentSample_Document 
+NEW TABLE 
+Step 1 
+6 
+trSamplePurpose_Header 
+NEW TABLE 
+Step 2 
+7 
+trSamplePurpose_Product 
+NEW TABLE 
+Step 2 
+8 
+trRMEvaluation_Header 
+NEW TABLE 
+Step 3 
+9 
+trRMEvaluation_Detail 
+NEW TABLE 
+Step 3 
+10 
+trRMEvaluation_FoodCategory 
+NEW TABLE 
+Step 3 
+11 
+trRMDisposition_Header 
+NEW TABLE 
+Step 4 
+12 
+mTypeDocument 
+EXISTING 
+FK Step 1 
+13 
+mStorage 
+EXISTING 
+FK Step 1 
+14 
+mPosition 
+EXISTING 
+FK Step 1 
+15 
+mHalalCategory 
+EXISTING 
+FK Step 1 
+16 
+mHalalBody 
+EXISTING 
+FK Step 1 
+17 
+mCurrency 
+EXISTING 
+FK Step 1 
+18 
+mUOM 
+EXISTING 
+FK Step 1 
+19 
+mPegawai 
+EXISTING 
+FK Step 1 & 4 
+20 
+mRMCategory 
+EXISTING 
+FK Step 2 
+21 
+mRMSubGroup 
+EXISTING 
+FK Step 2 
+22 
+mProductGroupType 
+EXISTING 
+FK Step 2 
+23 
+mProductChildType 
+EXISTING 
+FK Step 2 
+24 
+mVariant 
+EXISTING 
+FK Step 2 
+25 
+mFoodCategory 
+EXISTING 
+FK Step 3 
+26 
+mStatus 
+EXISTING 
+FK Header 
+ 
+5. BUSINESS RULES 
+5.1 General Rules 
+1. Sample No auto-generated dengan format: SMPL-YYYY-XXXX 
+2. Setiap step harus diselesaikan sebelum lanjut ke step berikutnya 
+3. Data dapat disimpan sebagai draft di setiap step 
+
+4. User dapat kembali ke step sebelumnya untuk edit (jika status masih Draft) 
+5. PIC auto-filled dari user yang login, tidak dapat diubah 
+5.2 Step-Specific Rules 
+Step 1 (Document): - Minimal 1 dokumen COA harus diupload - Jika Halal Category dipilih, Halal Body wajib diisi - 
+Allergen minimal 1 harus dipilih - Currency dipilih dari 20+ mata uang yang tersedia (AUD, CHF, CNY, EUR, IDR, dll) - 
+Type Document hanya 3 pilihan: RM, RM(BTP), Vitamin & Mineral 
+Step 2 (Purpose): - Jika Sample Purpose Type = “New Ingredients”, Item Code Existing disabled - Minimal 1 product 
+harus didefinisikan di Apply To Product - Objective wajib diisi 
+Step 3 (Evaluation): - Setiap parameter harus memiliki minimal COA Result atau Analysis Result - Jika nilai di luar 
+range regulasi, warning ditampilkan - Overall Score dihitung otomatis dari semua parameter - User dapat add COA 
+Result dan Analysis Result secara terpisah - User dapat view gabungan COA dan Analysis Result dalam satu modal 
+Step 4 (Disposition): - Jika Decision = “Rejected” atau “On Hold”, Reason wajib diisi - Jika Approval Required = Yes, 
+Approver wajib dipilih - Jika Decision = “On Hold”, user dapat kembali ke Step 3 untuk tambah evaluasi 
+5.3 Workflow Rules 
+• 
+Draft: User dapat edit semua field, tombol “Save Draft” aktif di semua step 
+• 
+Pending Approval: Hanya approver yang dapat approve/reject 
+• 
+Approved: Data read-only, tidak dapat diedit 
+• 
+Rejected: Data read-only 
+• 
+On Hold: User dapat edit Step 3 saja 
+5.4 Navigation Rules 
+• 
+Tombol “Previous” disabled di Step 1 
+• 
+Tombol “Next” disabled di Step 4 
+• 
+Tombol “Submit Complete” hanya muncul di Step 4 
+• 
+Progress indicator menunjukkan step aktif dengan highlight 
+ 
+6. UI SPECIFICATIONS 
+6.1 Index Page (NewRMSampleIndex.html) 
+Dashboard Cards: - Total Samples - Pending Approval - Approved - Rejected - On Hold 
+DataTable Columns: - Sample No - Material Name - Supplier Name - Sample Date - Status - Progress (Step 1/2/3/4) 
+- Actions (View/Edit/Delete) 
+Filters: - Date Range - Status - Supplier - Material Name 
+6.2 Detail Page (NewRMSampleDetail.html) 
+Layout: 4-Step Wizard dengan progress indicator 
+Header: - Title: “RM Sample Complete Management” - Subtitle: “Unified Workflow: Document Sample → Sample 
+Purpose → RM Evaluation” 
+Stepper Navigation: 
+
+[1] Document ──> [2] Sample ──> [3] Evaluation ──> [4] Disposition 
+    Sample details   Purpose analysis   Testing & Results   Review & Confirm 
+Action Buttons (Footer): - Previous (btnPrev): Disabled di Step 1 - Save Draft: Aktif di semua step - Next Step 
+(btnNext): Disabled di Step 4 - Submit Complete (btnSubmit): Hanya muncul di Step 4 
+Modals: 1. addAttachmentModal: Upload dokumen - Document Type dropdown (selDocType) - Remarks input 
+(txtDocRemarks) - File attachment (fileDocAttach) 
+2. lovTypeModal: Pilih Type Document 
+o 
+Table dengan pilihan: RM, RM(BTP), Vitamin & Mineral 
+3. lovCurrencyModal: Pilih Currency 
+o 
+Table dengan 20+ mata uang (AUD, CHF, CNY, EUR, IDR, dll) 
+4. lovUOMModal: Pilih UOM 
+o 
+Table dengan unit of measure 
+5. lovPICModal: Pilih PIC (disabled, auto dari login) 
+ 
+7. INTEGRATION POINTS 
+7.1 Master Data Dependencies 
+• 
+Master Type Document (3 values: RM, RM(BTP), Vitamin & Mineral) 
+• 
+Master Storage Condition 
+• 
+Master Position 
+• 
+Master Halal Category 
+• 
+Master Halal Body 
+• 
+Master Currency (20+ currencies) 
+• 
+Master UOM 
+• 
+Master Pegawai (Employee) - untuk PIC dan Approver 
+• 
+Master GMO Status 
+• 
+Master Country 
+• 
+Master RM Category 
+• 
+Master Product Type (Group dan Child) 
+• 
+Master Product Variant 
+• 
+Master Food Category 
+• 
+Master Status (Draft, Pending Approval, Approved, Rejected, On Hold) 
+7.2 File Storage 
+• 
+Dokumen disimpan di server file storage 
+• 
+Path disimpan di database (TR_RM_SAMPLE_DOCUMENT.FILE_PATH) 
+• 
+Supported formats: PDF, DOC, DOCX, XLS, XLSX, JPG, PNG 
+• 
+Upload melalui modal dengan validation 
+7.3 User Session 
+• 
+PIC auto-filled dari user login (session) 
+• 
+Created By dan Modified By auto dari session user 
+• 
+User role menentukan akses approval 
+
+ 
+8. REPORTING 
+8.1 Sample Summary Report 
+• 
+List semua sample dengan status 
+• 
+Filter by date range, supplier, status 
+• 
+Export to Excel/PDF 
+8.2 Evaluation Report 
+• 
+Detail evaluasi per sample 
+• 
+Comparison dengan regulasi 
+• 
+Export to Excel/PDF 
+8.3 Approval History Report 
+• 
+History approval/rejection 
+• 
+Approver name dan tanggal 
+• 
+Reason jika rejected 
+ 
+9. LAMPIRAN 
+9.1 Screenshots 
+Berikut adalah screenshots dari sistem New RM Sample Management dengan semua accordion/section dalam 
+keadaan expanded. 
+ 
+
+9.1.1 Index Page 
+Screenshot 1: Dashboard View 
+ 
+Dashboard dengan summary cards menampilkan Total Samples, Pending Approval, Approved, Rejected, dan On 
+Hold 
+Deskripsi: Halaman index menampilkan dashboard dengan 5 summary cards untuk monitoring status sample 
+secara real-time. 
+ 
+
+Screenshot 2: DataTable View 
+ 
+DataTable dengan kolom Sample No, Material Name, Supplier Name, Sample Date, Status, Progress, dan Actions 
+Deskripsi: DataTable menampilkan list semua sample dengan filter berdasarkan Date Range, Status, Supplier, dan 
+Material Name. Kolom Progress menunjukkan step terakhir yang sudah diselesaikan. 
+ 
+
+9.1.2 Detail Page - Step 1: Document 
+Screenshot 3: Header & Basic Information 
+ 
+Step 1 header dengan stepper navigation dan basic information fields 
+
+Deskripsi: Step 1 menampilkan stepper navigation (4 steps) dan basic information fields: Type Document, Currency, 
+UOM, dan PIC (auto-filled dari user login). 
+ 
+Screenshot 4: Material Details 
+Material details section dengan fields Material Name, Production Method, Principal Name, Supplier Name, dll 
+Material details section dengan fields Material Name, Production Method, Principal Name, Supplier Name, dll 
+Deskripsi: Section Material Details berisi informasi lengkap material: Material Name, Production Method, Principal 
+Name, Supplier Name, Shelf Life, Packaging, Storage Condition, Halal Category & Body, dan lain-lain. 
+ 
+Screenshot 5: Allergen Checklist 
+Allergen checklist dengan 14 pilihan allergen 
+Allergen checklist dengan 14 pilihan allergen 
+Deskripsi: Allergen Information section menampilkan 14 checkbox allergen yang dapat dipilih: Cereal containing 
+gluten, Egg, Fish, Peanuts, Crustaceae, Milk, Tree nuts, Sulphite, Soybeans, dan lain-lain. 
+ 
+Screenshot 6: Carry Over BTP Table 
+Table Carry Over BTP dengan kolom BTP Name, Function, Percentage (ppm) 
+Table Carry Over BTP dengan kolom BTP Name, Function, Percentage (ppm) 
+Deskripsi: Table Carry Over BTP untuk mencatat Bahan Tambahan Pangan yang ter-carry over dalam sample. User 
+dapat add/delete row dengan button action. 
+ 
+Screenshot 7: Document Upload Section 
+Document upload section dengan list dokumen yang sudah diupload 
+Document upload section dengan list dokumen yang sudah diupload 
+Deskripsi: Section untuk upload dokumen pendukung: Specification, COA, Halal Certificate, Price List, Regulation, 
+dan Flow Process. Upload dilakukan melalui modal “Add Document”. 
+ 
+
+9.1.3 Detail Page - Step 2: Sample Purpose 
+Screenshot 8: Category & Purpose 
+ 
+Step 2 dengan fields Category Code, Category Name, Sample Purpose Type 
+Deskripsi: Step 2 menampilkan Sample No (from Step 1), Category Code (LOV), Category Name (auto-filled), Sub 
+Code & Name, dan Sample Purpose Type. 
+ 
+Screenshot 9: Item Mapping 
+Item mapping section dengan Item Trial dan Item Code Existing 
+Item mapping section dengan Item Trial dan Item Code Existing 
+Deskripsi: Section Item Mapping untuk mendefinisikan Item Trial (untuk new ingredients) atau Item Code Existing 
+(untuk alternative), beserta Objective TextArea. 
+ 
+Screenshot 10: Apply To Product Table 
+Table Apply To Product dengan kolom Group Product Type, Child Product Type, Variant 
+Table Apply To Product dengan kolom Group Product Type, Child Product Type, Variant 
+Deskripsi: Table “Apply To Product” untuk mapping sample ke produk target. Satu sample dapat diaplikasikan ke 
+multiple products. 
+
+ 
+9.1.4 Detail Page - Step 3: Evaluation 
+Screenshot 11: Tab Organoleptic 
+ 
+Tab Organoleptic dengan parameter table 
+Deskripsi: Tab Organoleptic menampilkan parameter table dengan kolom: Line No, Test Code, Test Class, Test Unit, 
+Regulation, COA Result, Analysis Result, Spec SHP, Target. Button actions: Add, Edit, Delete, View COA and Analysis 
+Result. 
+ 
+Screenshot 12: Tab Nutrition and Physical 
+Tab Nutrition and Physical dengan parameter table 
+Tab Nutrition and Physical dengan parameter table 
+Deskripsi: Tab Nutrition and Physical untuk parameter nutrisi dan fisik seperti Protein, Fat, Moisture, pH, dan lain-
+lain. 
+ 
+
+Screenshot 13: Tab Microbiological 
+ 
+Tab Microbiological dengan parameter table 
+Deskripsi: Tab Microbiological untuk parameter mikrobiologi seperti TPC, E.coli, Salmonella, Yeast & Mold, dan 
+lain-lain. 
+ 
+Screenshot 14: Tab Heavy Metals 
+Tab Heavy Metals dengan parameter table 
+Tab Heavy Metals dengan parameter table 
+Deskripsi: Tab Heavy Metals untuk parameter logam berat seperti Pb (Lead), Cd (Cadmium), Hg (Mercury), As 
+(Arsenic), dan lain-lain. 
+ 
+
+Screenshot 15: Tab Other Contaminant 
+Tab Other Contaminant dengan parameter table 
+Tab Other Contaminant dengan parameter table 
+Deskripsi: Tab Other Contaminant untuk parameter kontaminan lain seperti Pestisida, Mycotoxin, Aflatoxin, dan 
+lain-lain. 
+ 
+Screenshot 16: Tab Food Category 
+Tab Food Category dengan mapping table 
+Tab Food Category dengan mapping table 
+Deskripsi: Tab Food Category untuk mapping sample ke kategori pangan sesuai regulasi (BPOM, FDA, dll). Satu 
+sample dapat masuk ke multiple food categories. 
+ 
+9.1.5 Detail Page - Step 4: Disposition 
+Screenshot 17: Disposition Form 
+ 
+Step 4 dengan Overall Score, Recommendation, Decision radio buttons 
+Deskripsi: Step 4 menampilkan Overall Score (calculated dari Step 3), Recommendation TextArea, Decision Radio 
+Buttons (Approved/Rejected/On Hold), Reason TextArea, Approval Required checkbox, dan Approver LOV. 
+ 
+Screenshot 18: Action Buttons 
+Footer dengan action buttons Previous, Save Draft, Next, Submit Complete 
+Footer dengan action buttons Previous, Save Draft, Next, Submit Complete 
+Deskripsi: Footer menampilkan action buttons: Previous (enabled), Save Draft, Next (disabled di Step 4), dan 
+Submit Complete (visible di Step 4). 
+
+ 
+9.1.6 Modals 
+Screenshot 19: Modal - LOV Type Document 
+Modal LOV Type Document dengan table pilihan RM, RM(BTP), Vitamin & Mineral 
+Modal LOV Type Document dengan table pilihan RM, RM(BTP), Vitamin & Mineral 
+Deskripsi: Modal LOV Type Document menampilkan table dengan 3 pilihan: RM, RM(BTP), dan Vitamin & Mineral. 
+User dapat select salah satu untuk field Type Document di Step 1. 
+ 
+[!NOTE] Screenshots yang belum ter-capture (perlu manual screenshot): - Modal - Add Document 
+(addAttachmentModal) - Modal - LOV Currency (lovCurrencyModal) - 20+ currencies - Modal - LOV 
+UOM (lovUOMModal) 
+Screenshots di atas dapat di-capture secara manual dengan membuka HTML page dan klik button yang 
+sesuai untuk membuka modal. 
+9.2 Sample Data 
+(Akan ditambahkan contoh data untuk testing) 
+9.3 Change Log 
+Version 
+Date 
+Changes 
+Author 
+1.0 
+2024-02-17 
+Initial FSD creation 
+Development Team 
+1.1 
+2024-02-17 
+Added ERD, Notes Column, 
+Detailed Flowchart 
+Development Team 
+1.2 
+2024-02-17 
+Added 19 Screenshots (Index + 
+Detail Pages) 
+Development Team 
+1.3 
+2024-02-17 
+Simplified Notes Column (Existing 
+vs NEW) 
+Development Team 
+1.4 
+2024-02-17 
+Updated Database Structure 
+(Legacy Naming Convention) 
+Development Team 
+1.5 
+2024-02-19 
+Added Section 4.3: 15 Existing 
+Reference Tables 
+Development Team 
+ 
+END OF DOCUMENT 

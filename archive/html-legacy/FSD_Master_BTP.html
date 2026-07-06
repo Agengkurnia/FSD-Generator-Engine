@@ -1,0 +1,2317 @@
+<!DOCTYPE html>
+<html lang="id">
+ <head>
+  <meta charset="utf-8"/>
+  <title>
+   FSD - Master BTP (Bahan Tambahan Pangan)
+  </title>
+  <style>
+   body {
+            font-family: 'Calibri', sans-serif;
+            line-height: 1.15;
+            margin: 20px;
+        }
+
+        h1 {
+            font-size: 24pt;
+            color: #2E74B5;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            font-size: 18pt;
+            color: #2E74B5;
+            border-bottom: 2px solid #2E74B5;
+            padding-bottom: 5px;
+            margin-top: 30px;
+        }
+
+        h3 {
+            font-size: 14pt;
+            color: #1F4D78;
+            margin-top: 20px;
+        }
+
+        h4 {
+            font-size: 12pt;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+
+        th,
+        td {
+            border: 1px solid #000;
+            padding: 8px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        th {
+            background-color: #D9E1F2;
+            font-weight: bold;
+        }
+
+        ul {
+            margin-top: 5px;
+            margin-bottom: 10px;
+            padding-left: 20px;
+        }
+
+        li {
+            margin-bottom: 5px;
+        }
+
+        .doc-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .doc-info {
+            margin-bottom: 20px;
+        }
+
+        .doc-info table {
+            width: 60%;
+            margin: 0 auto;
+        }
+
+        .doc-info td {
+            padding: 5px;
+        }
+
+        .section-title {
+            background-color: #D9E1F2;
+            padding: 10px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        code {
+            background-color: #f4f4f4;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+    
+        
+        .screenshot-container {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            page-break-inside: avoid;
+        }
+        
+        .screenshot-container img {
+            max-width: 100%;
+            border: 1px solid #ccc;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: block;
+            margin: 10px auto;
+        }
+        
+        .screenshot-caption {
+            text-align: center;
+            font-size: 10pt;
+            color: #666;
+            margin-top: 5px;
+            font-style: italic;
+        }
+  </style>
+ </head>
+ <body>
+  <div class="doc-header">
+   <h1>
+    FUNCTIONAL SPECIFICATION DOCUMENT
+   </h1>
+   <h2 style="border: none;">
+    Master BTP (Bahan Tambahan Pangan)
+   </h2>
+  </div>
+  <div class="doc-info">
+   <table>
+    <tr>
+     <td width="40%">
+      <strong>
+       Document Version
+      </strong>
+     </td>
+     <td>
+      1.0
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <strong>
+       Date
+      </strong>
+     </td>
+     <td>
+      16 Februari 2026
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <strong>
+       Project
+      </strong>
+     </td>
+     <td>
+      IDC System - RM Selection Module
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <strong>
+       Module
+      </strong>
+     </td>
+     <td>
+      Master BTP
+     </td>
+    </tr>
+   </table>
+  </div>
+  <hr/>
+  <h2>
+   1. INTRODUCTION
+  </h2>
+  <h3>
+   1.1 Purpose
+  </h3>
+  <p>
+   Dokumen ini menjelaskan spesifikasi fungsional untuk module Master BTP (Bahan Tambahan Pangan) dalam sistem
+        IDC (Integrated Data Center) untuk RM Selection. Module ini dirancang untuk mengelola data master Bahan
+        Tambahan Pangan sesuai dengan regulasi BPOM RI.
+  </p>
+  <h3>
+   1.2 Scope
+  </h3>
+  <p>
+   Dokumen ini mencakup 3 sub-module utama:
+  </p>
+  <ul>
+   <li>
+    <strong>
+     Master BTP
+    </strong>
+    - Pengelolaan data Bahan Tambahan Pangan
+   </li>
+   <li>
+    <strong>
+     Master BTP Function
+    </strong>
+    - Pengelolaan fungsi-fungsi BTP
+   </li>
+   <li>
+    <strong>
+     BTP Function Mapping
+    </strong>
+    - Mapping relasi BTP dengan fungsinya
+   </li>
+  </ul>
+  <h3>
+   1.3 Definitions and Acronyms
+  </h3>
+  <table>
+   <thead>
+    <tr>
+     <th width="30%">
+      Term
+     </th>
+     <th>
+      Definition
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      <strong>
+       BTP
+      </strong>
+     </td>
+     <td>
+      Bahan Tambahan Pangan - Food Additive
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <strong>
+       BPOM
+      </strong>
+     </td>
+     <td>
+      Badan Pengawas Obat dan Makanan
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <strong>
+       IDC
+      </strong>
+     </td>
+     <td>
+      Integrated Data Center
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <strong>
+       CRUD
+      </strong>
+     </td>
+     <td>
+      Create, Read, Update, Delete
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <strong>
+       LOV
+      </strong>
+     </td>
+     <td>
+      List of Values
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <hr/>
+  <h2>
+   2. FUNCTIONAL ASPECT
+  </h2>
+  <h3>
+   2.1 Menu Master BTP
+  </h3>
+  <p>
+   Menu ini digunakan untuk mengelola data master Bahan Tambahan Pangan yang digunakan dalam produk.
+  </p>
+  <h4>
+   2.1.1 Layout Index BTP
+  </h4>
+  <div class="screenshot-container">
+   <p>
+    <strong>
+     Screenshot:
+    </strong>
+   </p>
+   <img alt="Master BTP Index Page - Daftar BTP dengan DataTable" src="screenshots/BTP_Index_Page.png"/>
+   <p class="screenshot-caption">
+    Figure: Master BTP Index Page - Daftar BTP dengan DataTable
+   </p>
+  </div>
+  <p>
+   <strong>
+    Fungsi Utama:
+   </strong>
+  </p>
+  <ul>
+   <li>
+    Menampilkan daftar semua BTP dalam tabel dengan DataTables
+   </li>
+   <li>
+    Feature Search global untuk mencari BTP berdasarkan code atau name
+   </li>
+   <li>
+    Filter by status (Active/Inactive)
+   </li>
+   <li>
+    Pagination (25 rows/page) dan Sorting per kolom
+   </li>
+   <li>
+    Export data ke Excel/PDF (optional)
+   </li>
+  </ul>
+  <p>
+   <strong>
+    Kolom Tabel:
+   </strong>
+  </p>
+  <table>
+   <thead>
+    <tr>
+     <th width="25%">
+      Column Name
+     </th>
+     <th width="15%">
+      Data Type
+     </th>
+     <th>
+      Description
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      <strong>
+       BTP Code
+      </strong>
+     </td>
+     <td>
+      Text
+     </td>
+     <td>
+      Kode unik BTP (contoh: INS 100, INS 200)
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <strong>
+       BTP Name
+      </strong>
+     </td>
+     <td>
+      Text
+     </td>
+     <td>
+      Nama BTP (contoh: Kurkumin, Riboflavin)
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <strong>
+       Active
+      </strong>
+     </td>
+     <td>
+      Boolean
+     </td>
+     <td>
+      Status aktif (badge hijau/merah)
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <strong>
+       Action
+      </strong>
+     </td>
+     <td>
+      Button
+     </td>
+     <td>
+      Edit, Delete, Manage Functions
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <p>
+   <strong>
+    Aksi &amp; Navigasi:
+   </strong>
+  </p>
+  <table>
+   <thead>
+    <tr>
+     <th width="25%">
+      Button/Action
+     </th>
+     <th width="30%">
+      Navigasi
+     </th>
+     <th>
+      Keterangan
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      <strong>
+       Create New
+      </strong>
+     </td>
+     <td>
+      BTPDetail.html (Mode Create)
+     </td>
+     <td>
+      Membuka form kosong untuk create BTP baru
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <strong>
+       Edit
+      </strong>
+     </td>
+     <td>
+      BTPDetail.html (Mode Edit)
+     </td>
+     <td>
+      Membuka form terisi data untuk melakukan perubahan data BTP
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <strong>
+       Delete
+      </strong>
+     </td>
+     <td>
+      -
+     </td>
+     <td>
+      Melakukan Soft delete (set bitActive = 0) dengan konfirmasi SweetAlert
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <strong>
+       Manage Functions
+      </strong>
+     </td>
+     <td>
+      BTPFunctionMapping.html
+     </td>
+     <td>
+      Membuka halaman mapping fungsi untuk BTP terpilih
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <h4>
+   2.1.2 Layout Detail BTP
+  </h4>
+  <div class="screenshot-container">
+   <p>
+    <strong>
+     Screenshot:
+    </strong>
+   </p>
+   <img alt="Master BTP Detail Form - Form Input BTP" src="screenshots/BTP_Detail_Form.png"/>
+   <p class="screenshot-caption">
+    Figure: Master BTP Detail Form - Form Input BTP
+   </p>
+  </div>
+  <p>
+   <strong>
+    Fungsi Utama:
+   </strong>
+  </p>
+  <ul>
+   <li>
+    Form input untuk mendefinisikan Kode dan Nama BTP
+   </li>
+   <li>
+    Validasi keunikan kode BTP
+   </li>
+   <li>
+    Validasi format kode (INS Number)
+   </li>
+  </ul>
+  <p>
+   <strong>
+    Keterangan Field:
+   </strong>
+  </p>
+  <table>
+   <thead>
+    <tr>
+     <th width="25%">
+      Field Name
+     </th>
+     <th width="15%">
+      Mandatory
+     </th>
+     <th width="25%">
+      Validasi
+     </th>
+     <th>
+      Keterangan
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      <strong>
+       BTP Code
+      </strong>
+     </td>
+     <td>
+      Yes
+     </td>
+     <td>
+      Unique, Format: INS XXX
+     </td>
+     <td>
+      Kode unik BTP sesuai International Numbering System (INS). Contoh: INS 100, INS 200
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <strong>
+       BTP Name
+      </strong>
+     </td>
+     <td>
+      Yes
+     </td>
+     <td>
+      Min 3 Char, Max 200 Char
+     </td>
+     <td>
+      Nama deskriptif BTP. Contoh: Kurkumin, Riboflavin, Asam Askorbat
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <strong>
+       Active
+      </strong>
+     </td>
+     <td>
+      No
+     </td>
+     <td>
+      Boolean, Default: True
+     </td>
+     <td>
+      Status aktif data. Inactive BTP tidak dapat digunakan dalam formula baru
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <p>
+   <strong>
+    Business Rules:
+   </strong>
+  </p>
+  <ul>
+   <li>
+    BTP Code harus unique dalam sistem
+   </li>
+   <li>
+    BTP Code harus mengikuti format INS (International Numbering System)
+   </li>
+   <li>
+    BTP yang sudah digunakan dalam formula tidak dapat dihapus (soft delete only)
+   </li>
+   <li>
+    Inactive BTP tidak muncul dalam LOV untuk formula baru
+   </li>
+  </ul>
+  <hr/>
+  <h3>
+   2.2 Menu Master BTP Function
+  </h3>
+  <p>
+   Menu ini digunakan untuk mengelola fungsi-fungsi standar dari BTP sesuai regulasi BPOM (contoh: Pewarna,
+        Pengawet, Pemanis, Antioksidan).
+  </p>
+  <h4>
+   2.2.1 Layout Index BTP Function
+  </h4>
+  <div class="screenshot-container">
+   <p>
+    <strong>
+     Screenshot:
+    </strong>
+   </p>
+   <img alt="BTP Function Index Page - Daftar Fungsi BTP" src="screenshots/BTP_Function_Index.png"/>
+   <p class="screenshot-caption">
+    Figure: BTP Function Index Page - Daftar Fungsi BTP
+   </p>
+  </div>
+  <p>
+   <strong>
+    Fungsi Utama:
+   </strong>
+  </p>
+  <ul>
+   <li>
+    Menampilkan daftar fungsi BTP
+   </li>
+   <li>
+    Pencarian data fungsi BTP
+   </li>
+   <li>
+    Filter by status
+   </li>
+  </ul>
+  <p>
+   <strong>
+    Kolom Tabel:
+   </strong>
+  </p>
+  <table>
+   <thead>
+    <tr>
+     <th width="25%">
+      Column Name
+     </th>
+     <th width="15%">
+      Data Type
+     </th>
+     <th>
+      Description
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      <strong>
+       Function Code
+      </strong>
+     </td>
+     <td>
+      Text
+     </td>
+     <td>
+      Kode fungsi (contoh: PWR, PGW, PMS)
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <strong>
+       Function Name
+      </strong>
+     </td>
+     <td>
+      Text
+     </td>
+     <td>
+      Nama fungsi (contoh: Pewarna, Pengawet, Pemanis)
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <strong>
+       Active
+      </strong>
+     </td>
+     <td>
+      Boolean
+     </td>
+     <td>
+      Status aktif
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <strong>
+       Action
+      </strong>
+     </td>
+     <td>
+      Button
+     </td>
+     <td>
+      Edit, Delete
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <p>
+   <strong>
+    Aksi &amp; Navigasi:
+   </strong>
+  </p>
+  <table>
+   <thead>
+    <tr>
+     <th width="25%">
+      Button/Action
+     </th>
+     <th width="30%">
+      Navigasi
+     </th>
+     <th>
+      Keterangan
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      <strong>
+       Create New
+      </strong>
+     </td>
+     <td>
+      BTPFunctionDetail.html
+     </td>
+     <td>
+      Menambah fungsi BTP baru
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <strong>
+       Edit
+      </strong>
+     </td>
+     <td>
+      BTPFunctionDetail.html
+     </td>
+     <td>
+      Mengubah data fungsi BTP
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <strong>
+       Delete
+      </strong>
+     </td>
+     <td>
+      -
+     </td>
+     <td>
+      Menghapus data (Soft Delete)
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <h4>
+   2.2.2 Layout Detail BTP Function
+  </h4>
+  <div class="screenshot-container">
+   <p>
+    <strong>
+     Screenshot:
+    </strong>
+   </p>
+   <img alt="BTP Function Detail Form - Form Input Fungsi" src="screenshots/BTP_Function_Detail.png"/>
+   <p class="screenshot-caption">
+    Figure: BTP Function Detail Form - Form Input Fungsi
+   </p>
+  </div>
+  <p>
+   <strong>
+    Keterangan Field:
+   </strong>
+  </p>
+  <table>
+   <thead>
+    <tr>
+     <th width="25%">
+      Field Name
+     </th>
+     <th width="15%">
+      Mandatory
+     </th>
+     <th width="25%">
+      Validasi
+     </th>
+     <th>
+      Keterangan
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      <strong>
+       Function Code
+      </strong>
+     </td>
+     <td>
+      Yes
+     </td>
+     <td>
+      Unique, 3-5 Char, Uppercase
+     </td>
+     <td>
+      Kode fungsi. Contoh: PWR (Pewarna), PGW (Pengawet), PMS (Pemanis)
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <strong>
+       Function Name
+      </strong>
+     </td>
+     <td>
+      Yes
+     </td>
+     <td>
+      Min 3 Char, Max 100 Char
+     </td>
+     <td>
+      Nama fungsi. Contoh: Pewarna, Pengawet, Pemanis, Antioksidan
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <strong>
+       Active
+      </strong>
+     </td>
+     <td>
+      No
+     </td>
+     <td>
+      Boolean, Default: True
+     </td>
+     <td>
+      Status aktif data
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <p>
+   <strong>
+    Sample Data Fungsi BTP:
+   </strong>
+  </p>
+  <table>
+   <thead>
+    <tr>
+     <th width="20%">
+      Code
+     </th>
+     <th>
+      Function Name
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      PWR
+     </td>
+     <td>
+      Pewarna (Coloring Agent)
+     </td>
+    </tr>
+    <tr>
+     <td>
+      PGW
+     </td>
+     <td>
+      Pengawet (Preservative)
+     </td>
+    </tr>
+    <tr>
+     <td>
+      PMS
+     </td>
+     <td>
+      Pemanis (Sweetener)
+     </td>
+    </tr>
+    <tr>
+     <td>
+      AOX
+     </td>
+     <td>
+      Antioksidan (Antioxidant)
+     </td>
+    </tr>
+    <tr>
+     <td>
+      EMU
+     </td>
+     <td>
+      Pengemulsi (Emulsifier)
+     </td>
+    </tr>
+    <tr>
+     <td>
+      PNT
+     </td>
+     <td>
+      Pengental (Thickener)
+     </td>
+    </tr>
+    <tr>
+     <td>
+      PNS
+     </td>
+     <td>
+      Penstabil (Stabilizer)
+     </td>
+    </tr>
+    <tr>
+     <td>
+      PNY
+     </td>
+     <td>
+      Penyedap Rasa (Flavor Enhancer)
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <hr/>
+  <h3>
+   2.3 Menu BTP Function Mapping
+  </h3>
+  <p>
+   Menu ini digunakan untuk mapping relasi many-to-many antara BTP dan Fungsinya. Satu BTP dapat memiliki
+        multiple fungsi.
+  </p>
+  <h4>
+   2.3.1 Layout BTP Function Mapping
+  </h4>
+  <div class="screenshot-container">
+   <p>
+    <strong>
+     Screenshot:
+    </strong>
+   </p>
+   <img alt="BTP Function Mapping Page - Mapping BTP dengan Fungsi" src="screenshots/BTP_Function_Mapping.png"/>
+   <p class="screenshot-caption">
+    Figure: BTP Function Mapping Page - Mapping BTP dengan Fungsi
+   </p>
+  </div>
+  <p>
+   <strong>
+    Fungsi Utama:
+   </strong>
+  </p>
+  <ul>
+   <li>
+    Menampilkan header BTP (readonly)
+   </li>
+   <li>
+    Menampilkan tabel fungsi yang sudah di-assign ke BTP
+   </li>
+   <li>
+    Menambah fungsi baru melalui LOV modal
+   </li>
+   <li>
+    Menghapus fungsi dari BTP
+   </li>
+   <li>
+    Bulk save semua mapping
+   </li>
+  </ul>
+  <p>
+   <strong>
+    Section 1: BTP Header (Read-Only)
+   </strong>
+  </p>
+  <table>
+   <thead>
+    <tr>
+     <th width="30%">
+      Field
+     </th>
+     <th>
+      Description
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      <strong>
+       BTP Code
+      </strong>
+     </td>
+     <td>
+      Kode BTP (readonly)
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <strong>
+       BTP Name
+      </strong>
+     </td>
+     <td>
+      Nama BTP (readonly)
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <strong>
+       Active
+      </strong>
+     </td>
+     <td>
+      Status BTP (readonly checkbox)
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <p>
+   <strong>
+    Section 2: Function Mapping Table
+   </strong>
+  </p>
+  <table>
+   <thead>
+    <tr>
+     <th width="20%">
+      Column
+     </th>
+     <th width="15%">
+      Type
+     </th>
+     <th>
+      Description
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      <strong>
+       Action
+      </strong>
+     </td>
+     <td>
+      Button
+     </td>
+     <td>
+      Delete button untuk remove fungsi
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <strong>
+       Function Code
+      </strong>
+     </td>
+     <td>
+      LOV
+     </td>
+     <td>
+      Kode fungsi dengan search button
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <strong>
+       Function Name
+      </strong>
+     </td>
+     <td>
+      Text (readonly)
+     </td>
+     <td>
+      Nama fungsi (auto-filled dari LOV)
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <strong>
+       Active
+      </strong>
+     </td>
+     <td>
+      Checkbox
+     </td>
+     <td>
+      Status aktif mapping
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <p>
+   <strong>
+    Features:
+   </strong>
+  </p>
+  <ul>
+   <li>
+    <strong>
+     Add Function Button:
+    </strong>
+    Menambah row baru di top table
+   </li>
+   <li>
+    <strong>
+     Search Function Modal:
+    </strong>
+    LOV popup untuk select fungsi
+   </li>
+   <li>
+    <strong>
+     Delete Function:
+    </strong>
+    Remove row dari table (instant, no confirmation)
+   </li>
+   <li>
+    <strong>
+     Save Button:
+    </strong>
+    Bulk save semua mappings (transaction: all or nothing)
+   </li>
+   <li>
+    <strong>
+     Back Button:
+    </strong>
+    Kembali ke BTP Index
+   </li>
+  </ul>
+  <p>
+   <strong>
+    Validation Rules:
+   </strong>
+  </p>
+  <ul>
+   <li>
+    Tidak boleh duplicate fungsi dalam satu BTP
+   </li>
+   <li>
+    Minimal harus ada 1 fungsi untuk save
+   </li>
+   <li>
+    Function Code dan Name wajib diisi (via search)
+   </li>
+   <li>
+    Konfirmasi sebelum save: "Are you sure to save all mappings?"
+   </li>
+  </ul>
+  <p>
+   <strong>
+    Sample Mapping:
+   </strong>
+  </p>
+  <table>
+   <thead>
+    <tr>
+     <th>
+      BTP
+     </th>
+     <th>
+      Functions
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      <strong>
+       INS 100 - Kurkumin
+      </strong>
+     </td>
+     <td>
+      PWR (Pewarna)
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <strong>
+       INS 200 - Asam Sorbat
+      </strong>
+     </td>
+     <td>
+      PGW (Pengawet)
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <strong>
+       INS 300 - Asam Askorbat
+      </strong>
+     </td>
+     <td>
+      AOX (Antioksidan), PGW (Pengawet)
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <strong>
+       INS 950 - Acesulfame K
+      </strong>
+     </td>
+     <td>
+      PMS (Pemanis)
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <hr/>
+  <h2>
+   3. DATABASE SPECIFICATIONS
+  </h2>
+  <h3>
+   3.1 Table: M_BTP
+  </h3>
+  <p>
+   <strong>
+    Purpose:
+   </strong>
+   Menyimpan master data Bahan Tambahan Pangan
+  </p>
+  <table>
+   <thead>
+    <tr>
+     <th width="25%">
+      Column Name
+     </th>
+     <th width="15%">
+      Data Type
+     </th>
+     <th width="10%">
+      Nullable
+     </th>
+     <th width="15%">
+      Default
+     </th>
+     <th>
+      Description
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      <strong>
+       intBtpId
+      </strong>
+     </td>
+     <td>
+      INT
+     </td>
+     <td>
+      No
+     </td>
+     <td>
+      Auto
+     </td>
+     <td>
+      Primary Key
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <strong>
+       txtBtpCode
+      </strong>
+     </td>
+     <td>
+      VARCHAR(20)
+     </td>
+     <td>
+      No
+     </td>
+     <td>
+      -
+     </td>
+     <td>
+      Kode BTP (INS Number)
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <strong>
+       txtBtpName
+      </strong>
+     </td>
+     <td>
+      VARCHAR(200)
+     </td>
+     <td>
+      No
+     </td>
+     <td>
+      -
+     </td>
+     <td>
+      Nama BTP
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <strong>
+       bitActive
+      </strong>
+     </td>
+     <td>
+      BIT
+     </td>
+     <td>
+      No
+     </td>
+     <td>
+      1
+     </td>
+     <td>
+      Status aktif
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <strong>
+       txtCreatedBy
+      </strong>
+     </td>
+     <td>
+      VARCHAR(50)
+     </td>
+     <td>
+      No
+     </td>
+     <td>
+      -
+     </td>
+     <td>
+      User pembuat
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <strong>
+       dtCreatedDate
+      </strong>
+     </td>
+     <td>
+      DATETIME
+     </td>
+     <td>
+      No
+     </td>
+     <td>
+      GETDATE()
+     </td>
+     <td>
+      Tanggal dibuat
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <strong>
+       txtModifiedBy
+      </strong>
+     </td>
+     <td>
+      VARCHAR(50)
+     </td>
+     <td>
+      Yes
+     </td>
+     <td>
+      NULL
+     </td>
+     <td>
+      User terakhir modifikasi
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <strong>
+       dtModifiedDate
+      </strong>
+     </td>
+     <td>
+      DATETIME
+     </td>
+     <td>
+      Yes
+     </td>
+     <td>
+      NULL
+     </td>
+     <td>
+      Tanggal terakhir modifikasi
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <p>
+   <strong>
+    Indexes:
+   </strong>
+  </p>
+  <ul>
+   <li>
+    PRIMARY KEY: intBtpId
+   </li>
+   <li>
+    UNIQUE INDEX: txtBtpCode
+   </li>
+   <li>
+    INDEX: bitActive
+   </li>
+  </ul>
+  <h3>
+   3.2 Table: M_BTP_FUNCTION
+  </h3>
+  <p>
+   <strong>
+    Purpose:
+   </strong>
+   Menyimpan master fungsi BTP
+  </p>
+  <table>
+   <thead>
+    <tr>
+     <th width="25%">
+      Column Name
+     </th>
+     <th width="15%">
+      Data Type
+     </th>
+     <th width="10%">
+      Nullable
+     </th>
+     <th width="15%">
+      Default
+     </th>
+     <th>
+      Description
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      <strong>
+       intBtpFunctionId
+      </strong>
+     </td>
+     <td>
+      INT
+     </td>
+     <td>
+      No
+     </td>
+     <td>
+      Auto
+     </td>
+     <td>
+      Primary Key
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <strong>
+       txtFunctionCode
+      </strong>
+     </td>
+     <td>
+      VARCHAR(10)
+     </td>
+     <td>
+      No
+     </td>
+     <td>
+      -
+     </td>
+     <td>
+      Kode fungsi
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <strong>
+       txtFunctionName
+      </strong>
+     </td>
+     <td>
+      VARCHAR(100)
+     </td>
+     <td>
+      No
+     </td>
+     <td>
+      -
+     </td>
+     <td>
+      Nama fungsi
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <strong>
+       bitActive
+      </strong>
+     </td>
+     <td>
+      BIT
+     </td>
+     <td>
+      No
+     </td>
+     <td>
+      1
+     </td>
+     <td>
+      Status aktif
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <strong>
+       txtCreatedBy
+      </strong>
+     </td>
+     <td>
+      VARCHAR(50)
+     </td>
+     <td>
+      No
+     </td>
+     <td>
+      -
+     </td>
+     <td>
+      User pembuat
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <strong>
+       dtCreatedDate
+      </strong>
+     </td>
+     <td>
+      DATETIME
+     </td>
+     <td>
+      No
+     </td>
+     <td>
+      GETDATE()
+     </td>
+     <td>
+      Tanggal dibuat
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <strong>
+       txtModifiedBy
+      </strong>
+     </td>
+     <td>
+      VARCHAR(50)
+     </td>
+     <td>
+      Yes
+     </td>
+     <td>
+      NULL
+     </td>
+     <td>
+      User terakhir modifikasi
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <strong>
+       dtModifiedDate
+      </strong>
+     </td>
+     <td>
+      DATETIME
+     </td>
+     <td>
+      Yes
+     </td>
+     <td>
+      NULL
+     </td>
+     <td>
+      Tanggal terakhir modifikasi
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <p>
+   <strong>
+    Indexes:
+   </strong>
+  </p>
+  <ul>
+   <li>
+    PRIMARY KEY: intBtpFunctionId
+   </li>
+   <li>
+    UNIQUE INDEX: txtFunctionCode
+   </li>
+   <li>
+    INDEX: bitActive
+   </li>
+  </ul>
+  <h3>
+   3.3 Table: M_BTP_FUNCTION_MAPPING
+  </h3>
+  <p>
+   <strong>
+    Purpose:
+   </strong>
+   Mapping relasi many-to-many antara BTP dan Function
+  </p>
+  <table>
+   <thead>
+    <tr>
+     <th width="25%">
+      Column Name
+     </th>
+     <th width="15%">
+      Data Type
+     </th>
+     <th width="10%">
+      Nullable
+     </th>
+     <th width="15%">
+      Default
+     </th>
+     <th>
+      Description
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      <strong>
+       intMappingId
+      </strong>
+     </td>
+     <td>
+      INT
+     </td>
+     <td>
+      No
+     </td>
+     <td>
+      Auto
+     </td>
+     <td>
+      Primary Key
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <strong>
+       intBtpId
+      </strong>
+     </td>
+     <td>
+      INT
+     </td>
+     <td>
+      No
+     </td>
+     <td>
+      -
+     </td>
+     <td>
+      Foreign Key ke M_BTP
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <strong>
+       intBtpFunctionId
+      </strong>
+     </td>
+     <td>
+      INT
+     </td>
+     <td>
+      No
+     </td>
+     <td>
+      -
+     </td>
+     <td>
+      Foreign Key ke M_BTP_FUNCTION
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <strong>
+       bitActive
+      </strong>
+     </td>
+     <td>
+      BIT
+     </td>
+     <td>
+      No
+     </td>
+     <td>
+      1
+     </td>
+     <td>
+      Status aktif
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <strong>
+       txtCreatedBy
+      </strong>
+     </td>
+     <td>
+      VARCHAR(50)
+     </td>
+     <td>
+      No
+     </td>
+     <td>
+      -
+     </td>
+     <td>
+      User pembuat
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <strong>
+       dtCreatedDate
+      </strong>
+     </td>
+     <td>
+      DATETIME
+     </td>
+     <td>
+      No
+     </td>
+     <td>
+      GETDATE()
+     </td>
+     <td>
+      Tanggal dibuat
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <strong>
+       txtModifiedBy
+      </strong>
+     </td>
+     <td>
+      VARCHAR(50)
+     </td>
+     <td>
+      Yes
+     </td>
+     <td>
+      NULL
+     </td>
+     <td>
+      User terakhir modifikasi
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <strong>
+       dtModifiedDate
+      </strong>
+     </td>
+     <td>
+      DATETIME
+     </td>
+     <td>
+      Yes
+     </td>
+     <td>
+      NULL
+     </td>
+     <td>
+      Tanggal terakhir modifikasi
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <p>
+   <strong>
+    Indexes:
+   </strong>
+  </p>
+  <ul>
+   <li>
+    PRIMARY KEY: intMappingId
+   </li>
+   <li>
+    FOREIGN KEY: intBtpId REFERENCES M_BTP(intBtpId)
+   </li>
+   <li>
+    FOREIGN KEY: intBtpFunctionId REFERENCES M_BTP_FUNCTION(intBtpFunctionId)
+   </li>
+   <li>
+    UNIQUE INDEX: (intBtpId, intBtpFunctionId)
+   </li>
+   <li>
+    INDEX: bitActive
+   </li>
+  </ul>
+  <hr/>
+  <h2>
+   4. API SPECIFICATIONS
+  </h2>
+  <h3>
+   4.1 Master BTP APIs
+  </h3>
+  <table>
+   <thead>
+    <tr>
+     <th width="20%">
+      Method
+     </th>
+     <th width="35%">
+      Endpoint
+     </th>
+     <th>
+      Description
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      <strong>
+       GET
+      </strong>
+     </td>
+     <td>
+      /api/master/btp
+     </td>
+     <td>
+      Get all BTP (with pagination &amp; filter)
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <strong>
+       GET
+      </strong>
+     </td>
+     <td>
+      /api/master/btp/{id}
+     </td>
+     <td>
+      Get BTP by ID
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <strong>
+       POST
+      </strong>
+     </td>
+     <td>
+      /api/master/btp
+     </td>
+     <td>
+      Create new BTP
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <strong>
+       PUT
+      </strong>
+     </td>
+     <td>
+      /api/master/btp/{id}
+     </td>
+     <td>
+      Update existing BTP
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <strong>
+       DELETE
+      </strong>
+     </td>
+     <td>
+      /api/master/btp/{id}
+     </td>
+     <td>
+      Soft delete BTP (set bitActive = 0)
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <strong>
+       GET
+      </strong>
+     </td>
+     <td>
+      /api/master/btp/{id}/functions
+     </td>
+     <td>
+      Get all functions mapped to BTP
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <strong>
+       POST
+      </strong>
+     </td>
+     <td>
+      /api/master/btp/{id}/functions
+     </td>
+     <td>
+      Bulk save function mappings
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <h3>
+   4.2 Master BTP Function APIs
+  </h3>
+  <table>
+   <thead>
+    <tr>
+     <th width="20%">
+      Method
+     </th>
+     <th width="35%">
+      Endpoint
+     </th>
+     <th>
+      Description
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      <strong>
+       GET
+      </strong>
+     </td>
+     <td>
+      /api/master/btp-function
+     </td>
+     <td>
+      Get all BTP functions
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <strong>
+       GET
+      </strong>
+     </td>
+     <td>
+      /api/master/btp-function/{id}
+     </td>
+     <td>
+      Get BTP function by ID
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <strong>
+       POST
+      </strong>
+     </td>
+     <td>
+      /api/master/btp-function
+     </td>
+     <td>
+      Create new BTP function
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <strong>
+       PUT
+      </strong>
+     </td>
+     <td>
+      /api/master/btp-function/{id}
+     </td>
+     <td>
+      Update existing BTP function
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <strong>
+       DELETE
+      </strong>
+     </td>
+     <td>
+      /api/master/btp-function/{id}
+     </td>
+     <td>
+      Soft delete BTP function
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <hr/>
+  <h2>
+   5. BUSINESS RULES
+  </h2>
+  <h3>
+   5.1 Master BTP Rules
+  </h3>
+  <ul>
+   <li>
+    <strong>
+     Uniqueness:
+    </strong>
+    BTP Code harus unique dalam sistem
+   </li>
+   <li>
+    <strong>
+     Format:
+    </strong>
+    BTP Code harus mengikuti format INS (International Numbering System)
+   </li>
+   <li>
+    <strong>
+     Deletion:
+    </strong>
+    BTP yang sudah digunakan dalam formula tidak dapat dihapus (soft delete only)
+   </li>
+   <li>
+    <strong>
+     Inactive:
+    </strong>
+    Inactive BTP tidak muncul dalam LOV untuk formula baru
+   </li>
+   <li>
+    <strong>
+     Validation:
+    </strong>
+    BTP Code dan Name wajib diisi
+   </li>
+  </ul>
+  <h3>
+   5.2 Master BTP Function Rules
+  </h3>
+  <ul>
+   <li>
+    <strong>
+     Uniqueness:
+    </strong>
+    Function Code harus unique
+   </li>
+   <li>
+    <strong>
+     Format:
+    </strong>
+    Function Code harus uppercase, 3-5 characters
+   </li>
+   <li>
+    <strong>
+     Standard:
+    </strong>
+    Function harus sesuai dengan regulasi BPOM
+   </li>
+   <li>
+    <strong>
+     Deletion:
+    </strong>
+    Function yang sudah di-map ke BTP tidak dapat dihapus
+   </li>
+  </ul>
+  <h3>
+   5.3 BTP Function Mapping Rules
+  </h3>
+  <ul>
+   <li>
+    <strong>
+     Many-to-Many:
+    </strong>
+    Satu BTP dapat memiliki multiple functions
+   </li>
+   <li>
+    <strong>
+     No Duplicate:
+    </strong>
+    Tidak boleh duplicate function dalam satu BTP
+   </li>
+   <li>
+    <strong>
+     Minimum:
+    </strong>
+    Setiap BTP harus memiliki minimal 1 function
+   </li>
+   <li>
+    <strong>
+     Transaction:
+    </strong>
+    Bulk save menggunakan database transaction (all or nothing)
+   </li>
+  </ul>
+  <hr/>
+  <h2>
+   6. APPENDIX
+  </h2>
+  <h3>
+   6.1 Sample Data BTP
+  </h3>
+  <table>
+   <thead>
+    <tr>
+     <th width="20%">
+      BTP Code
+     </th>
+     <th width="35%">
+      BTP Name
+     </th>
+     <th>
+      Functions
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      INS 100
+     </td>
+     <td>
+      Kurkumin
+     </td>
+     <td>
+      Pewarna
+     </td>
+    </tr>
+    <tr>
+     <td>
+      INS 101
+     </td>
+     <td>
+      Riboflavin
+     </td>
+     <td>
+      Pewarna
+     </td>
+    </tr>
+    <tr>
+     <td>
+      INS 200
+     </td>
+     <td>
+      Asam Sorbat
+     </td>
+     <td>
+      Pengawet
+     </td>
+    </tr>
+    <tr>
+     <td>
+      INS 211
+     </td>
+     <td>
+      Natrium Benzoat
+     </td>
+     <td>
+      Pengawet
+     </td>
+    </tr>
+    <tr>
+     <td>
+      INS 300
+     </td>
+     <td>
+      Asam Askorbat
+     </td>
+     <td>
+      Antioksidan, Pengawet
+     </td>
+    </tr>
+    <tr>
+     <td>
+      INS 322
+     </td>
+     <td>
+      Lesitin
+     </td>
+     <td>
+      Pengemulsi, Antioksidan
+     </td>
+    </tr>
+    <tr>
+     <td>
+      INS 950
+     </td>
+     <td>
+      Acesulfame K
+     </td>
+     <td>
+      Pemanis
+     </td>
+    </tr>
+    <tr>
+     <td>
+      INS 951
+     </td>
+     <td>
+      Aspartam
+     </td>
+     <td>
+      Pemanis
+     </td>
+    </tr>
+    <tr>
+     <td>
+      INS 621
+     </td>
+     <td>
+      Monosodium Glutamat (MSG)
+     </td>
+     <td>
+      Penyedap Rasa
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <h3>
+   6.2 Regulasi Reference
+  </h3>
+  <ul>
+   <li>
+    Peraturan BPOM RI No. 11 Tahun 2019 tentang Bahan Tambahan Pangan
+   </li>
+   <li>
+    Codex Alimentarius - General Standard for Food Additives (GSFA)
+   </li>
+   <li>
+    International Numbering System (INS) for Food Additives
+   </li>
+  </ul>
+  <h3>
+   6.3 Change Log
+  </h3>
+  <table>
+   <thead>
+    <tr>
+     <th width="15%">
+      Version
+     </th>
+     <th width="20%">
+      Date
+     </th>
+     <th width="25%">
+      Author
+     </th>
+     <th>
+      Changes
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      1.0
+     </td>
+     <td>
+      2026-02-16
+     </td>
+     <td>
+      Development Team
+     </td>
+     <td>
+      Initial FSD creation for Master BTP modules
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <hr/>
+  <p style="text-align: center; margin-top: 50px;">
+   <strong>
+    --- END OF DOCUMENT ---
+   </strong>
+  </p>
+ </body>
+</html>

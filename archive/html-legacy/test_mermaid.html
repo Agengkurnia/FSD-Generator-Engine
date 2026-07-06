@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+      mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+    <style>
+        body { padding: 20px; font-family: sans-serif; }
+    </style>
+</head>
+<body>
+    <h2>Test 1: LR with RL subgraph</h2>
+    <div class="mermaid">
+flowchart LR
+    Start(["Mulai: Sample Diterima"]) --> Step1["STEP 1: DOCUMENT SAMPLE"]
+    Step1 --> Step2["STEP 2: SAMPLE PURPOSE"]
+    
+    Step2 --> Step3["STEP 3: RM EVALUATION"]
+    
+    subgraph Keputusan 
+        direction RL
+        Step3 --> Step4["STEP 4: DISPOSITION"]
+        Step4 --> Decision{"Keputusan?"}
+        Decision --> |APPROVED| ApprovalCheck{"Perlu Approval?"}
+        Decision --> |REJECTED| EndReject(["Selesai: REJECTED"])
+    end
+    
+    ApprovalCheck --> |Ya| PendingApproval["Pending Approval"]
+    </div>
+    
+    <h2>Test 2: TD with LR subgraphs</h2>
+    <div class="mermaid">
+flowchart TD
+    subgraph Baris1 [Fase Eksekusi]
+        direction LR
+        Start(["Mulai"]) --> Step1["STEP 1: DOC"] --> Step2["STEP 2: PURPOSE"] --> Step3["STEP 3: EVAL"]
+    end
+    
+    subgraph Baris2 [Fase Keputusan]
+        direction RL
+        Decision{"Keputusan"} <-- Step4["STEP 4: DISPOSITION"] <-- Step3
+        Decision --> Check{"Approval?"}
+    end
+    
+    subgraph Baris3 [Fase Approval]
+        direction LR
+        Check -->|Ya| Pend["Pending"] --> Rev["Review"] --> Dec2{"Hasil?"} -->|Approve| Comp(["Selesai"])
+    end
+    </div>
+</body>
+</html>

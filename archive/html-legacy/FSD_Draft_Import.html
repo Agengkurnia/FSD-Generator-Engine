@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <title>FSD Master Data Content</title>
+    <style>
+        body {
+            font-family: 'Calibri', sans-serif;
+            line-height: 1.15;
+        }
+
+        h1 {
+            font-size: 24pt;
+            color: #2E74B5;
+        }
+
+        h2 {
+            font-size: 18pt;
+            color: #2E74B5;
+            border-bottom: 1px solid #2E74B5;
+            padding-bottom: 5px;
+        }
+
+        h3 {
+            font-size: 14pt;
+            color: #1F4D78;
+            margin-top: 20px;
+        }
+
+        h4 {
+            font-size: 12pt;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+
+        th,
+        td {
+            border: 1px solid #000;
+            padding: 5px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        th {
+            background-color: #D9E1F2;
+            font-weight: bold;
+        }
+
+        ul {
+            margin-top: 5px;
+            margin-bottom: 10px;
+            padding-left: 20px;
+        }
+
+        li {
+            margin-bottom: 3px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h2>4. FUNCTIONAL ASPECT (Update)</h2>
+
+    <h3>4.1 Menu BTP (Bahan Tambahan Pangan)</h3>
+    <p>Menu ini digunakan untuk mengelola data master Bahan Tambahan Pangan.</p>
+
+    <h4>4.1.1 Layout Index BTP</h4>
+    <p><strong>Fungsi Utama:</strong></p>
+    <ul>
+        <li>Menampilkan daftar semua BTP dalam tabel dengan DataTables.</li>
+        <li>Feature Search global untuk mencari BTP berdasarkan code atau name.</li>
+        <li>Filter by status (Active/Inactive).</li>
+        <li>Pagination (25 rows/page) dan Sorting per kolom.</li>
+    </ul>
+
+    <p><strong>Aksi & Navigasi:</strong></p>
+    <table>
+        <thead>
+            <tr>
+                <th>Button/Action</th>
+                <th>Navigasi</th>
+                <th>Keterangan</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Add New</strong></td>
+                <td>BTPDetail.html (Mode Create)</td>
+                <td>Membuka form kosong untuk create BTP baru.</td>
+            </tr>
+            <tr>
+                <td><strong>Edit</strong></td>
+                <td>BTPDetail.html (Mode Edit)</td>
+                <td>Membuka form terisi data untuk melakukan perubahan data BTP.</td>
+            </tr>
+            <tr>
+                <td><strong>Delete</strong></td>
+                <td>-</td>
+                <td>Melakukan Soft delete (set bitActive = 0) dengan konfirmasi.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h4>4.1.2 Layout Detail BTP</h4>
+    <p><strong>Fungsi Utama:</strong></p>
+    <ul>
+        <li>Form input untuk mendefinisikan Kode dan Nama BTP.</li>
+        <li>Validasi keunikan kode BTP.</li>
+    </ul>
+
+    <p><strong>Keterangan Field:</strong></p>
+    <table>
+        <thead>
+            <tr>
+                <th>Field Name</th>
+                <th>Mandatory</th>
+                <th>Validasi</th>
+                <th>Keterangan</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>BTP Code</strong></td>
+                <td>Yes</td>
+                <td>Unique, No Space, Alphanumeric</td>
+                <td>Kode unik BTP.</td>
+            </tr>
+            <tr>
+                <td><strong>BTP Name</strong></td>
+                <td>Yes</td>
+                <td>Min 3 Char</td>
+                <td>Nama deskriptif BTP.</td>
+            </tr>
+            <tr>
+                <td><strong>Active</strong></td>
+                <td>No</td>
+                <td>-</td>
+                <td>Status aktif data.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <hr>
+
+    <h3>4.2 Menu BTP Function</h3>
+    <p>Menu ini digunakan untuk mengelola fungsi-fungsi standar dari BTP (contoh: Pengawet, Pemanis).</p>
+
+    <h4>4.2.1 Layout Index BTP Function</h4>
+    <p><strong>Fungsi Utama:</strong></p>
+    <ul>
+        <li>Menampilkan daftar fungsi BTP.</li>
+        <li>Pencarian data fungsi BTP.</li>
+    </ul>
+
+    <p><strong>Aksi & Navigasi:</strong></p>
+    <table>
+        <thead>
+            <tr>
+                <th>Button/Action</th>
+                <th>Navigasi</th>
+                <th>Keterangan</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Add New</strong></td>
+                <td>BTPFunctionDetail.html</td>
+                <td>Menambah fungsi BTP baru.</td>
+            </tr>
+            <tr>
+                <td><strong>Edit</strong></td>
+                <td>BTPFunctionDetail.html</td>
+                <td>Mengubah data fungsi BTP.</td>
+            </tr>
+            <tr>
+                <td><strong>Delete</strong></td>
+                <td>-</td>
+                <td>Menghapus data (Soft Delete).</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h4>4.2.2 Layout Detail BTP Function</h4>
+    <p><strong>Keterangan Field:</strong></p>
+    <table>
+        <thead>
+            <tr>
+                <th>Field Name</th>
+                <th>Mandatory</th>
+                <th>Validasi</th>
+                <th>Keterangan</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Function Code</strong></td>
+                <td>Yes</td>
+                <td>Unique</td>
+                <td>Kode fungsi.</td>
+            </tr>
+            <tr>
+                <td><strong>Function Name</strong></td>
+                <td>Yes</td>
+                <td>-</td>
+                <td>Nama fungsi.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <hr>
+
+    <h3>4.3 Menu RM Category</h3>
+    <p>Menu ini digunakan untuk mengelola Kategori Raw Material.</p>
+
+    <h4>4.3.1 Layout Index RM Category</h4>
+    <p><strong>Fungsi Utama:</strong></p>
+    <ul>
+        <li>Menampilkan daftar Kategori RM.</li>
+        <li>Menampilkan jumlah Sub Group yang terhubung (opsional).</li>
+    </ul>
+
+    <p><strong>Aksi & Navigasi:</strong></p>
+    <table>
+        <thead>
+            <tr>
+                <th>Button/Action</th>
+                <th>Navigasi</th>
+                <th>Keterangan</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Add New</strong></td>
+                <td>RMCategoryDetail.html</td>
+                <td>Membuat kategori baru.</td>
+            </tr>
+            <tr>
+                <td><strong>Edit</strong></td>
+                <td>RMCategoryDetail.html</td>
+                <td>Mengedit kategori dan mapping Sub Group.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h4>4.3.2 Layout Detail RM Category</h4>
+    <p><strong>Fungsi Utama:</strong></p>
+    <ul>
+        <li>Input data Header Category.</li>
+        <li><strong>Mapping Sub Group:</strong> User dapat memilih/menambah Sub Group yang masuk dalam kategori ini
+            (Many-to-Many).</li>
+    </ul>
+
+    <p><strong>Keterangan Field:</strong></p>
+    <table>
+        <thead>
+            <tr>
+                <th>Field Name</th>
+                <th>Mandatory</th>
+                <th>Validasi</th>
+                <th>Keterangan</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Category Code</strong></td>
+                <td>Yes</td>
+                <td>Unique</td>
+                <td>Kode Kategori.</td>
+            </tr>
+            <tr>
+                <td><strong>Category Name</strong></td>
+                <td>Yes</td>
+                <td>-</td>
+                <td>Nama Kategori.</td>
+            </tr>
+            <tr>
+                <td><strong>Sub Group List</strong></td>
+                <td>No</td>
+                <td>-</td>
+                <td>List Sub Group yang dipilih untuk kategori ini.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <hr>
+
+    <h3>4.4 Menu RM Sub Group</h3>
+    <p>Menu ini digunakan untuk mengelola Sub Group RM.</p>
+
+    <h4>4.4.1 Layout Index RM Sub Group</h4>
+    <p><strong>Fungsi Utama:</strong></p>
+    <ul>
+        <li>Menampilkan daftar Sub Group.</li>
+    </ul>
+
+    <p><strong>Aksi & Navigasi:</strong></p>
+    <table>
+        <thead>
+            <tr>
+                <th>Button/Action</th>
+                <th>Navigasi</th>
+                <th>Keterangan</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Add New</strong></td>
+                <td>RMSubGroupDetail.html</td>
+                <td>Membuat Sub Group baru.</td>
+            </tr>
+            <tr>
+                <td><strong>Edit</strong></td>
+                <td>RMSubGroupDetail.html</td>
+                <td>Edit data Sub Group.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h4>4.4.2 Layout Detail RM Sub Group</h4>
+    <p><strong>Keterangan Field:</strong></p>
+    <table>
+        <thead>
+            <tr>
+                <th>Field Name</th>
+                <th>Mandatory</th>
+                <th>Validasi</th>
+                <th>Keterangan</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Sub Group Code</strong></td>
+                <td>Yes</td>
+                <td>Unique</td>
+                <td>Kode Sub Group.</td>
+            </tr>
+            <tr>
+                <td><strong>Sub Group Name</strong></td>
+                <td>Yes</td>
+                <td>-</td>
+                <td>Nama Sub Group.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <hr>
+
+    <h3>4.5 Menu Master UOM</h3>
+    <p>Menu ini digunakan untuk mengelola satuan ukuran (Unit of Measure).</p>
+
+    <h4>4.5.1 Layout Index Master UOM</h4>
+    <p><strong>Fungsi Utama:</strong></p>
+    <ul>
+        <li>Menampilkan daftar UOM.</li>
+        <li>Kode UOM ditampilkan dalam huruf besar (UPPERCASE).</li>
+    </ul>
+
+    <p><strong>Aksi & Navigasi:</strong></p>
+    <table>
+        <thead>
+            <tr>
+                <th>Button/Action</th>
+                <th>Navigasi</th>
+                <th>Keterangan</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Add New</strong></td>
+                <td>MasterUOMDetail.html</td>
+                <td>Tambah UOM baru.</td>
+            </tr>
+            <tr>
+                <td><strong>Edit</strong></td>
+                <td>MasterUOMDetail.html</td>
+                <td>Edit UOM.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h4>4.5.2 Layout Detail Master UOM</h4>
+    <p><strong>Keterangan Field:</strong></p>
+    <table>
+        <thead>
+            <tr>
+                <th>Field Name</th>
+                <th>Mandatory</th>
+                <th>Validasi</th>
+                <th>Keterangan</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>UOM Code</strong></td>
+                <td>Yes</td>
+                <td>Unique, Auto-Uppercase</td>
+                <td>Kode satuan (KG, L, G). Otomatis kapital.</td>
+            </tr>
+            <tr>
+                <td><strong>UOM Name</strong></td>
+                <td>Yes</td>
+                <td>-</td>
+                <td>Nama satuan.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <hr>
+
+    <h3>4.6 Menu Test Parameter Conversion</h3>
+    <p>Menu ini digunakan untuk mengatur konversi parameter uji dan target per sub group.</p>
+
+    <h4>4.6.1 Layout Index Test Parameter</h4>
+    <p><strong>Fungsi Utama:</strong></p>
+    <ul>
+        <li>List konfigurasi konversi parameter.</li>
+        <li>Menampilkan rumus konversi secara ringkas.</li>
+    </ul>
+
+    <p><strong>Aksi & Navigasi:</strong></p>
+    <table>
+        <thead>
+            <tr>
+                <th>Button/Action</th>
+                <th>Navigasi</th>
+                <th>Keterangan</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Add New</strong></td>
+                <td>TestParameterConversionDetail.html</td>
+                <td>Tambah konfigurasi konversi baru.</td>
+            </tr>
+            <tr>
+                <td><strong>Edit</strong></td>
+                <td>TestParameterConversionDetail.html</td>
+                <td>Ubah konfigurasi.</td>
+            </tr>
+            <tr>
+                <td><strong>Set Target</strong></td>
+                <td>TargetPerRMCategoryManage.html</td>
+                <td>Mengatur target spesifik per RM Sub Group.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h4>4.6.2 Layout Detail Test Parameter</h4>
+    <p><strong>Fungsi Utama:</strong></p>
+    <ul>
+        <li>Menentukan rumus konversi: <code>(Nilai - Factor) / FactorNumber</code>.</li>
+        <li>Menandai apakah parameter berlaku untuk cairan (Liquid).</li>
+    </ul>
+
+    <p><strong>Keterangan Field:</strong></p>
+    <table>
+        <thead>
+            <tr>
+                <th>Field Name</th>
+                <th>Mandatory</th>
+                <th>Validasi</th>
+                <th>Keterangan</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Test Code</strong></td>
+                <td>Yes</td>
+                <td>Unique</td>
+                <td>Kode Test.</td>
+            </tr>
+            <tr>
+                <td><strong>Convert Parameter</strong></td>
+                <td>Yes</td>
+                <td>Selection</td>
+                <td>Parameter asal (dari Master Parameter).</td>
+            </tr>
+            <tr>
+                <td><strong>Factor</strong></td>
+                <td>No</td>
+                <td>Numeric</td>
+                <td>Nilai pengurang dalam rumus.</td>
+            </tr>
+            <tr>
+                <td><strong>Factor Number</strong></td>
+                <td>No</td>
+                <td>Numeric</td>
+                <td>Nilai pembagi dalam rumus.</td>
+            </tr>
+            <tr>
+                <td><strong>Convert UOM</strong></td>
+                <td>No</td>
+                <td>-</td>
+                <td>Satuan hasil konversi.</td>
+            </tr>
+            <tr>
+                <td><strong>Liquid</strong></td>
+                <td>No</td>
+                <td>Checkbox</td>
+                <td>Penanda jika berlaku untuk bahan cair.</td>
+            </tr>
+        </tbody>
+    </table>
+
+</body>
+
+</html>

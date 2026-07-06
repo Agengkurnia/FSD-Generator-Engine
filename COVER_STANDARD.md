@@ -1,0 +1,1 @@
+# DEPRECATED → [docs/COVER-STANDARD.md](docs/COVER-STANDARD.md)

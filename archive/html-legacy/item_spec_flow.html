@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Flow Bisnis Item Spec — KN2017 Formulation</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <style>
+    :root {
+      --kalbe-blue:       #003087;
+      --kalbe-blue-mid:   #005BAC;
+      --kalbe-blue-light: #D6E4F7;
+      --kalbe-green:      #00A651;
+      --kalbe-green-light:#D6F5E6;
+      --kalbe-gold:       #F5A623;
+      --kalbe-white:      #FFFFFF;
+      --grey-bg:          #F4F6FA;
+      --grey-border:      #D0D9EA;
+      --text-dark:        #1A2340;
+      --text-mid:         #4A5568;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: var(--grey-bg);
+      color: var(--text-dark);
+      line-height: 1.7;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: linear-gradient(135deg, var(--kalbe-blue) 0%, var(--kalbe-blue-mid) 100%);
+      color: white;
+      padding: 40px 60px;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+    .logo-circle {
+      width: 64px; height: 64px; border-radius: 50%;
+      background: var(--kalbe-white);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .logo-circle svg { width: 40px; height: 40px; }
+    header h1 { font-size: 1.8rem; font-weight: 700; }
+    header p  { opacity: .85; font-size: .95rem; margin-top: 4px; }
+
+    /* ── NAV ── */
+    nav {
+      background: var(--kalbe-blue);
+      padding: 0 60px;
+      display: flex; gap: 4px; overflow-x: auto;
+    }
+    nav a {
+      color: rgba(255,255,255,.75);
+      padding: 12px 20px;
+      font-size: .88rem; font-weight: 500;
+      text-decoration: none; white-space: nowrap;
+      border-bottom: 3px solid transparent;
+      transition: all .2s;
+    }
+    nav a:hover, nav a.active {
+      color: white;
+      border-bottom-color: var(--kalbe-green);
+    }
+
+    /* ── LAYOUT ── */
+    main { max-width: 1100px; margin: 0 auto; padding: 40px 24px 80px; }
+
+    section { margin-bottom: 56px; }
+
+    h2 {
+      font-size: 1.35rem; font-weight: 700;
+      color: var(--kalbe-blue);
+      border-left: 4px solid var(--kalbe-green);
+      padding-left: 14px; margin-bottom: 20px;
+    }
+    h3 { font-size: 1.05rem; font-weight: 600; color: var(--kalbe-blue-mid); margin-bottom: 10px; }
+
+    p { color: var(--text-mid); margin-bottom: 12px; }
+
+    /* ── TIMELINE ── */
+    .timeline { position: relative; padding-left: 32px; }
+    .timeline::before {
+      content:''; position:absolute; left:10px; top:0; bottom:0;
+      width:3px; background: linear-gradient(to bottom, var(--kalbe-blue-mid), var(--kalbe-green));
+      border-radius: 2px;
+    }
+    .tl-item { position: relative; margin-bottom: 28px; }
+    .tl-dot {
+      position:absolute; left:-38px; top:4px;
+      width:16px; height:16px; border-radius:50%;
+      background: var(--kalbe-blue-mid);
+      border: 3px solid var(--kalbe-white);
+      box-shadow: 0 0 0 2px var(--kalbe-blue-mid);
+    }
+    .tl-dot.green { background: var(--kalbe-green); box-shadow: 0 0 0 2px var(--kalbe-green); }
+    .tl-year {
+      display:inline-block; background: var(--kalbe-blue);
+      color:white; font-size:.75rem; font-weight:700;
+      padding:2px 10px; border-radius:20px; margin-bottom:6px;
+    }
+    .tl-year.green { background: var(--kalbe-green); }
+    .tl-card {
+      background: white; border: 1px solid var(--grey-border);
+      border-radius: 10px; padding: 16px 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.04);
+    }
+    .tl-card h4 { font-size:1rem; font-weight:600; color:var(--kalbe-blue); margin-bottom:6px; }
+
+    /* ── ALERT BOX ── */
+    .alert {
+      border-radius: 10px; padding: 16px 20px;
+      margin-bottom: 20px; display: flex; gap: 14px;
+    }
+    .alert-warn { background:#FFF3CD; border-left:4px solid var(--kalbe-gold); }
+    .alert-info { background:var(--kalbe-blue-light); border-left:4px solid var(--kalbe-blue-mid); }
+    .alert-success { background:var(--kalbe-green-light); border-left:4px solid var(--kalbe-green); }
+    .alert-icon { font-size:1.5rem; flex-shrink:0; }
+    .alert-body strong { display:block; margin-bottom:4px; }
+    .alert-body p { margin:0; }
+
+    /* ── DIAGRAM CARD ── */
+    .diagram-card {
+      background: white; border: 1px solid var(--grey-border);
+      border-radius: 12px; padding: 28px;
+      box-shadow: 0 2px 10px rgba(0,0,0,.05);
+      margin-bottom: 24px; overflow-x: auto;
+    }
+    .diagram-card .mermaid { display:flex; justify-content:center; }
+
+    /* ── MODULE CARDS GRID ── */
+    .module-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 16px; margin-bottom: 24px;
+    }
+    .mod-card {
+      background: white; border-radius: 12px;
+      padding: 20px; border: 1px solid var(--grey-border);
+      box-shadow: 0 2px 8px rgba(0,0,0,.04);
+      border-top: 4px solid var(--kalbe-blue-mid);
+      transition: transform .2s, box-shadow .2s;
+    }
+    .mod-card:hover { transform:translateY(-3px); box-shadow:0 6px 20px rgba(0,48,135,.12); }
+    .mod-card.green { border-top-color: var(--kalbe-green); }
+    .mod-card.gold  { border-top-color: var(--kalbe-gold); }
+    .mod-card .mod-icon { font-size:2rem; margin-bottom:10px; }
+    .mod-card h4 { font-size:1rem; font-weight:700; color:var(--kalbe-blue); margin-bottom:4px; }
+    .mod-card .badge {
+      display:inline-block; font-size:.7rem; font-weight:600;
+      padding:2px 8px; border-radius:20px; margin-bottom:8px;
+    }
+    .badge-blue   { background:var(--kalbe-blue-light); color:var(--kalbe-blue); }
+    .badge-green  { background:var(--kalbe-green-light); color:#006632; }
+    .badge-gold   { background:#FFF3CD; color:#856404; }
+    .mod-card ul  { list-style:none; font-size:.85rem; color:var(--text-mid); }
+    .mod-card ul li::before { content:'• '; color:var(--kalbe-blue-mid); }
+    .mod-card ul li.check::before { content:'✅ '; }
+    .mod-card ul li.cross::before { content:'❌ '; }
+
+    /* ── TABLE ── */
+    .tbl-wrap { overflow-x:auto; border-radius:12px; box-shadow:0 2px 10px rgba(0,0,0,.05); }
+    table { width:100%; border-collapse:collapse; background:white; }
+    thead tr { background: var(--kalbe-blue); color:white; }
+    thead th { padding:12px 16px; text-align:left; font-size:.85rem; }
+    tbody tr:nth-child(even) { background: var(--grey-bg); }
+    tbody td { padding:11px 16px; font-size:.85rem; color:var(--text-mid); border-bottom:1px solid var(--grey-border); }
+    tbody td:first-child { font-weight:600; color:var(--text-dark); }
+    .t-yes { color:var(--kalbe-green); font-weight:700; }
+    .t-no  { color:#C53030; font-weight:700; }
+
+    /* ── REVAMP SECTION ── */
+    .choice-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:16px; }
+    .choice-card {
+      border-radius:12px; padding:20px;
+      border:2px solid var(--grey-border); background:white;
+    }
+    .choice-card.blue { border-color:var(--kalbe-blue-mid); }
+    .choice-card.green { border-color:var(--kalbe-green); }
+    .choice-card h4 { font-size:.95rem; font-weight:700; margin-bottom:8px; }
+    .choice-card.blue h4 { color:var(--kalbe-blue); }
+    .choice-card.green h4 { color:#006632; }
+    .choice-card p { font-size:.85rem; margin:0; }
+
+    /* ── STATUS CHIPS ── */
+    .status-grid { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+    .chip {
+      padding:6px 14px; border-radius:20px; font-size:.8rem; font-weight:600;
+      display:flex; align-items:center; gap:6px;
+    }
+    .chip-draft   { background:#EBF4FE; color:var(--kalbe-blue-mid); }
+    .chip-wait    { background:#FFF3CD; color:#856404; }
+    .chip-oracle  { background:#E8F5E9; color:#2E7D32; }
+    .chip-done    { background:var(--kalbe-green-light); color:#006632; }
+    .chip-error   { background:#FDECEA; color:#C62828; }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align:center; padding:24px;
+      font-size:.8rem; color:#888;
+      border-top:1px solid var(--grey-border);
+    }
+
+    @media(max-width:640px){
+      header { padding:24px; flex-direction:column; align-items:flex-start; }
+      nav { padding:0 16px; }
+      main { padding:24px 16px; }
+      .choice-grid { grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── HEADER ── -->
+<header>
+  <div class="logo-circle">
+    <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="30" cy="30" r="28" fill="#003087"/>
+      <text x="30" y="36" text-anchor="middle" font-size="16" font-weight="bold" fill="white" font-family="Segoe UI,sans-serif">K</text>
+    </svg>
+  </div>
+  <div>
+    <h1>📋 Flow Bisnis — Item Specification</h1>
+    <p>KN2017_FORMULATION · Laporan Analisis Modul · Dibuat 27 Feb 2026</p>
+  </div>
+</header>
+
+<!-- ── NAV ── -->
+<nav>
+  <a href="#sejarah" class="active">🕰️ Sejarah</a>
+  <a href="#flow">🔄 Alur Proses</a>
+  <a href="#modul">🧩 Detail Modul</a>
+  <a href="#status">🚦 Status Dokumen</a>
+  <a href="#tabel">📊 Perbandingan</a>
+  <a href="#revamp">🚀 Revamp IDC</a>
+</nav>
+
+<main>
+
+  <!-- ═══════════════════════════════════════════
+       SECTION 1 — SEJARAH
+  ═══════════════════════════════════════════ -->
+  <section id="sejarah">
+    <h2>🕰️ Sejarah Perkembangan Sistem</h2>
+
+    <div class="timeline">
+
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <span class="tl-year">2018</span>
+        <div class="tl-card">
+          <h4>Sistem Awal — 3 Modul Terpisah</h4>
+          <p>Dibangun 3 form independen: <strong>Item Spec Blending</strong> (Prodev), <strong>Item Spec Packing</strong> (Packdev), dan <strong>Item Spec</strong> (NPC Team). Sistem ini berjalan baik untuk produk bertipe <strong>Base / Premix</strong> karena kedua tim bekerja secara independen.</p>
+          <div class="alert alert-warn" style="margin-top:12px;margin-bottom:0">
+            <span class="alert-icon">⚠️</span>
+            <div class="alert-body">
+              <strong>Masalah: Produk FG / Intermediate</strong>
+              <p>Blending Spec dan Packing Spec <em>saling bergantung</em> — keduanya harus selesai sebelum Item Spec final bisa dibuat. Akibatnya terjadi <strong>bottleneck: saling tunggu-menunggu</strong>, dan tidak ada mekanisme "merge" data dari kedua spec ke satu dokumen final.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-dot green"></div>
+        <span class="tl-year green">2019</span>
+        <div class="tl-card">
+          <h4>Solusi — Modul Item Spec New</h4>
+          <p>Lahir modul baru <strong>Item Spec New</strong> sebagai solusi bottleneck FG/Intermediate. Cara kerjanya: Prodev dan Packdev membuat spec-nya masing-masing secara independen. Setelah keduanya selesai (approved), NPC Team <strong>memilih kedua spec sebagai referensi</strong>, data langsung ter-link, lalu dikirim ke Oracle sebagai satu dokumen final.</p>
+          <div class="alert alert-success" style="margin-top:12px;margin-bottom:0">
+            <span class="alert-icon">✅</span>
+            <div class="alert-body">
+              <strong>Keunggulan solusi ini</strong>
+              <p>Prodev dan Packdev tidak perlu saling tunggu lagi. Masing-masing bisa mengerjakan spec-nya kapan saja — ketika keduanya selesai, Item Spec New tinggal <em>link dan submit</em>.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+       SECTION 2 — FLOW
+  ═══════════════════════════════════════════ -->
+  <section id="flow">
+    <h2>🔄 Alur Proses Berdasarkan Tipe Transaksi</h2>
+
+    <h3>Tipe 1 — Base / Premix</h3>
+    <p>Proses sederhana dan independen. NPC Team membuat Item Spec langsung tanpa bergantung pada modul lain.</p>
+    <div class="diagram-card">
+      <div class="mermaid">
+flowchart LR
+    A(["👤 NPC / R&D Team"]) --> B["Buat Item Spec"]
+    B --> C(["DRAFT ✏️"])
+    C --> D{"Submit"}
+    D --> E["Review QA / QS"]
+    E --> F{"Decision"}
+    F -- "✅ Approved" --> G["Submit ke Oracle"]
+    F -- "↩ Return" --> C
+    G --> H{"Proses Oracle"}
+    H -- "Success" --> I(["✅ APPROVED"])
+    H -- "Failed" --> J(["❌ Error Oracle"])
+    J -- "Re-Push" --> G
+
+    style A fill:#003087,color:#fff,stroke:#003087
+    style C fill:#D6E4F7,color:#003087,stroke:#005BAC
+    style E fill:#FFF3CD,color:#856404,stroke:#F5A623
+    style G fill:#D6F5E6,color:#006632,stroke:#00A651
+    style I fill:#00A651,color:#fff,stroke:#00A651
+    style J fill:#FDECEA,color:#C62828,stroke:#C62828
+      </div>
+    </div>
+
+    <h3>Tipe 2 — FG / Intermediate (3 Jalur Paralel)</h3>
+    <p>Prodev dan Packdev bekerja <strong>paralel secara independen</strong>. Setelah keduanya approved, NPC Team baru bisa membuat Item Spec New.</p>
+    <div class="diagram-card">
+      <div class="mermaid">
+flowchart TD
+    subgraph PRODEV ["🧪 Product Development"]
+        B1["Buat Blending Item Spec"] --> B2["Isi: ProductCode, Variant, Country, IC Assignment, Parameter Uji"] --> B3["Submit ke QA"] --> B4(["✅ Blending Spec APPROVED"])
+    end
+
+    subgraph PACKDEV ["📦 Packaging Development"]
+        P1["Buat Packing Item Spec"] --> P2["Isi: ProductCode, Variant, Country, IC Assignment, Parameter Uji"] --> P3["Submit ke QA"] --> P4(["✅ Packing Spec APPROVED"])
+    end
+
+    subgraph NPC ["🏭 NPC Team"]
+        N1["Buat Item Spec New"] --> N2["Pilih Blending Spec + Packing Spec"] --> N3["Data ter-link otomatis"] --> N4["Submit ke Oracle"] --> N5(["✅ Item Spec APPROVED"])
+    end
+
+    B4 -- "FK Reference" --> N2
+    P4 -- "FK Reference" --> N2
+
+    style B4 fill:#00A651,color:#fff,stroke:#00A651
+    style P4 fill:#00A651,color:#fff,stroke:#00A651
+    style N5 fill:#00A651,color:#fff,stroke:#00A651
+    style PRODEV fill:#EFF8FF,stroke:#005BAC
+    style PACKDEV fill:#FFF8EF,stroke:#F5A623
+    style NPC fill:#F0FBF4,stroke:#00A651
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+       SECTION 3 — DETAIL MODUL
+  ═══════════════════════════════════════════ -->
+  <section id="modul">
+    <h2>🧩 Detail Setiap Modul</h2>
+
+    <div class="module-grid">
+
+      <div class="mod-card">
+        <div class="mod-icon">📄</div>
+        <h4>Item Spec</h4>
+        <span class="badge badge-blue">Era 2018 · Base/Premix</span>
+        <ul>
+          <li>Dibuat oleh NPC / QC Team</li>
+          <li>Ada pilihan Inline / Non-Inline</li>
+          <li class="check">Dikirim ke Oracle EBS</li>
+          <li class="cross">Tidak butuh referensi spec lain</li>
+          <li class="cross">Tidak ada IC Assignment</li>
+        </ul>
+      </div>
+
+      <div class="mod-card green">
+        <div class="mod-icon">🧪</div>
+        <h4>Item Spec Blending</h4>
+        <span class="badge badge-blue">Era 2018 · FG/Intermediate</span>
+        <ul>
+          <li>Dibuat oleh Product Dev</li>
+          <li>Ada ProductCode, Variant, Country</li>
+          <li class="check">IC Assignment (wajib saat submit)</li>
+          <li class="cross">Tidak dikirim ke Oracle</li>
+          <li>Approval: QA/QS internal</li>
+        </ul>
+      </div>
+
+      <div class="mod-card green">
+        <div class="mod-icon">📦</div>
+        <h4>Item Spec Packing</h4>
+        <span class="badge badge-blue">Era 2018 · FG/Intermediate</span>
+        <ul>
+          <li>Dibuat oleh Packaging Dev</li>
+          <li>Struktur identik dengan Blending</li>
+          <li class="check">IC Assignment (wajib saat submit)</li>
+          <li class="cross">Tidak dikirim ke Oracle</li>
+          <li>Approval: QA/QS internal</li>
+        </ul>
+      </div>
+
+      <div class="mod-card gold">
+        <div class="mod-icon">🏭</div>
+        <h4>Item Spec New</h4>
+        <span class="badge badge-green">Era 2019 · FG/Intermediate</span>
+        <ul>
+          <li>Dibuat oleh NPC Team</li>
+          <li class="check">Wajib pilih Blending Spec</li>
+          <li class="check">Wajib pilih Packing Spec</li>
+          <li>Country ambil dari Blending Spec</li>
+          <li class="check">Dikirim ke Oracle EBS</li>
+        </ul>
+      </div>
+
+    </div>
+
+    <h3 style="margin-top:24px">Alur Approval Detail — Item Spec Blending / Packing</h3>
+    <div class="diagram-card">
+      <div class="mermaid">
+stateDiagram-v2
+    [*] --> DRAFT : Simpan Pertama
+    DRAFT --> WAITING : Submit (IC Assignment wajib ada)
+    WAITING --> APPROVED : QA / QS Setujui
+    WAITING --> DRAFT : QA / QS Kembalikan
+    APPROVED --> [*]
+      </div>
+    </div>
+
+    <h3>Alur Submit Oracle — Item Spec / Item Spec New</h3>
+    <div class="diagram-card">
+      <div class="mermaid">
+stateDiagram-v2
+    [*] --> DRAFT : Simpan
+    DRAFT --> WAITING : Submit (Status 20)
+    WAITING --> ORACLE : Submit ke Oracle (Status 25)
+    ORACLE --> APPROVED : Berhasil (Status 30)
+    ORACLE --> ERROR : Gagal (Status 26)
+    ERROR --> ORACLE : Re-Push Oracle
+    APPROVED --> [*]
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+       SECTION 4 — STATUS DOKUMEN
+  ═══════════════════════════════════════════ -->
+  <section id="status">
+    <h2>🚦 Kode Status Dokumen</h2>
+    <p>Semua modul menggunakan kode status yang sama:</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Kode</th>
+            <th>Status</th>
+            <th>Keterangan</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>00</td><td>NEW</td><td>Dokumen baru, belum pernah disimpan</td></tr>
+          <tr><td>10</td><td>DRAFT</td><td>Sudah disimpan, belum disubmit</td></tr>
+          <tr><td>20</td><td>WAITING TO BE APPROVED</td><td>Sudah submit, menunggu approval</td></tr>
+          <tr><td>24</td><td>SUBMITTED TO QA / QS</td><td>Dikirim ke QA atau QS untuk review</td></tr>
+          <tr><td>25</td><td>SUBMITTING TO ORACLE</td><td>Sedang dikirim ke Oracle EBS</td></tr>
+          <tr><td>26</td><td>ERROR IN ORACLE</td><td>Gagal masuk Oracle — bisa di-re-push</td></tr>
+          <tr><td>30</td><td>APPROVED</td><td>Disetujui</td></tr>
+          <tr><td>40</td><td>CANCELED</td><td>Dibatalkan</td></tr>
+          <tr><td>50</td><td>REJECTED</td><td>Ditolak</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div style="margin-top:20px">
+      <h3>Representasi Visual Status</h3>
+      <div class="status-grid">
+        <span class="chip chip-draft">✏️ DRAFT (10)</span>
+        <span class="chip chip-wait">⏳ WAITING (20)</span>
+        <span class="chip chip-wait">🔍 TO QA/QS (24)</span>
+        <span class="chip chip-oracle">📡 TO ORACLE (25)</span>
+        <span class="chip chip-error">❌ ERROR (26)</span>
+        <span class="chip chip-done">✅ APPROVED (30)</span>
+        <span class="chip" style="background:#F3F3F3;color:#555">🚫 CANCELED (40)</span>
+        <span class="chip chip-error">❎ REJECTED (50)</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+       SECTION 5 — TABEL PERBANDINGAN
+  ═══════════════════════════════════════════ -->
+  <section id="tabel">
+    <h2>📊 Perbandingan 4 Modul</h2>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Aspek</th>
+            <th>Item Spec</th>
+            <th>Blending</th>
+            <th>Packing</th>
+            <th>Item Spec New</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Era Dibuat</td>
+            <td>2018</td><td>2018</td><td>2018</td><td>2019</td>
+          </tr>
+          <tr>
+            <td>Tipe Transaksi</td>
+            <td>Base / Premix</td>
+            <td>FG / Intermediate</td>
+            <td>FG / Intermediate</td>
+            <td>FG / Intermediate</td>
+          </tr>
+          <tr>
+            <td>Tim Pembuat</td>
+            <td>NPC / QC</td>
+            <td>Product Dev</td>
+            <td>Packaging Dev</td>
+            <td>NPC Team</td>
+          </tr>
+          <tr>
+            <td>Butuh Referensi Spec Lain</td>
+            <td class="t-no">Tidak</td>
+            <td class="t-no">Tidak</td>
+            <td class="t-no">Tidak</td>
+            <td class="t-yes">Ya (Blending + Packing)</td>
+          </tr>
+          <tr>
+            <td>IC Assignment</td>
+            <td class="t-no">Tidak</td>
+            <td class="t-yes">Ya (Wajib)</td>
+            <td class="t-yes">Ya (Wajib)</td>
+            <td class="t-no">Tidak</td>
+          </tr>
+          <tr>
+            <td>Fitur Inline / Non-Inline</td>
+            <td class="t-yes">Ada</td>
+            <td class="t-no">Tidak</td>
+            <td class="t-no">Tidak</td>
+            <td class="t-no">Tidak</td>
+          </tr>
+          <tr>
+            <td>Kirim ke Oracle EBS</td>
+            <td class="t-yes">Ya</td>
+            <td class="t-no">Tidak</td>
+            <td class="t-no">Tidak</td>
+            <td class="t-yes">Ya</td>
+          </tr>
+          <tr>
+            <td>Re-Push jika Error Oracle</td>
+            <td class="t-yes">Ya</td>
+            <td>N/A</td>
+            <td>N/A</td>
+            <td class="t-yes">Ya</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+       SECTION 6 — REVAMP IDC
+  ═══════════════════════════════════════════ -->
+  <section id="revamp">
+    <h2>🚀 Rencana Revamp — IDC System</h2>
+
+    <div class="alert alert-info">
+      <span class="alert-icon">💡</span>
+      <div class="alert-body">
+        <strong>Ide Utama</strong>
+        <p>Semua modul Item Spec digabung menjadi <strong>1 form tunggal</strong> di IDC System. User cukup pilih tipe transaksi di awal, form secara otomatis menampilkan field dan seksi yang relevan.</p>
+      </div>
+    </div>
+
+    <div class="diagram-card">
+      <div class="mermaid">
+flowchart TD
+    A(["📝 Form Item Spec Baru (IDC)"]) --> B{"Pilih Tipe Transaksi"}
+    B --> C["🔵 Base / Premix"]
+    B --> D["🟢 Intermediate / FG"]
+    C --> E["Input Ingredient Langsung"]
+    C --> F["Copy dari Item Spec Lama"]
+    D --> G["Get Data dari Blending Spec"]
+    D --> H["Get Data dari Packing Spec"]
+    E --> I(["Submit ke Oracle"])
+    F --> I
+    G --> I
+    H --> I
+
+    style A fill:#003087,color:#fff,stroke:#003087
+    style B fill:#D6E4F7,color:#003087,stroke:#005BAC
+    style C fill:#005BAC,color:#fff,stroke:#005BAC
+    style D fill:#00A651,color:#fff,stroke:#00A651
+    style I fill:#00A651,color:#fff,stroke:#00A651
+      </div>
+    </div>
+
+    <h3>Perbedaan Tampilan Berdasarkan Tipe</h3>
+    <div class="choice-grid">
+      <div class="choice-card blue">
+        <h4>🔵 Base / Premix</h4>
+        <p><strong>Field yang muncul:</strong> Input ingredient secara manual, atau opsi untuk copy dari Item Spec yang sudah ada (existing table). Tidak ada pilihan Blending/Packing Spec.</p>
+      </div>
+      <div class="choice-card green">
+        <h4>🟢 Intermediate / FG</h4>
+        <p><strong>Field yang muncul:</strong> Dropdown untuk <strong>Get data Blending Spec</strong> dan <strong>Get data Packing Spec</strong>. Data parameter uji otomatis ter-populate dari kedua spec yang dipilih.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  &copy; 2026 Kalbe Formulation System · Laporan Analisis Teknis · KN2017_FORMULATION
+</footer>
+
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'base',
+    themeVariables: {
+      primaryColor:       '#003087',
+      primaryTextColor:   '#ffffff',
+      primaryBorderColor: '#005BAC',
+      lineColor:          '#005BAC',
+      secondaryColor:     '#D6E4F7',
+      tertiaryColor:      '#F0FBF4',
+      noteBkgColor:       '#FFF3CD',
+      noteTextColor:      '#1A2340',
+      edgeLabelBackground:'#F4F6FA',
+      clusterBkg:         '#F4F6FA',
+      clusterBorder:      '#D0D9EA',
+      titleColor:         '#003087',
+      fontFamily:         'Segoe UI, sans-serif',
+      fontSize:           '14px'
+    }
+  });
+
+  // Smooth scroll nav
+  document.querySelectorAll('nav a').forEach(a => {
+    a.addEventListener('click', e => {
+      document.querySelectorAll('nav a').forEach(x => x.classList.remove('active'));
+      e.currentTarget.classList.add('active');
+    });
+  });
+
+  // Highlight active section on scroll
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('nav a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => {
+      if (window.scrollY >= s.offsetTop - 100) current = s.id;
+    });
+    navLinks.forEach(a => {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+    });
+  });
+</script>
+
+</body>
+</html>

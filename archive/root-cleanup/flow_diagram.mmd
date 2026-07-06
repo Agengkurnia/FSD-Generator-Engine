@@ -1,0 +1,20 @@
+flowchart TD
+    A([fa:fa-plus Pembuat\nBuat SEAL Baru]) --> B[Draft]
+    B --> C{Lengkapi\nIdentitas & PIC}
+    C --> D[Upload Dokumen\noleh PIC]
+    D --> E{Submit\nke Reviewer}
+    E --> F[Waiting Approval]
+    F --> G{Review oleh\nReviewer}
+    G -->|Approve Semua| H[Approved]
+    G -->|Reject| I[Rejected]
+    I --> D
+    H --> J([fa:fa-check Completed])
+    B -->|Close oleh Pembuat| K([fa:fa-times Closed])
+
+    style A fill:#4CAF50,color:#fff,stroke:#388E3C
+    style J fill:#2196F3,color:#fff,stroke:#1565C0
+    style K fill:#9E9E9E,color:#fff,stroke:#616161
+    style B fill:#FFF9C4,stroke:#F9A825
+    style F fill:#FFE0B2,stroke:#E65100
+    style H fill:#C8E6C9,stroke:#2E7D32
+    style I fill:#FFCDD2,stroke:#C62828

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Mermaid Renderer</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: white;
+            font-family: Arial, sans-serif;
+        }
+
+        .diagram-container {
+            margin-bottom: 60px;
+        }
+
+        h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .mermaid {
+            background: white;
+        }
+    </style>
+</head>
+
+<body>
+    <script>mermaid.initialize({ startOnLoad: true, theme: 'default', securityLevel: 'loose' });</script>
+
+    <div class="diagram-container" id="diagram1">
+        <h3>Diagram 1: Simplified Flow (Section 2.2.1)</h3>
+        <div class="mermaid" id="mermaid1">
+            graph LR
+            A["📄 Step 1\nDocument"] --> B["🧪 Step 2\nPurpose"]
+            B --> C["🔬 Step 3\nEvaluation"]
+            C --> D["📋 Step 4\nDisposition"]
+            D --> E{"⚖️ Decision"}
+            E -->|"✅ Approved"| F(["🎉 Complete"])
+            E -->|"❌ Rejected"| G(["🚫 End"])
+            E -->|"⏸️ On Hold"| C
+
+            style A fill:#fff3cd,stroke:#f0ad4e,color:#333
+            style B fill:#cfe2ff,stroke:#3d8bcd,color:#333
+            style C fill:#f8d7da,stroke:#dc3545,color:#333
+            style D fill:#d1ecf1,stroke:#0dcaf0,color:#333
+            style E fill:#e2d9f3,stroke:#7c4dff,color:#333
+            style F fill:#d4edda,stroke:#28a745,color:#333
+            style G fill:#f8d7da,stroke:#dc3545,color:#333
+        </div>
+    </div>
+
+    <div class="diagram-container" id="diagram2">
+        <h3>Diagram 2: Detailed Workflow (Section 2.2.2)</h3>
+        <div class="mermaid" id="mermaid2">
+            flowchart TD
+            Start(["🚀 Mulai"]) --> S1
+
+            subgraph S1 ["📄 STEP 1 — Document"]
+            direction TB
+            A1["Input Data Sample\n& LOV Fields"] --> A2["Upload Dokumen\nCOA / Spec / Halal Cert"] --> A3["Allergen &
+            BTP\nChecklist"]
+            end
+
+            subgraph S2 ["🧪 STEP 2 — Purpose"]
+            direction TB
+            B1["Pilih RM Category"] --> B2["Tentukan Tujuan Sample"] --> B3["Map Item Code\n& Apply To Product"]
+            end
+
+            subgraph S3 ["🔬 STEP 3 — Evaluation"]
+            direction TB
+            C1["Input Parameter Uji\nOrgano / Nutrisi / Mikro / dll"] --> C2["Input Hasil COA &\nAnalysis Result"]
+            end
+
+            subgraph S4 ["📋 STEP 4 — Disposition"]
+            direction TB
+            D1["Review Data &\nOverall Score"] --> D2{{"Keputusan"}}
+            D2 -->|"✅ Approve"| D3["Submit ke Approver"]
+            D2 -->|"❌ Reject"| D4["Input Alasan Penolakan"]
+            D2 -->|"⏸️ On Hold"| D5["Kembali ke Step 3"]
+            end
+
+            S1 -->|"Next"| S2
+            S2 -->|"Next"| S3
+            S3 -->|"Next"| S4
+            D3 --> Approve(["✅ Status: Approved"])
+            D4 --> Reject(["❌ Status: Rejected"])
+            D5 --> S3
+
+            style S1 fill:#fff9e6,stroke:#f0ad4e
+            style S2 fill:#e8f4ff,stroke:#3d8bcd
+            style S3 fill:#fff0f0,stroke:#dc3545
+            style S4 fill:#e8f9f9,stroke:#0dcaf0
+            style Approve fill:#d4edda,stroke:#28a745
+            style Reject fill:#f8d7da,stroke:#dc3545
+        </div>
+    </div>
+
+    <div class="diagram-container" id="diagram3">
+        <h3>Diagram 3: Status Transition (Section 3 Header)</h3>
+        <div class="mermaid" id="mermaid3">
+            stateDiagram-v2
+            [*] --> Draft : User creates new sample
+
+            Draft --> WaitingApproval : Submit for Approval
+            Draft --> Draft : Save Draft
+
+            WaitingApproval --> Approved : Approver menyetujui
+            WaitingApproval --> Rejected : Approver menolak
+            WaitingApproval --> OnHold : Approver tunda
+
+            Rejected --> Draft : User revise & re-submit
+            OnHold --> Step3Evaluation : Return for re-evaluation
+            Step3Evaluation --> WaitingApproval : Re-submit after evaluation
+
+            Approved --> [*] : Process Complete
+            Rejected --> [*] : Process Ended (no revision)
+
+            state "📝 Draft" as Draft
+            state "⏳ Waiting Approval" as WaitingApproval
+            state "✅ Approved" as Approved
+            state "❌ Rejected" as Rejected
+            state "⏸️ On Hold" as OnHold
+            state "🔬 Step 3: Re-Evaluation" as Step3Evaluation
+        </div>
+    </div>
+
+</body>
+
+</html>

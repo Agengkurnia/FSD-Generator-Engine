@@ -1,0 +1,71 @@
+erDiagram
+    M_BTP {
+        int intBtp PK
+        varchar txtBtpCode
+        varchar txtBtpName
+        bit bitActive
+    }
+    M_BTP_FUNCTION {
+        int intBtpFunction PK
+        varchar txtFunctionCode
+        varchar txtFunctionName
+        bit bitActive
+    }
+    M_BTP_DETAIL {
+        int intBtpDetail PK
+        int intBtp FK
+        int intBtpFunction FK
+        decimal decPercentage
+    }
+    M_RM_CATEGORY {
+        int intRMCategoryId PK
+        varchar txtRMCategoryCode
+        varchar txtRMCategoryName
+        bit bitCritical
+        bit bitApplyProduct
+        bit bitActive
+    }
+    M_RM_SUB_GROUP {
+        int intRMSubGroupId PK
+        varchar txtRMSubGroupCode
+        varchar txtRMSubGroupName
+        bit bitActive
+    }
+    M_RM_CATEGORY_DETAIL {
+        int intRMCategoryDetailId PK
+        int intRMCategoryId FK
+        int intRMSubGroupId FK
+    }
+    M_UNIT {
+        int intUnitId PK
+        varchar txtUnitCode
+        varchar txtUnitName
+        bit bitActive
+    }
+    M_PARENT_EXAM_PARAMETER {
+        int intParentExamParameterId PK
+        int intUnitId FK
+        varchar txtParameterCode
+        varchar txtParameterName
+    }
+    M_TEST_PARAMETER_CONVERSION {
+        int intTestId PK
+        int intParentExamParameterId FK
+        decimal decFactorNumber
+        varchar txtFactor
+    }
+    M_TARGET_PER_RM_CATEGORY {
+        int intTargetPerRMCategoryId PK
+        int intTestId FK
+        int intRMSubGroupId FK
+        varchar txtTarget
+    }
+
+    M_BTP ||--o{ M_BTP_DETAIL : "has detail"
+    M_BTP_FUNCTION ||--o{ M_BTP_DETAIL : "has mapping"
+    M_RM_CATEGORY ||--o{ M_RM_CATEGORY_DETAIL : "contains"
+    M_RM_SUB_GROUP ||--o{ M_RM_CATEGORY_DETAIL : "mapped to"
+    M_UNIT ||--o{ M_PARENT_EXAM_PARAMETER : "unit for"
+    M_PARENT_EXAM_PARAMETER ||--o{ M_TEST_PARAMETER_CONVERSION : "converted in"
+    M_TEST_PARAMETER_CONVERSION ||--o{ M_TARGET_PER_RM_CATEGORY : "has target"
+    M_RM_SUB_GROUP ||--o{ M_TARGET_PER_RM_CATEGORY : "applied to"

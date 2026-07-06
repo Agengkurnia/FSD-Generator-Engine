@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FSD Master Data - RM Selection System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f5f5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        nav {
+            background: #2c3e50;
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: #3498db;
+        }
+
+        .content {
+            padding: 2rem;
+        }
+
+        section {
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 2px solid #eee;
+        }
+
+        section:last-child {
+            border-bottom: none;
+        }
+
+        h2 {
+            color: #667eea;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid #667eea;
+        }
+
+        h3 {
+            color: #764ba2;
+            font-size: 1.5rem;
+            margin: 2rem 0 1rem;
+        }
+
+        h4 {
+            color: #555;
+            font-size: 1.2rem;
+            margin: 1.5rem 0 1rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        th {
+            background: #667eea;
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .screenshot {
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .screenshot img {
+            max-width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .screenshot p {
+            margin-top: 0.5rem;
+            font-style: italic;
+            color: #666;
+        }
+
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 4px;
+        }
+
+        .warning-box {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 4px;
+        }
+
+        .code-block {
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 1rem;
+            margin: 1rem 0;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin: 0 0.25rem;
+        }
+
+        .badge-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .badge-success {
+            background: #51cf66;
+            color: white;
+        }
+
+        .badge-warning {
+            background: #ffd43b;
+            color: #333;
+        }
+
+        .badge-danger {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        footer {
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 3rem;
+        }
+
+        @media print {
+            nav {
+                display: none;
+            }
+
+            .container {
+                box-shadow: none;
+            }
+
+            section {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Functional Specification Document (FSD)</h1>
+            <p>Modul Master Data - RM Selection System</p>
+            <p><strong>Versi 1.1</strong> | 25 Januari 2026 | IT & Squad IDC</p>
+        </header>
+
+        <nav>
+            <ul>
+                <li><a href="#pendahuluan">Pendahuluan</a></li>
+                <li><a href="#arsitektur">Arsitektur Database</a></li>
+                <li><a href="#btp">BTP</a></li>
+                <li><a href="#btp-function">BTP Function</a></li>
+                <li><a href="#rm-category">RM Category</a></li>
+                <li><a href="#rm-subgroup">RM Sub Group</a></li>
+                <li><a href="#uom">Master UOM</a></li>
+                <li><a href="#test-conversion">Test Parameter Conversion</a></li>
+            </ul>
+        </nav>
+
+        <div class="content">
+            <!-- PENDAHULUAN -->
+            <section id="pendahuluan">
+                <h2>1. Pendahuluan</h2>
+
+                <h3>1.1 Tujuan Dokumen</h3>
+                <p>Dokumentasi spesifikasi fungsional untuk Modul Master Data pada sistem RM Selection (Raw Material
+                    Selection) dengan struktur database aktual.</p>
+
+                <h3>1.2 Ruang Lingkup</h3>
+                <p>Dokumentasi ini mencakup 6 modul master utama berdasarkan database existing:</p>
+                <ul style="margin-left: 2rem; margin-top: 1rem;">
+                    <li>BTP (Bahan Tambahan Pangan)</li>
+                    <li>BTP Function</li>
+                    <li>RM Category</li>
+                    <li>RM Sub Group</li>
+                    <li>Master UOM (Unit of Measure)</li>
+                    <li>Test Parameter Conversion</li>
+                </ul>
+            </section>
+
+            <!-- ARSITEKTUR DATABASE -->
+            <section id="arsitektur">
+                <h2>2. Arsitektur Database</h2>
+
+                <h3>2.1 Entity Relationship Diagram (ERD)</h3>
+
+                <div style="background: #f8f9fa; padding: 2rem; border-radius: 8px; margin: 2rem 0;">
+                    <div style="text-align: center; margin-bottom: 2rem;">
+                        <h4 style="color: #667eea;">Diagram Relasi Tabel Master Data</h4>
+                    </div>
+
+                    <!-- ERD Visual -->
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin-bottom: 2rem;">
+                        <!-- BTP Module -->
+                        <div style="background: white; padding: 1.5rem; border-radius: 8px; border: 2px solid #667eea;">
+                            <h5 style="color: #667eea; text-align: center; margin-bottom: 1rem;">BTP Module</h5>
+                            <div
+                                style="background: #e3f2fd; padding: 0.75rem; margin-bottom: 0.5rem; border-radius: 4px;">
+                                <strong>M_BTP</strong>
+                                <div style="font-size: 0.85rem; margin-top: 0.25rem;">intBtp (PK)</div>
+                            </div>
+                            <div style="text-align: center; margin: 0.5rem 0;">↕️</div>
+                            <div
+                                style="background: #fff3e0; padding: 0.75rem; margin-bottom: 0.5rem; border-radius: 4px;">
+                                <strong>M_BTP_DETAIL</strong>
+                                <div style="font-size: 0.85rem;">intBtp (FK)</div>
+                                <div style="font-size: 0.85rem;">intBtpFunction (FK)</div>
+                            </div>
+                            <div style="text-align: center; margin: 0.5rem 0;">↕️</div>
+                            <div style="background: #e3f2fd; padding: 0.75rem; border-radius: 4px;">
+                                <strong>M_BTP_FUNCTION</strong>
+                                <div style="font-size: 0.85rem; margin-top: 0.25rem;">intBtpFunction (PK)</div>
+                            </div>
+                        </div>
+
+                        <!-- RM Category Module -->
+                        <div style="background: white; padding: 1.5rem; border-radius: 8px; border: 2px solid #764ba2;">
+                            <h5 style="color: #764ba2; text-align: center; margin-bottom: 1rem;">RM Category Module</h5>
+                            <div
+                                style="background: #f3e5f5; padding: 0.75rem; margin-bottom: 0.5rem; border-radius: 4px;">
+                                <strong>M_RM_CATEGORY</strong>
+                                <div style="font-size: 0.85rem; margin-top: 0.25rem;">intRMCategoryId (PK)</div>
+                            </div>
+                            <div style="text-align: center; margin: 0.5rem 0;">↕️</div>
+                            <div
+                                style="background: #fff3e0; padding: 0.75rem; margin-bottom: 0.5rem; border-radius: 4px;">
+                                <strong>M_RM_CATEGORY_DETAIL</strong>
+                                <div style="font-size: 0.85rem;">intRMCategoryId (FK)</div>
+                                <div style="font-size: 0.85rem;">intRMSubGroupId (FK)</div>
+                            </div>
+                            <div style="text-align: center; margin: 0.5rem 0;">↕️</div>
+                            <div style="background: #f3e5f5; padding: 0.75rem; border-radius: 4px;">
+                                <strong>M_RM_SUB_GROUP</strong>
+                                <div style="font-size: 0.85rem; margin-top: 0.25rem;">intRMSubGroupId (PK)</div>
+                            </div>
+                        </div>
+
+                        <!-- Test Parameter Module -->
+                        <div style="background: white; padding: 1.5rem; border-radius: 8px; border: 2px solid #51cf66;">
+                            <h5 style="color: #51cf66; text-align: center; margin-bottom: 1rem;">Parameter Module</h5>
+                            <div
+                                style="background: #e8f5e9; padding: 0.75rem; margin-bottom: 0.5rem; border-radius: 4px;">
+                                <strong>M_UNIT</strong>
+                                <div style="font-size: 0.85rem; margin-top: 0.25rem;">intUnitId (PK)</div>
+                            </div>
+                            <div style="text-align: center; margin: 0.5rem 0;">↕️</div>
+                            <div
+                                style="background: #e8f5e9; padding: 0.75rem; margin-bottom: 0.5rem; border-radius: 4px;">
+                                <strong>M_PARENT_EXAM_PARAMETER</strong>
+                                <div style="font-size: 0.85rem;">intUnitId (FK)</div>
+                            </div>
+                            <div style="text-align: center; margin: 0.5rem 0;">↕️</div>
+                            <div
+                                style="background: #fff3e0; padding: 0.75rem; margin-bottom: 0.5rem; border-radius: 4px;">
+                                <strong>M_TEST_PARAMETER_CONVERSION</strong>
+                                <div style="font-size: 0.85rem;">intParentExamParameterId (FK)</div>
+                            </div>
+                            <div style="text-align: center; margin: 0.5rem 0;">↕️</div>
+                            <div style="background: #fff3e0; padding: 0.75rem; border-radius: 4px;">
+                                <strong>M_TARGET_PER_RM_CATEGORY</strong>
+                                <div style="font-size: 0.85rem;">intTestId (FK)</div>
+                                <div style="font-size: 0.85rem;">intRMSubGroupId (FK)</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="info-box">
+                        <strong>Keterangan Warna:</strong>
+                        <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                            <li><span
+                                    style="background: #e3f2fd; padding: 0.25rem 0.5rem; border-radius: 3px;">Biru</span>
+                                - Tabel Master Utama</li>
+                            <li><span
+                                    style="background: #fff3e0; padding: 0.25rem 0.5rem; border-radius: 3px;">Kuning</span>
+                                - Tabel Relasi/Junction</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>2.2 Struktur Tabel Database</h3>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nama Tabel</th>
+                            <th>Tipe</th>
+                            <th>Primary Key</th>
+                            <th>Foreign Keys</th>
+                            <th>Keterangan</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>M_BTP</strong></td>
+                            <td><span class="badge badge-primary">Master</span></td>
+                            <td>intBtp</td>
+                            <td>-</td>
+                            <td>Bahan Tambahan Pangan</td>
+                        </tr>
+                        <tr>
+                            <td><strong>M_BTP_FUNCTION</strong></td>
+                            <td><span class="badge badge-primary">Master</span></td>
+                            <td>intBtpFunction</td>
+                            <td>-</td>
+                            <td>Fungsi BTP (PERKA BPOM)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>M_BTP_DETAIL</strong></td>
+                            <td><span class="badge badge-warning">Junction</span></td>
+                            <td>intBtpDetail</td>
+                            <td>intBtp, intBtpFunction</td>
+                            <td>Relasi BTP ↔ Function</td>
+                        </tr>
+                        <tr>
+                            <td><strong>M_RM_CATEGORY</strong></td>
+                            <td><span class="badge badge-primary">Master</span></td>
+                            <td>intRMCategoryId</td>
+                            <td>-</td>
+                            <td>Kategori Raw Material</td>
+                        </tr>
+                        <tr>
+                            <td><strong>M_RM_SUB_GROUP</strong></td>
+                            <td><span class="badge badge-primary">Master</span></td>
+                            <td>intRMSubGroupId</td>
+                            <td>-</td>
+                            <td>Sub Group Raw Material</td>
+                        </tr>
+                        <tr>
+                            <td><strong>M_RM_CATEGORY_DETAIL</strong></td>
+                            <td><span class="badge badge-warning">Junction</span></td>
+                            <td>intRMCategoryDetailId</td>
+                            <td>intRMCategoryId, intRMSubGroupId</td>
+                            <td>Relasi Category ↔ Sub Group</td>
+                        </tr>
+                        <tr>
+                            <td><strong>M_UNIT</strong></td>
+                            <td><span class="badge badge-primary">Master</span></td>
+                            <td>intUnitId</td>
+                            <td>-</td>
+                            <td>Unit of Measure (UOM)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>M_PARENT_EXAM_PARAMETER</strong></td>
+                            <td><span class="badge badge-primary">Master</span></td>
+                            <td>intParentExamParameterId</td>
+                            <td>intUnitId</td>
+                            <td>Parameter Pengujian</td>
+                        </tr>
+                        <tr>
+                            <td><strong>M_TEST_PARAMETER_CONVERSION</strong></td>
+                            <td><span class="badge badge-success">Transaction</span></td>
+                            <td>intTestId</td>
+                            <td>intParentExamParameterId</td>
+                            <td>Konversi Parameter Test</td>
+                        </tr>
+                        <tr>
+                            <td><strong>M_TARGET_PER_RM_CATEGORY</strong></td>
+                            <td><span class="badge badge-warning">Junction</span></td>
+                            <td>intTargetPerRMCategoryId</td>
+                            <td>intTestId, intRMSubGroupId</td>
+                            <td>Target per Sub Group</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>2.3 Relasi Antar Tabel</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tabel Parent</th>
+                            <th>Tabel Child</th>
+                            <th>Relasi</th>
+                            <th>Keterangan</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>M_BTP</td>
+                            <td>M_BTP_DETAIL</td>
+                            <td><span class="badge badge-primary">1:N</span></td>
+                            <td>Satu BTP dapat memiliki banyak fungsi melalui detail</td>
+                        </tr>
+                        <tr>
+                            <td>M_BTP_FUNCTION</td>
+                            <td>M_BTP_DETAIL</td>
+                            <td><span class="badge badge-primary">1:N</span></td>
+                            <td>Satu fungsi dapat digunakan oleh banyak BTP</td>
+                        </tr>
+                        <tr>
+                            <td>M_RM_CATEGORY</td>
+                            <td>M_RM_CATEGORY_DETAIL</td>
+                            <td><span class="badge badge-primary">1:N</span></td>
+                            <td>Kategori memiliki detail sub group</td>
+                        </tr>
+                        <tr>
+                            <td>M_RM_SUB_GROUP</td>
+                            <td>M_RM_CATEGORY_DETAIL</td>
+                            <td><span class="badge badge-primary">1:N</span></td>
+                            <td>Sub group terkait dengan kategori melalui detail</td>
+                        </tr>
+                        <tr>
+                            <td>M_UNIT</td>
+                            <td>M_PARENT_EXAM_PARAMETER</td>
+                            <td><span class="badge badge-primary">1:N</span></td>
+                            <td>Unit/UOM untuk parameter</td>
+                        </tr>
+                        <tr>
+                            <td>M_PARENT_EXAM_PARAMETER</td>
+                            <td>M_TEST_PARAMETER_CONVERSION</td>
+                            <td><span class="badge badge-primary">1:N</span></td>
+                            <td>Parameter dikonversi dalam test</td>
+                        </tr>
+                        <tr>
+                            <td>M_TEST_PARAMETER_CONVERSION</td>
+                            <td>M_TARGET_PER_RM_CATEGORY</td>
+                            <td><span class="badge badge-primary">1:N</span></td>
+                            <td>Test memiliki target per sub group</td>
+                        </tr>
+                        <tr>
+                            <td>M_RM_SUB_GROUP</td>
+                            <td>M_TARGET_PER_RM_CATEGORY</td>
+                            <td><span class="badge badge-primary">1:N</span></td>
+                            <td>Target untuk sub group tertentu</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>2.4 Tabel Relasi (Junction Tables)</h3>
+
+                <div class="info-box">
+                    <h4>M_BTP_DETAIL</h4>
+                    <p>Menghubungkan BTP dengan BTP Function (Many-to-Many)</p>
+                    <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                        <li>Satu BTP dapat memiliki banyak fungsi</li>
+                        <li>Satu fungsi dapat digunakan oleh banyak BTP</li>
+                        <li>Menyimpan persentase (decPercentage) untuk setiap kombinasi</li>
+                    </ul>
+                </div>
+
+                <div class="info-box">
+                    <h4>M_RM_CATEGORY_DETAIL</h4>
+                    <p>Menghubungkan RM Category dengan RM Sub Group (Many-to-Many)</p>
+                    <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                        <li>Satu kategori dapat memiliki banyak sub group</li>
+                        <li>Satu sub group dapat terkait dengan banyak kategori</li>
+                        <li>Relasi tidak langsung antara M_RM_CATEGORY dan M_RM_SUB_GROUP</li>
+                    </ul>
+                </div>
+
+                <div class="info-box">
+                    <h4>M_TARGET_PER_RM_CATEGORY</h4>
+                    <p>Target value per kombinasi Test dan RM Sub Group</p>
+                    <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                        <li>Setiap test conversion dapat memiliki target berbeda untuk setiap sub group</li>
+                        <li>Menyimpan target value dan deskripsi target</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- MODUL BTP -->
+            <section id="btp">
+                <h2>3. Modul BTP (Bahan Tambahan Pangan)</h2>
+
+                <h3>3.1 Halaman Index BTP</h3>
+                <p><strong>URL:</strong> <code>BTPIndex.html</code></p>
+
+                <div class="screenshot">
+                    <img src="C:/Users/Lenovo/.gemini/antigravity/brain/1c4e0fdf-9d9b-485e-bf8b-110843f9fc2e/btp_index_page_1769348295724.png"
+                        alt="BTP Index">
+                    <p>Halaman Index BTP</p>
+                </div>
+
+                <h4>Fungsi Utama:</h4>
+                <ul style="margin-left: 2rem;">
+                    <li>Menampilkan daftar semua BTP dalam tabel dengan DataTables</li>
+                    <li>Search global untuk mencari BTP berdasarkan code atau name</li>
+                    <li>Filter by status (Active/Inactive)</li>
+                    <li>Pagination (25 rows/page, dapat diubah)</li>
+                    <li>Sorting per kolom (ascending/descending)</li>
+                </ul>
+
+                <h4>Aksi & Navigasi:</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Button/Action</th>
+                            <th>Navigasi</th>
+                            <th>Keterangan</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Add New</strong></td>
+                            <td>→ BTPDetail.html (mode: create)</td>
+                            <td>Membuka form kosong untuk create BTP baru</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Edit (per row)</strong></td>
+                            <td>→ BTPDetail.html?id={intBtp} (mode: edit)</td>
+                            <td>Membuka form terisi data untuk edit BTP</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Delete (per row)</strong></td>
+                            <td>Confirmation dialog → API Delete</td>
+                            <td>Soft delete (set bitActive = 0)</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="warning-box">
+                    <strong>Business Rules - Index:</strong>
+                    <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                        <li>BTP yang sudah digunakan di M_BTP_DETAIL tidak dapat dihapus</li>
+                        <li>Hanya menampilkan data dengan bitActive = 1 secara default</li>
+                        <li>User dapat toggle untuk melihat inactive records</li>
+                    </ul>
+                </div>
+
+                <h3>3.2 Halaman Detail BTP</h3>
+                <p><strong>URL:</strong> <code>BTPDetail.html</code></p>
+
+                <div class="screenshot">
+                    <img src="C:/Users/Lenovo/.gemini/antigravity/brain/1c4e0fdf-9d9b-485e-bf8b-110843f9fc2e/btp_detail_full_page_1769349110945.png"
+                        alt="BTP Detail">
+                    <p>Halaman Detail/Create BTP</p>
+                </div>
+
+                <h4>Mode Halaman:</h4>
+                <ul style="margin-left: 2rem;">
+                    <li><strong>Create Mode:</strong> Semua field kosong, intBtp auto-generated</li>
+                    <li><strong>Edit Mode:</strong> Field terisi data existing, intBtp read-only</li>
+                </ul>
+
+                <h4>Form Fields & Validasi:</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Field</th>
+                            <th>Type</th>
+                            <th>Required</th>
+                            <th>Validasi</th>
+                            <th>Error Message</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>BTP Code</td>
+                            <td>Text</td>
+                            <td><span class="badge badge-danger">Ya</span></td>
+                            <td>
+                                • Alphanumeric only<br>
+                                • Max 50 karakter<br>
+                                • Unique (case-insensitive)<br>
+                                • Tidak boleh spasi
+                            </td>
+                            <td>
+                                "BTP Code sudah digunakan"<br>
+                                "BTP Code hanya boleh huruf dan angka"
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>BTP Name</td>
+                            <td>Text</td>
+                            <td><span class="badge badge-danger">Ya</span></td>
+                            <td>
+                                • Min 3 karakter<br>
+                                • Max 200 karakter<br>
+                                • Tidak boleh hanya spasi
+                            </td>
+                            <td>
+                                "BTP Name minimal 3 karakter"<br>
+                                "BTP Name maksimal 200 karakter"
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Active</td>
+                            <td>Checkbox</td>
+                            <td><span class="badge badge-success">Tidak</span></td>
+                            <td>Default: checked (true)</td>
+                            <td>-</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>Buttons & Actions:</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Button</th>
+                            <th>Action</th>
+                            <th>Validasi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Save</strong></td>
+                            <td>
+                                • Validate semua field<br>
+                                • Check unique BTP Code<br>
+                                • Insert/Update ke database<br>
+                                • Set audit fields (txtInsertedBy, dtInserted, dll)<br>
+                                • Redirect ke Index dengan success message
+                            </td>
+                            <td>
+                                Semua required field harus terisi<br>
+                                Validasi format harus pass
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Back/Cancel</strong></td>
+                            <td>
+                                • Confirmation jika ada perubahan belum disimpan<br>
+                                • Redirect ke BTPIndex.html
+                            </td>
+                            <td>-</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="warning-box">
+                    <strong>Business Rules - Detail:</strong>
+                    <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                        <li><strong>Create:</strong> BTP Code harus unique di seluruh database</li>
+                        <li><strong>Edit:</strong> BTP Code tidak dapat diubah jika sudah ada di M_BTP_DETAIL</li>
+                        <li><strong>Deactivate:</strong> BTP dapat di-nonaktifkan (bitActive = 0) kapan saja</li>
+                        <li><strong>Audit Trail:</strong> Setiap perubahan tercatat (user & timestamp)</li>
+                        <li><strong>Concurrent Edit:</strong> Last save wins, tidak ada locking</li>
+                    </ul>
+                </div>
+
+                <h3>3.3 Database Schema - M_BTP</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Kolom</th>
+                            <th>Tipe</th>
+                            <th>Null</th>
+                            <th>Keterangan</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>intBtp</strong></td>
+                            <td>INT</td>
+                            <td>No</td>
+                            <td><span class="badge badge-primary">PK</span> Identity</td>
+                        </tr>
+                        <tr>
+                            <td><strong>txtBtpCode</strong></td>
+                            <td>VARCHAR</td>
+                            <td>No</td>
+                            <td><span class="badge badge-warning">UK</span> Kode BTP</td>
+                        </tr>
+                        <tr>
+                            <td>txtBtpName</td>
+                            <td>VARCHAR</td>
+                            <td>No</td>
+                            <td>Nama BTP</td>
+                        </tr>
+                        <tr>
+                            <td>bitActive</td>
+                            <td>BIT</td>
+                            <td>Yes</td>
+                            <td>Status aktif (default 1)</td>
+                        </tr>
+                        <tr>
+                            <td>dtNonActive</td>
+                            <td>DATETIME</td>
+                            <td>Yes</td>
+                            <td>Tanggal non-aktif</td>
+                        </tr>
+                        <tr>
+                            <td>txtInsertedBy</td>
+                            <td>VARCHAR</td>
+                            <td>Yes</td>
+                            <td>User pembuat</td>
+                        </tr>
+                        <tr>
+                            <td>dtInserted</td>
+                            <td>DATETIME</td>
+                            <td>Yes</td>
+                            <td>Tanggal dibuat</td>
+                        </tr>
+                        <tr>
+                            <td>txtUpdatedBy</td>
+                            <td>VARCHAR</td>
+                            <td>Yes</td>
+                            <td>User pengubah</td>
+                        </tr>
+                        <tr>
+                            <td>dtUpdated</td>
+                            <td>DATETIME</td>
+                            <td>Yes</td>
+                            <td>Tanggal diubah</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- MODUL BTP FUNCTION -->
+            <section id="btp-function">
+                <h2>4. Modul BTP Function</h2>
+
+                <h3>4.1 Halaman Index BTP Function</h3>
+                <p><strong>URL:</strong> <code>BTPFunctionIndex.html</code></p>
+
+                <div class="screenshot">
+                    <img src="C:/Users/Lenovo/.gemini/antigravity/brain/1c4e0fdf-9d9b-485e-bf8b-110843f9fc2e/btp_function_index_page_1769348323180.png"
+                        alt="BTP Function Index">
+                    <p>Halaman Index BTP Function</p>
+                </div>
+
+                <h3>4.2 Halaman Detail BTP Function</h3>
+                <p><strong>URL:</strong> <code>BTPFunctionDetail.html</code></p>
+
+                <div class="screenshot">
+                    <img src="C:/Users/Lenovo/.gemini/antigravity/brain/1c4e0fdf-9d9b-485e-bf8b-110843f9fc2e/btp_function_detail_full_page_1769349136255.png"
+                        alt="BTP Function Detail">
+                    <p>Halaman Detail/Create BTP Function</p>
+                </div>
+
+                <div class="warning-box">
+                    <strong>Business Rules:</strong>
+                    <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                        <li>Function Code mengikuti format PERKA BPOM (contoh: PERKA BPOM 07-2013)</li>
+                        <li>Satu fungsi dapat digunakan oleh multiple BTP</li>
+                        <li>Fungsi yang sudah ter-mapping tidak dapat dihapus</li>
+                    </ul>
+                </div>
+
+                <h3>4.3 Database Schema - M_BTP_FUNCTION</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Kolom</th>
+                            <th>Tipe</th>
+                            <th>Null</th>
+                            <th>Keterangan</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>intBtpFunction</strong></td>
+                            <td>INT</td>
+                            <td>No</td>
+                            <td><span class="badge badge-primary">PK</span> Identity</td>
+                        </tr>
+                        <tr>
+                            <td><strong>txtFunctionCode</strong></td>
+                            <td>VARCHAR</td>
+                            <td>No</td>
+                            <td><span class="badge badge-warning">UK</span> Kode fungsi</td>
+                        </tr>
+                        <tr>
+                            <td>txtFunctionName</td>
+                            <td>VARCHAR</td>
+                            <td>No</td>
+                            <td>Nama fungsi</td>
+                        </tr>
+                        <tr>
+                            <td>bitActive</td>
+                            <td>BIT</td>
+                            <td>No</td>
+                            <td>Status aktif</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- MODUL RM CATEGORY -->
+            <section id="rm-category">
+                <h2>5. Modul RM Category</h2>
+
+                <h3>5.1 Halaman Index RM Category</h3>
+                <div class="screenshot">
+                    <img src="C:/Users/Lenovo/.gemini/antigravity/brain/1c4e0fdf-9d9b-485e-bf8b-110843f9fc2e/rm_category_index_page_1769348374657.png"
+                        alt="RM Category Index">
+                    <p>Halaman Index RM Category</p>
+                </div>
+
+                <h3>5.2 Halaman Detail RM Category</h3>
+                <div class="screenshot">
+                    <img src="C:/Users/Lenovo/.gemini/antigravity/brain/1c4e0fdf-9d9b-485e-bf8b-110843f9fc2e/rm_category_detail_full_page_1769349215666.png"
+                        alt="RM Category Detail">
+                    <p>Halaman Detail/Create RM Category</p>
+                </div>
+
+                <h3>5.3 Database Schema - M_RM_CATEGORY</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Kolom</th>
+                            <th>Tipe</th>
+                            <th>Keterangan</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>intRMCategoryId</strong></td>
+                            <td>INT</td>
+                            <td><span class="badge badge-primary">PK</span> Identity</td>
+                        </tr>
+                        <tr>
+                            <td><strong>txtRMCategoryCode</strong></td>
+                            <td>VARCHAR</td>
+                            <td><span class="badge badge-warning">UK</span> Kode kategori</td>
+                        </tr>
+                        <tr>
+                            <td>txtRMCategoryName</td>
+                            <td>VARCHAR</td>
+                            <td>Nama kategori</td>
+                        </tr>
+                        <tr>
+                            <td>bitCritical</td>
+                            <td>BIT</td>
+                            <td>Flag kategori critical</td>
+                        </tr>
+                        <tr>
+                            <td>bitApplyProduct</td>
+                            <td>BIT</td>
+                            <td>Flag apply product</td>
+                        </tr>
+                        <tr>
+                            <td>bitActive</td>
+                            <td>BIT</td>
+                            <td>Status aktif</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- MODUL RM SUB GROUP -->
+            <section id="rm-subgroup">
+                <h2>6. Modul RM Sub Group</h2>
+
+                <h3>6.1 Halaman Index RM Sub Group</h3>
+                <div class="screenshot">
+                    <img src="C:/Users/Lenovo/.gemini/antigravity/brain/1c4e0fdf-9d9b-485e-bf8b-110843f9fc2e/rm_sub_group_index_1769348344666.png"
+                        alt="RM Sub Group Index">
+                    <p>Halaman Index RM Sub Group</p>
+                </div>
+
+                <h3>6.2 Halaman Detail RM Sub Group</h3>
+                <div class="screenshot">
+                    <img src="C:/Users/Lenovo/.gemini/antigravity/brain/1c4e0fdf-9d9b-485e-bf8b-110843f9fc2e/rm_sub_group_detail_full_1769349171354.png"
+                        alt="RM Sub Group Detail">
+                    <p>Halaman Detail/Create RM Sub Group</p>
+                </div>
+
+                <div class="info-box">
+                    <strong>Catatan Penting:</strong>
+                    <p>Tabel M_RM_SUB_GROUP TIDAK memiliki foreign key langsung ke M_RM_CATEGORY. Relasi dikelola
+                        melalui tabel M_RM_CATEGORY_DETAIL.</p>
+                </div>
+            </section>
+
+            <!-- MODUL MASTER UOM -->
+            <section id="uom">
+                <h2>7. Modul Master UOM</h2>
+
+                <h3>7.1 Halaman Index Master UOM</h3>
+                <div class="screenshot">
+                    <img src="C:/Users/Lenovo/.gemini/antigravity/brain/1c4e0fdf-9d9b-485e-bf8b-110843f9fc2e/master_uom_index_page_1769348394165.png"
+                        alt="Master UOM Index">
+                    <p>Halaman Index Master UOM</p>
+                </div>
+
+                <h3>7.2 Halaman Detail Master UOM</h3>
+                <div class="screenshot">
+                    <img src="C:/Users/Lenovo/.gemini/antigravity/brain/1c4e0fdf-9d9b-485e-bf8b-110843f9fc2e/master_uom_detail_full_1769349241611.png"
+                        alt="Master UOM Detail">
+                    <p>Halaman Detail/Create Master UOM</p>
+                </div>
+
+                <div class="warning-box">
+                    <strong>Catatan:</strong> Nama tabel adalah <code>M_UNIT</code>, bukan M_UOM.
+                </div>
+            </section>
+
+            <!-- MODUL TEST PARAMETER CONVERSION -->
+            <section id="test-conversion">
+                <h2>8. Modul Test Parameter Conversion</h2>
+
+                <h3>8.1 Halaman Index Test Parameter Conversion</h3>
+                <div class="screenshot">
+                    <img src="C:/Users/Lenovo/.gemini/antigravity/brain/1c4e0fdf-9d9b-485e-bf8b-110843f9fc2e/test_parameter_conversion_index_1769348448799.png"
+                        alt="Test Parameter Conversion Index">
+                    <p>Halaman Index Test Parameter Conversion</p>
+                </div>
+
+                <h3>8.2 Halaman Detail Test Parameter Conversion</h3>
+                <div class="screenshot">
+                    <img src="C:/Users/Lenovo/.gemini/antigravity/brain/1c4e0fdf-9d9b-485e-bf8b-110843f9fc2e/test_parameter_conversion_detail_1769349332081.png"
+                        alt="Test Parameter Conversion Detail">
+                    <p>Halaman Detail/Create Test Parameter Conversion</p>
+                </div>
+
+                <h3>8.3 Formula Konversi</h3>
+                <div class="code-block">
+                    Hasil Konversi = (Nilai Test × txtFactor) / decFactorNumber
+                </div>
+
+                <h4>Contoh Perhitungan:</h4>
+                <div class="info-box">
+                    <p><strong>TEST-001:</strong> Konversi Protein</p>
+                    <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                        <li>Nilai Test: 4.0</li>
+                        <li>txtFactor: 6.38</li>
+                        <li>decFactorNumber: 1</li>
+                        <li><strong>Hasil:</strong> Protein % = (4.0 × 6.38) / 1 = 25.52%</li>
+                    </ul>
+                </div>
+
+                <div class="warning-box">
+                    <strong>Catatan Penting:</strong>
+                    <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                        <li><code>txtFactor</code> dan <code>txtTarget</code> disimpan sebagai VARCHAR/TEXT, bukan
+                            DECIMAL</li>
+                        <li><code>decFactorNumber</code> adalah DECIMAL</li>
+                        <li>Tidak ada kolom <code>bitActive</code> pada tabel ini</li>
+                        <li>Foreign key ke <code>M_PARENT_EXAM_PARAMETER</code>, bukan ke tabel PARAMETER</li>
+                    </ul>
+                </div>
+            </section>
+        </div>
+
+        <footer>
+            <p>&copy; 2026 IT & Squad IDC | RM Selection System</p>
+            <p>Functional Specification Document - Master Data Module</p>
+        </footer>
+    </div>
+</body>
+
+</html>

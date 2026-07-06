@@ -1,0 +1,3691 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="utf-8" />
+    <title>
+        FSD - New RM Sample Management
+    </title>
+    <style>
+        body {
+            font-family: 'Calibri', sans-serif;
+            line-height: 1.15;
+            margin: 20px;
+        }
+
+        h1 {
+            font-size: 24pt;
+            color: #2E74B5;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            font-size: 18pt;
+            color: #2E74B5;
+            border-bottom: 2px solid #2E74B5;
+            padding-bottom: 5px;
+            margin-top: 30px;
+        }
+
+        h3 {
+            font-size: 14pt;
+            color: #1F4D78;
+            margin-top: 20px;
+        }
+
+        h4 {
+            font-size: 12pt;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+
+        th,
+        td {
+            border: 1px solid #000;
+            padding: 8px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        th {
+            background-color: #FFF2CC;
+            font-weight: bold;
+        }
+
+        ul {
+            margin-top: 5px;
+            margin-bottom: 10px;
+            padding-left: 20px;
+        }
+
+        li {
+            margin-bottom: 5px;
+        }
+
+        .doc-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .doc-info {
+            margin-bottom: 20px;
+        }
+
+        .doc-info table {
+            width: 60%;
+            margin: 0 auto;
+        }
+
+        .doc-info td {
+            padding: 5px;
+        }
+
+        .section-title {
+            background-color: #D9E1F2;
+            padding: 10px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        code {
+            background-color: #f4f4f4;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .screenshot-container {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            page-break-inside: avoid;
+        }
+
+        .screenshot-container img {
+            max-width: 100%;
+            border: 1px solid #ccc;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: block;
+            margin: 10px auto;
+        }
+
+        .screenshot-caption {
+            text-align: center;
+            font-size: 10pt;
+            color: #666;
+            margin-top: 5px;
+            font-style: italic;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+</head>
+
+<body>
+    <div class="doc-header">
+        <h1>
+            FUNCTIONAL SPECIFICATION DOCUMENT
+        </h1>
+        <h2 style="border: none;">
+            New RM Sample Management
+        </h2>
+    </div>
+    <div class="doc-info">
+        <table>
+            <tr>
+                <td width="40%">
+                    <strong>
+                        Document Version
+                    </strong>
+                </td>
+                <td>
+                    1.0
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        Date
+                    </strong>
+                </td>
+                <td>
+                    16 Februari 2026
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        Project
+                    </strong>
+                </td>
+                <td>
+                    IDC System - RM Selection Module
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        Module
+                    </strong>
+                </td>
+                <td>
+                    New RM Sample Management
+                </td>
+            </tr>
+        </table>
+        <h3>
+            1.4 Business Flow Summary
+        </h3>
+        <p>
+            New RM Sample Management adalah sistem untuk mengelola proses evaluasi sample Raw Material baru dari
+            supplier.
+            Workflow dirancang untuk memastikan setiap sample melalui tahapan evaluasi yang terstruktur sebelum
+            keputusan final dibuat.
+        </p>
+        <h4>
+            Alur Bisnis Utama:
+        </h4>
+        <ol>
+            <li>
+                <strong>
+                    Sample Reception (Step 1: Document)
+                </strong>
+                <ul>
+                    <li>
+                        Supplier mengirimkan sample RM ke perusahaan
+                    </li>
+                    <li>
+                        PIC menerima sample dan mendokumentasikan detail (material name, supplier, quantity, price)
+                    </li>
+                    <li>
+                        Upload dokumen pendukung (COA, MSDS, Spec Sheet)
+                    </li>
+                    <li>
+                        Sample diberi nomor unik untuk tracking
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <strong>
+                    Purpose Analysis (Step 2: Sample Purpose)
+                </strong>
+                <ul>
+                    <li>
+                        Tim R&amp;D menganalisis tujuan penggunaan sample
+                    </li>
+                    <li>
+                        Mapping sample dengan target product yang akan menggunakan
+                    </li>
+                    <li>
+                        Identifikasi expected benefit (cost reduction, quality improvement, dll)
+                    </li>
+                    <li>
+                        Set deadline untuk analisis dan testing
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <strong>
+                    Technical Evaluation (Step 3: RM Evaluation)
+                </strong>
+                <ul>
+                    <li>
+                        Lab melakukan testing sesuai spesifikasi yang dibutuhkan
+                    </li>
+                    <li>
+                        Trial production untuk validasi performa material
+                    </li>
+                    <li>
+                        Evaluator memberikan quality score dan compliance assessment
+                    </li>
+                    <li>
+                        Upload hasil test report dan dokumentasi
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <strong>
+                    Final Decision (Step 4: Disposition)
+                </strong>
+                <ul>
+                    <li>
+                        Review summary lengkap dari semua step sebelumnya
+                    </li>
+                    <li>
+                        Decision maker memberikan keputusan: Approved / Rejected / On Hold
+                    </li>
+                    <li>
+                        Jika approved dan memerlukan approval atasan, masuk ke approval workflow
+                    </li>
+                    <li>
+                        Setelah final approval, sample status menjadi Completed
+                    </li>
+                </ul>
+            </li>
+        </ol>
+        <h4>
+            Key Benefits:
+        </h4>
+        <ul>
+            <li>
+                <strong>
+                    Standardized Process:
+                </strong>
+                Setiap sample melalui evaluasi yang sama, mengurangi subjektivitas
+            </li>
+            <li>
+                <strong>
+                    Traceability:
+                </strong>
+                Full audit trail dari reception hingga final decision
+            </li>
+            <li>
+                <strong>
+                    Collaboration:
+                </strong>
+                Melibatkan multiple stakeholders (Procurement, R&amp;D, Lab, Management)
+            </li>
+            <li>
+                <strong>
+                    Data-Driven Decision:
+                </strong>
+                Keputusan berdasarkan data testing dan evaluasi objektif
+            </li>
+            <li>
+                <strong>
+                    Time Management:
+                </strong>
+                Deadline tracking untuk memastikan sample tidak tertunda
+            </li>
+        </ul>
+        <h4>
+            Stakeholders:
+        </h4>
+        <table>
+            <thead>
+                <tr>
+                    <th width="25%">
+                        Role
+                    </th>
+                    <th>
+                        Responsibility
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <strong>
+                            Sample Requestor (PIC)
+                        </strong>
+                    </td>
+                    <td>
+                        Menerima sample, dokumentasi awal, koordinasi dengan supplier
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <strong>
+                            R&amp;D Team
+                        </strong>
+                    </td>
+                    <td>
+                        Analisis purpose, mapping dengan product, set requirement
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <strong>
+                            Lab/QC Team
+                        </strong>
+                    </td>
+                    <td>
+                        Testing sample, validasi compliance, quality scoring
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <strong>
+                            Decision Maker
+                        </strong>
+                    </td>
+                    <td>
+                        Review hasil evaluasi, keputusan final (approve/reject)
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <strong>
+                            Approver (Management)
+                        </strong>
+                    </td>
+                    <td>
+                        Final approval untuk sample yang di-approve (jika diperlukan)
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <h3>
+            1.5 Business Process Flowchart
+        </h3>
+        <div style="background-color: #f9f9f9; padding: 20px; border: 1px solid #ddd; margin: 20px 0;">
+            <div class="mermaid">
+                flowchart TD
+                Start([START]) --> Step1[STEP 1: DOCUMENT<br />Sample Reception]
+
+                Step1 --> |• Receive sample from supplier<br />• Document material details<br />• Upload COA,
+                MSDS<br />• Generate Sample No| Step2[STEP 2: PURPOSE<br />Sample Analysis]
+
+                Step2 --> |• Define purpose category<br />• Map to target products<br />• Set expected benefits<br />•
+                Set analysis deadline| Step3[STEP 3: EVALUATION<br />Technical Testing]
+
+                Step3 --> |• Lab testing<br />• Trial production<br />• Quality scoring<br />• Compliance check|
+                Step4[STEP 4: DISPOSITION<br />Final Decision]
+
+                Step4 --> |Review all steps| Decision{Decision?}
+
+                Decision -->|APPROVED| ApprovalCheck{Approval<br />Required?}
+                Decision -->|REJECTED| EndReject([END])
+                Decision -->|ON HOLD| OnHold[Wait for<br />Additional Info]
+                Decision -->|CANCEL| EndCancel([END])
+
+                OnHold --> |Back to| Step3
+
+                ApprovalCheck -->|YES| PendingApproval[Pending<br />Approval]
+                ApprovalCheck -->|NO| Completed([Completed<br />END])
+
+                PendingApproval --> ApproverReview[Approver<br />Review]
+
+                ApproverReview --> ApprovalDecision{Approval<br />Decision}
+
+                ApprovalDecision -->|APPROVE| CompletedApproved([Completed<br />END])
+                ApprovalDecision -->|REJECT| BackToStep4[Back to<br />Step 4]
+
+                BackToStep4 --> Step4
+
+                style Start fill:#8CC63F,stroke:#009B4D,stroke-width:2px
+                style Step1 fill:#FFF3CD,stroke:#FFC107,stroke-width:2px
+                style Step2 fill:#D1ECF1,stroke:#17A2B8,stroke-width:2px
+                style Step3 fill:#E2E3E5,stroke:#6C757D,stroke-width:2px
+                style Step4 fill:#F8D7DA,stroke:#DC3545,stroke-width:2px
+                style Decision fill:#FFF3E0,stroke:#F7941E,stroke-width:3px
+                style ApprovalCheck fill:#FFF3E0,stroke:#F7941E,stroke-width:2px
+                style ApprovalDecision fill:#FFF3E0,stroke:#F7941E,stroke-width:2px
+                style OnHold fill:#E7F3FF,stroke:#0D6EFD,stroke-width:2px
+                style PendingApproval fill:#FFF9C4,stroke:#F57F17,stroke-width:2px
+                style ApproverReview fill:#F3E5F5,stroke:#7B1FA2,stroke-width:2px
+                style Completed fill:#C8E6C9,stroke:#388E3C,stroke-width:2px
+                style CompletedApproved fill:#C8E6C9,stroke:#388E3C,stroke-width:2px
+                style EndReject fill:#FFCDD2,stroke:#D32F2F,stroke-width:2px
+                style EndCancel fill:#FFCDD2,stroke:#D32F2F,stroke-width:2px
+                style BackToStep4 fill:#FFE0B2,stroke:#FF6F00,stroke-width:2px
+            </div>
+            <p style="text-align: center; font-size: 10pt; color: #666; margin-top: 10px;">
+                <em>
+                    Figure 1: New RM Sample Complete Workflow
+                </em>
+            </p>
+        </div>
+        <h3>
+            1.6 Entity Relationship Diagram (ERD)
+        </h3>
+        <div style="background-color: #f9f9f9; padding: 20px; border: 1px solid #ddd; margin: 20px 0;">
+            <pre style="font-size: 8pt; line-height: 1.3; font-family: 'Courier New', monospace;">
+┌─────────────────────────────────────────────────────────────────────────────────────────┐
+│                           NEW RM SAMPLE - DATABASE SCHEMA                                │
+└─────────────────────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────┐         ┌──────────────────────────┐
+│  M_TYPE_DOCUMENT         │         │  M_SUPPLIER              │
+├──────────────────────────┤         ├──────────────────────────┤
+│ PK intTypeDocId          │         │ PK intSupplierId         │
+│    txtTypeName           │         │    txtSupplierName       │
+│    bitActive             │         │    txtCountry            │
+└──────────────────────────┘         │    bitActive             │
+         │                            └──────────────────────────┘
+         │                                      │
+         │                                      │
+         │                                      │
+         │                                      │
+         └──────────────┬───────────────────────┘
+                        │
+                        │
+                        ▼
+        ┌───────────────────────────────────────────────┐
+        │  T_RM_SAMPLE_HEADER (Main Table)              │
+        ├───────────────────────────────────────────────┤
+        │ PK intSampleId                                │
+        │    txtSampleNo (UNIQUE)                       │
+        │ FK intTypeDocumentId ──→ M_TYPE_DOCUMENT      │
+        │    txtMaterialName                            │
+        │ FK intSupplierId ──→ M_SUPPLIER               │
+        │    decPrice                                   │
+        │ FK intCurrencyId ──→ M_CURRENCY               │
+        │ FK intUOMId ──→ M_UOM                         │
+        │    decQuantity                                │
+        │ FK intPICId ──→ M_PEGAWAI                     │
+        │    dtSubmissionDate                           │
+        │    txtRemarks                                 │
+        │    txtWorkflowStage (Document/Sample/Eval/Disp)│
+        │    txtStatus (Draft/Pending/Completed)        │
+        │    bitActive                                  │
+        │    txtCreatedBy, dtCreatedDate                │
+        │    txtModifiedBy, dtModifiedDate              │
+        └───────────────────────────────────────────────┘
+                        │
+                        │
+        ┌───────────────┼───────────────┬───────────────┐
+        │               │               │               │
+        ▼               ▼               ▼               ▼
+┌─────────────────┐ ┌─────────────────┐ ┌─────────────────┐ ┌─────────────────┐
+│ T_RM_SAMPLE_    │ │ T_RM_SAMPLE_    │ │ T_RM_SAMPLE_    │ │ T_RM_SAMPLE_    │
+│ PURPOSE         │ │ EVALUATION      │ │ DISPOSITION     │ │ ATTACHMENT      │
+├─────────────────┤ ├─────────────────┤ ├─────────────────┤ ├─────────────────┤
+│ PK intPurposeId │ │ PK intEvalId    │ │ PK intDispId    │ │ PK intAttachId  │
+│ FK intSampleId  │ │ FK intSampleId  │ │ FK intSampleId  │ │ FK intSampleId  │
+│ FK intPurpose   │ │    dtTestDate   │ │    txtDecision  │ │ FK intDocTypeId │
+│    CategoryId   │ │ FK intTestTypeId│ │    dtDecisionDt │ │    txtRemarks   │
+│    txtExpected  │ │    txtTestResult│ │ FK intDecisionBy│ │    txtFileName  │
+│    Benefit      │ │    txtSpecComp  │ │    txtReason    │ │    txtFilePath  │
+│    decUsagePct  │ │    intQualScore │ │    txtNextAction│ │    intFileSize  │
+│ FK intReplace   │ │    txtEvalNotes │ │    bitApproval  │ │    txtUploadBy  │
+│    MaterialId   │ │ FK intEvaluator │ │    Required     │ │    dtUploadDate │
+│    dtAnalysis   │ │    Id           │ │ FK intApproverId│ └─────────────────┘
+│    Deadline     │ └─────────────────┘ │    txtApproval  │
+└─────────────────┘                     │    Status       │
+                                        └─────────────────┘
+
+RELATIONSHIP SUMMARY:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+• T_RM_SAMPLE_HEADER (1) ──→ (N) T_RM_SAMPLE_PURPOSE
+• T_RM_SAMPLE_HEADER (1) ──→ (N) T_RM_SAMPLE_EVALUATION
+• T_RM_SAMPLE_HEADER (1) ──→ (1) T_RM_SAMPLE_DISPOSITION
+• T_RM_SAMPLE_HEADER (1) ──→ (N) T_RM_SAMPLE_ATTACHMENT
+• M_TYPE_DOCUMENT (1) ──→ (N) T_RM_SAMPLE_HEADER
+• M_SUPPLIER (1) ──→ (N) T_RM_SAMPLE_HEADER
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        </pre>
+            <p style="text-align: center; font-size: 10pt; color: #666; margin-top: 10px;">
+                <em>
+                    Figure 2: Entity Relationship Diagram - New RM Sample Module
+                </em>
+            </p>
+        </div>
+    </div>
+    <hr />
+    <h2>
+        1. INTRODUCTION
+    </h2>
+    <h3>
+        1.1 Purpose
+    </h3>
+    <p>
+        Dokumen ini menjelaskan spesifikasi fungsional untuk module New RM Sample Management dalam sistem IDC
+        (Integrated Data Center) untuk RM Selection. Module ini dirancang untuk mengelola proses pengajuan,
+        evaluasi, dan disposisi sample Raw Material baru dari supplier dengan workflow yang terstruktur.
+    </p>
+    <h3>
+        1.2 Scope
+    </h3>
+    <p>
+        Dokumen ini mencakup workflow lengkap pengelolaan RM Sample:
+    </p>
+    <ul>
+        <li>
+            <strong>
+                Step 1: Document Sample
+            </strong>
+            - Pendaftaran dan dokumentasi sample RM
+        </li>
+        <li>
+            <strong>
+                Step 2: Sample Purpose
+            </strong>
+            - Analisis tujuan dan kebutuhan sample
+        </li>
+        <li>
+            <strong>
+                Step 3: RM Evaluation
+            </strong>
+            - Testing dan evaluasi teknis sample
+        </li>
+        <li>
+            <strong>
+                Step 4: Disposition
+            </strong>
+            - Review final dan keputusan approval/reject
+        </li>
+    </ul>
+    <h3>
+        1.3 Definitions and Acronyms
+    </h3>
+    <table>
+        <thead>
+            <tr>
+                <th width="30%">
+                    Term
+                </th>
+                <th>
+                    Definition
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <strong>
+                        RM
+                    </strong>
+                </td>
+                <td>
+                    Raw Material - Bahan baku untuk produksi
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        Sample
+                    </strong>
+                </td>
+                <td>
+                    Contoh material yang diajukan supplier untuk evaluasi
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        PIC
+                    </strong>
+                </td>
+                <td>
+                    Person In Charge - Penanggung jawab sample
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        LOV
+                    </strong>
+                </td>
+                <td>
+                    List of Values - Dropdown selection dengan search
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        Disposition
+                    </strong>
+                </td>
+                <td>
+                    Keputusan final terhadap sample (Approved/Rejected)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        UOM
+                    </strong>
+                </td>
+                <td>
+                    Unit of Measure - Satuan pengukuran (kg, liter, dll)
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <hr />
+    <h2>
+        2. FUNCTIONAL ASPECT
+    </h2>
+    <h3>
+        2.1 RM Sample Index Page
+    </h3>
+    <p>
+        Halaman utama untuk monitoring dan manajemen semua RM Sample yang ada dalam sistem.
+    </p>
+    <h4>
+        2.1.1 Dashboard Summary Cards
+    </h4>
+    <p>
+        <strong>
+            Fungsi Utama:
+        </strong>
+    </p>
+    <ul>
+        <li>
+            Menampilkan summary statistik sample berdasarkan workflow stage
+        </li>
+        <li>
+            Quick filter dengan klik pada card untuk filter tabel
+        </li>
+        <li>
+            Visual indicator dengan color coding per stage
+        </li>
+    </ul>
+    <p>
+        <strong>
+            Dashboard Cards:
+        </strong>
+    </p>
+    <table>
+        <thead>
+            <tr>
+                <th width="25%">
+                    Card Name
+                </th>
+                <th width="15%">
+                    Color
+                </th>
+                <th>
+                    Description
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <strong>
+                        Total Samples
+                    </strong>
+                </td>
+                <td>
+                    Primary (Blue)
+                </td>
+                <td>
+                    Total semua sample dalam sistem
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        Step 1: Document
+                    </strong>
+                </td>
+                <td>
+                    Warning (Yellow)
+                </td>
+                <td>
+                    Sample di tahap dokumentasi
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        Step 2: Analysis
+                    </strong>
+                </td>
+                <td>
+                    Info (Cyan)
+                </td>
+                <td>
+                    Sample di tahap analisis purpose
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        Step 3: Eval
+                    </strong>
+                </td>
+                <td>
+                    Secondary (Gray)
+                </td>
+                <td>
+                    Sample di tahap evaluasi teknis
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        Completed
+                    </strong>
+                </td>
+                <td>
+                    Success (Green)
+                </td>
+                <td>
+                    Sample yang sudah selesai (approved/rejected)
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <h4>
+        2.1.2 Data Table
+    </h4>
+    <div class="screenshot-container">
+        <p>
+            <strong>
+                Screenshot:
+            </strong>
+        </p>
+        <img alt="New RM Sample Index Page - Dashboard dan Data Table" src="screenshots/NewRMSample_Index_Page.png" />
+        <p class="screenshot-caption">
+            Figure: New RM Sample Index Page - Dashboard dan Data Table
+        </p>
+    </div>
+    <div class="screenshot-container">
+        <p>
+            <strong>
+                Screenshot:
+            </strong>
+        </p>
+        <img alt="New RM Sample Index Page - Dashboard dan Data Table" src="screenshots/NewRMSample_Index_Page.png" />
+        <p class="screenshot-caption">
+            Figure: New RM Sample Index Page - Dashboard dan Data Table
+        </p>
+    </div>
+    <p>
+        <strong>
+            Fungsi Utama:
+        </strong>
+    </p>
+    <ul>
+        <li>
+            Menampilkan daftar semua RM Sample dengan pagination
+        </li>
+        <li>
+            Search global untuk mencari sample
+        </li>
+        <li>
+            Filter by workflow stage dan status
+        </li>
+        <li>
+            Export data ke Excel
+        </li>
+    </ul>
+    <p>
+        <strong>
+            Kolom Tabel:
+        </strong>
+    </p>
+    <table>
+        <thead>
+            <tr>
+                <th width="25%">
+                    Column Name
+                </th>
+                <th width="15%">
+                    Data Type
+                </th>
+                <th>
+                    Description
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <strong>
+                        Sample No
+                    </strong>
+                </td>
+                <td>
+                    Text
+                </td>
+                <td>
+                    Nomor unik sample (format: XXX-R-RM-MM-YY)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        Material Name
+                    </strong>
+                </td>
+                <td>
+                    Text
+                </td>
+                <td>
+                    Nama material/RM yang di-sample
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        Supplier Name
+                    </strong>
+                </td>
+                <td>
+                    Text
+                </td>
+                <td>
+                    Nama supplier yang mengajukan sample
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        Date
+                    </strong>
+                </td>
+                <td>
+                    DateTime
+                </td>
+                <td>
+                    Tanggal submission sample
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        Workflow Stage
+                    </strong>
+                </td>
+                <td>
+                    Text
+                </td>
+                <td>
+                    Tahap workflow saat ini (Document/Sample/Evaluation/Disposition)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        Status
+                    </strong>
+                </td>
+                <td>
+                    Text
+                </td>
+                <td>
+                    Status sample (Draft/Pending/Completed)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        Action
+                    </strong>
+                </td>
+                <td>
+                    Button
+                </td>
+                <td>
+                    Edit, View, Delete
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <p>
+        <strong>
+            Aksi &amp; Navigasi:
+        </strong>
+    </p>
+    <table>
+        <thead>
+            <tr>
+                <th width="25%">
+                    Button/Action
+                </th>
+                <th width="30%">
+                    Navigasi
+                </th>
+                <th>
+                    Keterangan
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <strong>
+                        Create New Sample
+                    </strong>
+                </td>
+                <td>
+                    NewRMSampleDetail.html
+                </td>
+                <td>
+                    Membuka wizard form untuk create sample baru
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        Export Excel
+                    </strong>
+                </td>
+                <td>
+                    -
+                </td>
+                <td>
+                    Download data tabel ke Excel file
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        Edit
+                    </strong>
+                </td>
+                <td>
+                    NewRMSampleDetail.html (Edit Mode)
+                </td>
+                <td>
+                    Membuka wizard form dengan data terisi untuk edit
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        View
+                    </strong>
+                </td>
+                <td>
+                    NewRMSampleDetail.html (View Mode)
+                </td>
+                <td>
+                    Membuka wizard form dalam mode read-only
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        Delete
+                    </strong>
+                </td>
+                <td>
+                    -
+                </td>
+                <td>
+                    Soft delete sample (hanya untuk status Draft)
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <hr />
+    <h3>
+        2.2 RM Sample Detail - Wizard Form
+    </h3>
+    <div class="screenshot-container">
+        <p>
+            <strong>
+                Screenshot:
+            </strong>
+        </p>
+        <img alt="New RM Sample Detail - 4-Step Wizard Form" src="screenshots/NewRMSample_Detail_Wizard.png" />
+        <p class="screenshot-caption">
+            Figure: New RM Sample Detail - 4-Step Wizard Form
+        </p>
+    </div>
+    <div class="screenshot-container">
+        <p>
+            <strong>
+                Screenshot:
+            </strong>
+        </p>
+        <img alt="New RM Sample Detail - 4-Step Wizard Form" src="screenshots/NewRMSample_Detail_Wizard.png" />
+        <p class="screenshot-caption">
+            Figure: New RM Sample Detail - 4-Step Wizard Form
+        </p>
+    </div>
+    <p>
+        Form wizard dengan 4 steps untuk mengelola lifecycle lengkap RM Sample dari dokumentasi hingga disposition.
+    </p>
+    <h4>
+        2.2.1 Step 1: Document Sample
+    </h4>
+    <div class="screenshot-container">
+        <p>
+            <strong>
+                Screenshot:
+            </strong>
+        </p>
+        <img alt="Step 1: Document Sample - All Accordions Expanded" src="screenshots/Step1_Document_Sample.png" />
+        <p class="screenshot-caption">
+            Figure: Step 1: Document Sample - All Accordions Expanded
+        </p>
+    </div>
+    <p>
+        <strong>
+            Fungsi Utama:
+        </strong>
+    </p>
+    <ul>
+        <li>
+            Mendokumentasikan informasi dasar sample RM
+        </li>
+        <li>
+            Input data supplier, material, pricing
+        </li>
+        <li>
+            Upload dokumen pendukung (COA, MSDS, dll)
+        </li>
+    </ul>
+    <p>
+        <strong>
+            Keterangan Field:
+        </strong>
+    </p>
+    <table>
+        <thead>
+            <tr>
+                <th width="25%">
+                    Field Name
+                </th>
+                <th width="15%">
+                    Mandatory
+                </th>
+                <th width="25%">
+                    Validasi
+                </th>
+                <th>
+                    Keterangan
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <strong>
+                        Type Document
+                    </strong>
+                </td>
+                <td>
+                    Yes
+                </td>
+                <td>
+                    LOV Selection
+                </td>
+                <td>
+                    Jenis dokumen sample (New Material, Replacement, Alternative)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        Sample No
+                    </strong>
+                </td>
+                <td>
+                    Auto
+                </td>
+                <td>
+                    Auto-generated
+                </td>
+                <td>
+                    Nomor unik sample (format: XXX-R-RM-MM-YY)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        Material Name
+                    </strong>
+                </td>
+                <td>
+                    Yes
+                </td>
+                <td>
+                    Min 3 Char, Max 200 Char
+                </td>
+                <td>
+                    Nama material yang di-sample
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        Supplier
+                    </strong>
+                </td>
+                <td>
+                    Yes
+                </td>
+                <td>
+                    LOV Selection
+                </td>
+                <td>
+                    Supplier yang mengajukan sample
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        Price
+                    </strong>
+                </td>
+                <td>
+                    No
+                </td>
+                <td>
+                    Numeric, &gt;= 0
+                </td>
+                <td>
+                    Harga sample per UOM
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        Price Currency
+                    </strong>
+                </td>
+                <td>
+                    Yes (if Price filled)
+                </td>
+                <td>
+                    LOV Selection
+                </td>
+                <td>
+                    Mata uang harga (IDR, USD, EUR)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        UOM
+                    </strong>
+                </td>
+                <td>
+                    Yes
+                </td>
+                <td>
+                    LOV Selection
+                </td>
+                <td>
+                    Unit of Measure (kg, liter, pcs)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        Quantity
+                    </strong>
+                </td>
+                <td>
+                    Yes
+                </td>
+                <td>
+                    Numeric, &gt; 0
+                </td>
+                <td>
+                    Jumlah sample yang diterima
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        PIC
+                    </strong>
+                </td>
+                <td>
+                    Yes
+                </td>
+                <td>
+                    Auto from Login User
+                </td>
+                <td>
+                    Person in charge (default: user login)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        Submission Date
+                    </strong>
+                </td>
+                <td>
+                    Auto
+                </td>
+                <td>
+                    Auto: Current Date
+                </td>
+                <td>
+                    Tanggal pengajuan sample
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        Remarks
+                    </strong>
+                </td>
+                <td>
+                    No
+                </td>
+                <td>
+                    Max 500 Char
+                </td>
+                <td>
+                    Catatan tambahan
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <p>
+        <strong>
+            Document Attachment Table:
+        </strong>
+    </p>
+    <ul>
+        <li>
+            Upload multiple documents (COA, MSDS, Spec Sheet, dll)
+        </li>
+        <li>
+            Kolom: Document Type, Remarks, File Name, Upload Date, Action (Delete)
+        </li>
+        <li>
+            Supported format: PDF, DOC, DOCX, XLS, XLSX, JPG, PNG
+        </li>
+        <li>
+            Max file size: 10 MB per file
+        </li>
+    </ul>
+    <h4>
+        2.2.2 Step 2: Sample Purpose
+    </h4>
+    <div class="screenshot-container">
+        <p>
+            <strong>
+                Screenshot:
+            </strong>
+        </p>
+        <img alt="Step 2: Sample Purpose - Purpose Analysis" src="screenshots/Step2_Sample_Purpose.png" />
+        <p class="screenshot-caption">
+            Figure: Step 2: Sample Purpose - Purpose Analysis
+        </p>
+    </div>
+    <p>
+        <strong>
+            Fungsi Utama:
+        </strong>
+    </p>
+    <ul>
+        <li>
+            Mendefinisikan tujuan dan alasan pengajuan sample
+        </li>
+        <li>
+            Mapping sample dengan product/formula yang akan menggunakan
+        </li>
+        <li>
+            Input target usage dan benefit yang diharapkan
+        </li>
+    </ul>
+    <p>
+        <strong>
+            Keterangan Field:
+        </strong>
+    </p>
+    <table>
+        <thead>
+            <tr>
+                <th width="25%">
+                    Field Name
+                </th>
+                <th width="15%">
+                    Mandatory
+                </th>
+                <th width="25%">
+                    Validasi
+                </th>
+                <th>
+                    Keterangan
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <strong>
+                        Purpose Category
+                    </strong>
+                </td>
+                <td>
+                    Yes
+                </td>
+                <td>
+                    LOV Selection
+                </td>
+                <td>
+                    Kategori tujuan (Cost Reduction, Quality Improvement, New Product, dll)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        Target Product
+                    </strong>
+                </td>
+                <td>
+                    Yes
+                </td>
+                <td>
+                    LOV Selection (Multiple)
+                </td>
+                <td>
+                    Product yang akan menggunakan material ini
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        Expected Benefit
+                    </strong>
+                </td>
+                <td>
+                    Yes
+                </td>
+                <td>
+                    Min 10 Char, Max 1000 Char
+                </td>
+                <td>
+                    Benefit yang diharapkan dari sample ini
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        Usage Percentage
+                    </strong>
+                </td>
+                <td>
+                    No
+                </td>
+                <td>
+                    Numeric, 0-100
+                </td>
+                <td>
+                    Persentase usage dalam formula (%)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        Replacement For
+                    </strong>
+                </td>
+                <td>
+                    No
+                </td>
+                <td>
+                    LOV Selection
+                </td>
+                <td>
+                    Material yang akan digantikan (jika ada)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        Analysis Deadline
+                    </strong>
+                </td>
+                <td>
+                    Yes
+                </td>
+                <td>
+                    Date, &gt;= Current Date
+                </td>
+                <td>
+                    Target deadline analisis sample
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <h4>
+        2.2.3 Step 3: RM Evaluation
+    </h4>
+    <div class="screenshot-container">
+        <p>
+            <strong>
+                Screenshot:
+            </strong>
+        </p>
+        <img alt="Step 3: RM Evaluation - Testing &amp; Quality Score" src="screenshots/Step3_RM_Evaluation.png" />
+        <p class="screenshot-caption">
+            Figure: Step 3: RM Evaluation - Testing &amp; Quality Score
+        </p>
+    </div>
+    <p>
+        <strong>
+            Fungsi Utama:
+        </strong>
+    </p>
+    <ul>
+        <li>
+            Input hasil testing dan evaluasi teknis sample
+        </li>
+        <li>
+            Comparison dengan spec requirement dan existing material
+        </li>
+        <li>
+            Upload hasil lab test dan trial production
+        </li>
+    </ul>
+    <p>
+        <strong>
+            Keterangan Field:
+        </strong>
+    </p>
+    <table>
+        <thead>
+            <tr>
+                <th width="25%">
+                    Field Name
+                </th>
+                <th width="15%">
+                    Mandatory
+                </th>
+                <th width="25%">
+                    Validasi
+                </th>
+                <th>
+                    Keterangan
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <strong>
+                        Test Date
+                    </strong>
+                </td>
+                <td>
+                    Yes
+                </td>
+                <td>
+                    Date
+                </td>
+                <td>
+                    Tanggal pelaksanaan testing
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        Test Type
+                    </strong>
+                </td>
+                <td>
+                    Yes
+                </td>
+                <td>
+                    LOV Selection
+                </td>
+                <td>
+                    Jenis testing (Lab Test, Trial Production, Sensory Test)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        Test Result
+                    </strong>
+                </td>
+                <td>
+                    Yes
+                </td>
+                <td>
+                    Selection: Pass/Fail
+                </td>
+                <td>
+                    Hasil testing
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        Specification Compliance
+                    </strong>
+                </td>
+                <td>
+                    Yes
+                </td>
+                <td>
+                    Selection: Yes/No/Partial
+                </td>
+                <td>
+                    Kesesuaian dengan spesifikasi
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        Quality Score
+                    </strong>
+                </td>
+                <td>
+                    No
+                </td>
+                <td>
+                    Numeric, 0-100
+                </td>
+                <td>
+                    Skor kualitas (0-100)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        Evaluation Notes
+                    </strong>
+                </td>
+                <td>
+                    Yes
+                </td>
+                <td>
+                    Min 10 Char, Max 2000 Char
+                </td>
+                <td>
+                    Catatan detail hasil evaluasi
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        Evaluator
+                    </strong>
+                </td>
+                <td>
+                    Yes
+                </td>
+                <td>
+                    LOV Selection
+                </td>
+                <td>
+                    Nama evaluator/tester
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <p>
+        <strong>
+            Test Result Attachment:
+        </strong>
+    </p>
+    <ul>
+        <li>
+            Upload hasil test report, foto sample, dll
+        </li>
+        <li>
+            Multiple files allowed
+        </li>
+    </ul>
+    <h4>
+        2.2.4 Step 4: Disposition
+    </h4>
+    <div class="screenshot-container">
+        <p>
+            <strong>
+                Screenshot:
+            </strong>
+        </p>
+        <img alt="Step 4: Disposition - Final Review &amp; Decision" src="screenshots/Step4_Disposition.png" />
+        <p class="screenshot-caption">
+            Figure: Step 4: Disposition - Final Review &amp; Decision
+        </p>
+    </div>
+    <p>
+        <strong>
+            Fungsi Utama:
+        </strong>
+    </p>
+    <ul>
+        <li>
+            Review summary lengkap dari semua step sebelumnya
+        </li>
+        <li>
+            Input keputusan final (Approved/Rejected/On Hold)
+        </li>
+        <li>
+            Approval workflow (jika diperlukan)
+        </li>
+    </ul>
+    <p>
+        <strong>
+            Keterangan Field:
+        </strong>
+    </p>
+    <table>
+        <thead>
+            <tr>
+                <th width="25%">
+                    Field Name
+                </th>
+                <th width="15%">
+                    Mandatory
+                </th>
+                <th width="25%">
+                    Validasi
+                </th>
+                <th>
+                    Keterangan
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <strong>
+                        Disposition Decision
+                    </strong>
+                </td>
+                <td>
+                    Yes
+                </td>
+                <td>
+                    Selection
+                </td>
+                <td>
+                    Keputusan: Approved / Rejected / On Hold
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        Decision Date
+                    </strong>
+                </td>
+                <td>
+                    Auto
+                </td>
+                <td>
+                    Auto: Current Date
+                </td>
+                <td>
+                    Tanggal keputusan dibuat
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        Decision By
+                    </strong>
+                </td>
+                <td>
+                    Auto
+                </td>
+                <td>
+                    Auto from Login User
+                </td>
+                <td>
+                    User yang membuat keputusan
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        Reason
+                    </strong>
+                </td>
+                <td>
+                    Yes
+                </td>
+                <td>
+                    Min 10 Char, Max 1000 Char
+                </td>
+                <td>
+                    Alasan keputusan
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        Next Action
+                    </strong>
+                </td>
+                <td>
+                    No
+                </td>
+                <td>
+                    Max 500 Char
+                </td>
+                <td>
+                    Action plan selanjutnya (jika On Hold atau Approved)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        Approval Required
+                    </strong>
+                </td>
+                <td>
+                    No
+                </td>
+                <td>
+                    Boolean
+                </td>
+                <td>
+                    Apakah memerlukan approval atasan
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        Approver
+                    </strong>
+                </td>
+                <td>
+                    Conditional
+                </td>
+                <td>
+                    LOV Selection
+                </td>
+                <td>
+                    Mandatory jika Approval Required = Yes
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <p>
+        <strong>
+            Summary Review Section:
+        </strong>
+    </p>
+    <ul>
+        <li>
+            Read-only summary dari Step 1, 2, dan 3
+        </li>
+        <li>
+            Menampilkan semua informasi penting untuk review
+        </li>
+        <li>
+            Link ke dokumen attachment yang sudah diupload
+        </li>
+    </ul>
+    <h4>
+        2.2.5 Wizard Navigation &amp; Actions
+    </h4>
+    <p>
+        <strong>
+            Navigation Buttons:
+        </strong>
+    </p>
+    <table>
+        <thead>
+            <tr>
+                <th width="25%">
+                    Button
+                </th>
+                <th width="20%">
+                    Visibility
+                </th>
+                <th>
+                    Function
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <strong>
+                        Previous
+                    </strong>
+                </td>
+                <td>
+                    Step 2, 3, 4
+                </td>
+                <td>
+                    Kembali ke step sebelumnya (data tersimpan)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        Next Step
+                    </strong>
+                </td>
+                <td>
+                    Step 1, 2, 3
+                </td>
+                <td>
+                    Lanjut ke step berikutnya (validasi field mandatory)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        Save Draft
+                    </strong>
+                </td>
+                <td>
+                    All Steps
+                </td>
+                <td>
+                    Simpan sebagai draft (bisa dilanjutkan nanti)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        Submit Complete
+                    </strong>
+                </td>
+                <td>
+                    Step 4 only
+                </td>
+                <td>
+                    Submit final dan ubah status menjadi Completed
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <p>
+        <strong>
+            Business Rules:
+        </strong>
+    </p>
+    <ul>
+        <li>
+            User harus menyelesaikan step secara berurutan (tidak bisa skip)
+        </li>
+        <li>
+            Data di-save otomatis saat pindah step
+        </li>
+        <li>
+            Draft bisa diedit kapan saja sebelum Submit Complete
+        </li>
+        <li>
+            Setelah Submit Complete, data menjadi read-only (kecuali untuk role tertentu)
+        </li>
+        <li>
+            Sample dengan status Completed tidak bisa dihapus
+        </li>
+        <li>
+            Jika Approval Required, status berubah menjadi "Pending Approval"
+        </li>
+    </ul>
+    <hr />
+    <h2>
+        3. DATABASE SPECIFICATIONS
+    </h2>
+    <h3>
+        3.1 Table: T_RM_SAMPLE_HEADER
+    </h3>
+    <p>
+        <strong>
+            Purpose:
+        </strong>
+        Menyimpan header information RM Sample
+    </p>
+    <table>
+        <thead>
+            <tr>
+                <th width="25%">
+                    Column Name
+                </th>
+                <th width="15%">
+                    Data Type
+                </th>
+                <th width="10%">
+                    Nullable
+                </th>
+                <th width="15%">
+                    Default
+                </th>
+                <th>
+                    Description
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <strong>
+                        intSampleId
+                    </strong>
+                </td>
+                <td>
+                    INT
+                </td>
+                <td>
+                    No
+                </td>
+                <td>
+                    Auto
+                </td>
+                <td>
+                    Primary Key
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        txtSampleNo
+                    </strong>
+                </td>
+                <td>
+                    VARCHAR(50)
+                </td>
+                <td>
+                    No
+                </td>
+                <td>
+                    Auto-generated
+                </td>
+                <td>
+                    Nomor unik sample
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        intTypeDocumentId
+                    </strong>
+                </td>
+                <td>
+                    INT
+                </td>
+                <td>
+                    No
+                </td>
+                <td>
+                    -
+                </td>
+                <td>
+                    FK ke M_TYPE_DOCUMENT
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        txtMaterialName
+                    </strong>
+                </td>
+                <td>
+                    VARCHAR(200)
+                </td>
+                <td>
+                    No
+                </td>
+                <td>
+                    -
+                </td>
+                <td>
+                    Nama material
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        intSupplierId
+                    </strong>
+                </td>
+                <td>
+                    INT
+                </td>
+                <td>
+                    No
+                </td>
+                <td>
+                    -
+                </td>
+                <td>
+                    FK ke M_SUPPLIER
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        decPrice
+                    </strong>
+                </td>
+                <td>
+                    DECIMAL(18,2)
+                </td>
+                <td>
+                    Yes
+                </td>
+                <td>
+                    NULL
+                </td>
+                <td>
+                    Harga sample
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        intCurrencyId
+                    </strong>
+                </td>
+                <td>
+                    INT
+                </td>
+                <td>
+                    Yes
+                </td>
+                <td>
+                    NULL
+                </td>
+                <td>
+                    FK ke M_CURRENCY
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        intUOMId
+                    </strong>
+                </td>
+                <td>
+                    INT
+                </td>
+                <td>
+                    No
+                </td>
+                <td>
+                    -
+                </td>
+                <td>
+                    FK ke M_UOM
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        decQuantity
+                    </strong>
+                </td>
+                <td>
+                    DECIMAL(18,2)
+                </td>
+                <td>
+                    No
+                </td>
+                <td>
+                    -
+                </td>
+                <td>
+                    Jumlah sample
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        intPICId
+                    </strong>
+                </td>
+                <td>
+                    INT
+                </td>
+                <td>
+                    No
+                </td>
+                <td>
+                    -
+                </td>
+                <td>
+                    FK ke M_PEGAWAI (PIC)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        dtSubmissionDate
+                    </strong>
+                </td>
+                <td>
+                    DATETIME
+                </td>
+                <td>
+                    No
+                </td>
+                <td>
+                    GETDATE()
+                </td>
+                <td>
+                    Tanggal submission
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        txtRemarks
+                    </strong>
+                </td>
+                <td>
+                    VARCHAR(500)
+                </td>
+                <td>
+                    Yes
+                </td>
+                <td>
+                    NULL
+                </td>
+                <td>
+                    Catatan
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        txtWorkflowStage
+                    </strong>
+                </td>
+                <td>
+                    VARCHAR(50)
+                </td>
+                <td>
+                    No
+                </td>
+                <td>
+                    'Document'
+                </td>
+                <td>
+                    Tahap workflow saat ini
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        txtStatus
+                    </strong>
+                </td>
+                <td>
+                    VARCHAR(50)
+                </td>
+                <td>
+                    No
+                </td>
+                <td>
+                    'Draft'
+                </td>
+                <td>
+                    Status sample
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        bitActive
+                    </strong>
+                </td>
+                <td>
+                    BIT
+                </td>
+                <td>
+                    No
+                </td>
+                <td>
+                    1
+                </td>
+                <td>
+                    Status aktif
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        txtCreatedBy
+                    </strong>
+                </td>
+                <td>
+                    VARCHAR(50)
+                </td>
+                <td>
+                    No
+                </td>
+                <td>
+                    -
+                </td>
+                <td>
+                    User pembuat
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        dtCreatedDate
+                    </strong>
+                </td>
+                <td>
+                    DATETIME
+                </td>
+                <td>
+                    No
+                </td>
+                <td>
+                    GETDATE()
+                </td>
+                <td>
+                    Tanggal dibuat
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        txtModifiedBy
+                    </strong>
+                </td>
+                <td>
+                    VARCHAR(50)
+                </td>
+                <td>
+                    Yes
+                </td>
+                <td>
+                    NULL
+                </td>
+                <td>
+                    User terakhir modifikasi
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        dtModifiedDate
+                    </strong>
+                </td>
+                <td>
+                    DATETIME
+                </td>
+                <td>
+                    Yes
+                </td>
+                <td>
+                    NULL
+                </td>
+                <td>
+                    Tanggal terakhir modifikasi
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <p>
+        <strong>
+            Indexes:
+        </strong>
+    </p>
+    <ul>
+        <li>
+            PRIMARY KEY: intSampleId
+        </li>
+        <li>
+            UNIQUE INDEX: txtSampleNo
+        </li>
+        <li>
+            INDEX: intSupplierId, txtWorkflowStage, txtStatus, bitActive
+        </li>
+    </ul>
+    <h3>
+        3.2 Table: T_RM_SAMPLE_PURPOSE
+    </h3>
+    <p>
+        <strong>
+            Purpose:
+        </strong>
+        Menyimpan informasi purpose dan target usage sample
+    </p>
+    <table>
+        <thead>
+            <tr>
+                <th width="25%">
+                    Column Name
+                </th>
+                <th width="15%">
+                    Data Type
+                </th>
+                <th width="10%">
+                    Nullable
+                </th>
+                <th width="15%">
+                    Default
+                </th>
+                <th>
+                    Description
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <strong>
+                        intPurposeId
+                    </strong>
+                </td>
+                <td>
+                    INT
+                </td>
+                <td>
+                    No
+                </td>
+                <td>
+                    Auto
+                </td>
+                <td>
+                    Primary Key
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        intSampleId
+                    </strong>
+                </td>
+                <td>
+                    INT
+                </td>
+                <td>
+                    No
+                </td>
+                <td>
+                    -
+                </td>
+                <td>
+                    FK ke T_RM_SAMPLE_HEADER
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        intPurposeCategoryId
+                    </strong>
+                </td>
+                <td>
+                    INT
+                </td>
+                <td>
+                    No
+                </td>
+                <td>
+                    -
+                </td>
+                <td>
+                    FK ke M_PURPOSE_CATEGORY
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        txtExpectedBenefit
+                    </strong>
+                </td>
+                <td>
+                    VARCHAR(1000)
+                </td>
+                <td>
+                    No
+                </td>
+                <td>
+                    -
+                </td>
+                <td>
+                    Benefit yang diharapkan
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        decUsagePercentage
+                    </strong>
+                </td>
+                <td>
+                    DECIMAL(5,2)
+                </td>
+                <td>
+                    Yes
+                </td>
+                <td>
+                    NULL
+                </td>
+                <td>
+                    Persentase usage (%)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        intReplacementMaterialId
+                    </strong>
+                </td>
+                <td>
+                    INT
+                </td>
+                <td>
+                    Yes
+                </td>
+                <td>
+                    NULL
+                </td>
+                <td>
+                    FK ke M_MATERIAL (material yang digantikan)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        dtAnalysisDeadline
+                    </strong>
+                </td>
+                <td>
+                    DATE
+                </td>
+                <td>
+                    No
+                </td>
+                <td>
+                    -
+                </td>
+                <td>
+                    Target deadline analisis
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <h3>
+        3.3 Table: T_RM_SAMPLE_EVALUATION
+    </h3>
+    <p>
+        <strong>
+            Purpose:
+        </strong>
+        Menyimpan hasil evaluasi dan testing sample
+    </p>
+    <table>
+        <thead>
+            <tr>
+                <th width="25%">
+                    Column Name
+                </th>
+                <th width="15%">
+                    Data Type
+                </th>
+                <th width="10%">
+                    Nullable
+                </th>
+                <th width="15%">
+                    Default
+                </th>
+                <th>
+                    Description
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <strong>
+                        intEvaluationId
+                    </strong>
+                </td>
+                <td>
+                    INT
+                </td>
+                <td>
+                    No
+                </td>
+                <td>
+                    Auto
+                </td>
+                <td>
+                    Primary Key
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        intSampleId
+                    </strong>
+                </td>
+                <td>
+                    INT
+                </td>
+                <td>
+                    No
+                </td>
+                <td>
+                    -
+                </td>
+                <td>
+                    FK ke T_RM_SAMPLE_HEADER
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        dtTestDate
+                    </strong>
+                </td>
+                <td>
+                    DATE
+                </td>
+                <td>
+                    No
+                </td>
+                <td>
+                    -
+                </td>
+                <td>
+                    Tanggal testing
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        intTestTypeId
+                    </strong>
+                </td>
+                <td>
+                    INT
+                </td>
+                <td>
+                    No
+                </td>
+                <td>
+                    -
+                </td>
+                <td>
+                    FK ke M_TEST_TYPE
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        txtTestResult
+                    </strong>
+                </td>
+                <td>
+                    VARCHAR(20)
+                </td>
+                <td>
+                    No
+                </td>
+                <td>
+                    -
+                </td>
+                <td>
+                    Pass/Fail
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        txtSpecCompliance
+                    </strong>
+                </td>
+                <td>
+                    VARCHAR(20)
+                </td>
+                <td>
+                    No
+                </td>
+                <td>
+                    -
+                </td>
+                <td>
+                    Yes/No/Partial
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        intQualityScore
+                    </strong>
+                </td>
+                <td>
+                    INT
+                </td>
+                <td>
+                    Yes
+                </td>
+                <td>
+                    NULL
+                </td>
+                <td>
+                    Skor kualitas (0-100)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        txtEvaluationNotes
+                    </strong>
+                </td>
+                <td>
+                    VARCHAR(2000)
+                </td>
+                <td>
+                    No
+                </td>
+                <td>
+                    -
+                </td>
+                <td>
+                    Catatan evaluasi
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        intEvaluatorId
+                    </strong>
+                </td>
+                <td>
+                    INT
+                </td>
+                <td>
+                    No
+                </td>
+                <td>
+                    -
+                </td>
+                <td>
+                    FK ke M_PEGAWAI (evaluator)
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <h3>
+        3.4 Table: T_RM_SAMPLE_DISPOSITION
+    </h3>
+    <p>
+        <strong>
+            Purpose:
+        </strong>
+        Menyimpan keputusan final terhadap sample
+    </p>
+    <table>
+        <thead>
+            <tr>
+                <th width="25%">
+                    Column Name
+                </th>
+                <th width="15%">
+                    Data Type
+                </th>
+                <th width="10%">
+                    Nullable
+                </th>
+                <th width="15%">
+                    Default
+                </th>
+                <th>
+                    Description
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <strong>
+                        intDispositionId
+                    </strong>
+                </td>
+                <td>
+                    INT
+                </td>
+                <td>
+                    No
+                </td>
+                <td>
+                    Auto
+                </td>
+                <td>
+                    Primary Key
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        intSampleId
+                    </strong>
+                </td>
+                <td>
+                    INT
+                </td>
+                <td>
+                    No
+                </td>
+                <td>
+                    -
+                </td>
+                <td>
+                    FK ke T_RM_SAMPLE_HEADER
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        txtDecision
+                    </strong>
+                </td>
+                <td>
+                    VARCHAR(20)
+                </td>
+                <td>
+                    No
+                </td>
+                <td>
+                    -
+                </td>
+                <td>
+                    Approved/Rejected/On Hold
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        dtDecisionDate
+                    </strong>
+                </td>
+                <td>
+                    DATETIME
+                </td>
+                <td>
+                    No
+                </td>
+                <td>
+                    GETDATE()
+                </td>
+                <td>
+                    Tanggal keputusan
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        intDecisionBy
+                    </strong>
+                </td>
+                <td>
+                    INT
+                </td>
+                <td>
+                    No
+                </td>
+                <td>
+                    -
+                </td>
+                <td>
+                    FK ke M_PEGAWAI (decision maker)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        txtReason
+                    </strong>
+                </td>
+                <td>
+                    VARCHAR(1000)
+                </td>
+                <td>
+                    No
+                </td>
+                <td>
+                    -
+                </td>
+                <td>
+                    Alasan keputusan
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        txtNextAction
+                    </strong>
+                </td>
+                <td>
+                    VARCHAR(500)
+                </td>
+                <td>
+                    Yes
+                </td>
+                <td>
+                    NULL
+                </td>
+                <td>
+                    Action plan selanjutnya
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        bitApprovalRequired
+                    </strong>
+                </td>
+                <td>
+                    BIT
+                </td>
+                <td>
+                    No
+                </td>
+                <td>
+                    0
+                </td>
+                <td>
+                    Memerlukan approval
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        intApproverId
+                    </strong>
+                </td>
+                <td>
+                    INT
+                </td>
+                <td>
+                    Yes
+                </td>
+                <td>
+                    NULL
+                </td>
+                <td>
+                    FK ke M_PEGAWAI (approver)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        txtApprovalStatus
+                    </strong>
+                </td>
+                <td>
+                    VARCHAR(20)
+                </td>
+                <td>
+                    Yes
+                </td>
+                <td>
+                    NULL
+                </td>
+                <td>
+                    Pending/Approved/Rejected
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <h3>
+        3.5 Table: T_RM_SAMPLE_ATTACHMENT
+    </h3>
+    <p>
+        <strong>
+            Purpose:
+        </strong>
+        Menyimpan dokumen attachment sample
+    </p>
+    <table>
+        <thead>
+            <tr>
+                <th width="25%">
+                    Column Name
+                </th>
+                <th width="15%">
+                    Data Type
+                </th>
+                <th width="10%">
+                    Nullable
+                </th>
+                <th width="15%">
+                    Default
+                </th>
+                <th>
+                    Description
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <strong>
+                        intAttachmentId
+                    </strong>
+                </td>
+                <td>
+                    INT
+                </td>
+                <td>
+                    No
+                </td>
+                <td>
+                    Auto
+                </td>
+                <td>
+                    Primary Key
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        intSampleId
+                    </strong>
+                </td>
+                <td>
+                    INT
+                </td>
+                <td>
+                    No
+                </td>
+                <td>
+                    -
+                </td>
+                <td>
+                    FK ke T_RM_SAMPLE_HEADER
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        intDocTypeId
+                    </strong>
+                </td>
+                <td>
+                    INT
+                </td>
+                <td>
+                    No
+                </td>
+                <td>
+                    -
+                </td>
+                <td>
+                    FK ke M_DOCUMENT_TYPE
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        txtRemarks
+                    </strong>
+                </td>
+                <td>
+                    VARCHAR(200)
+                </td>
+                <td>
+                    Yes
+                </td>
+                <td>
+                    NULL
+                </td>
+                <td>
+                    Keterangan dokumen
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        txtFileName
+                    </strong>
+                </td>
+                <td>
+                    VARCHAR(200)
+                </td>
+                <td>
+                    No
+                </td>
+                <td>
+                    -
+                </td>
+                <td>
+                    Nama file
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        txtFilePath
+                    </strong>
+                </td>
+                <td>
+                    VARCHAR(500)
+                </td>
+                <td>
+                    No
+                </td>
+                <td>
+                    -
+                </td>
+                <td>
+                    Path file di server
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        intFileSize
+                    </strong>
+                </td>
+                <td>
+                    INT
+                </td>
+                <td>
+                    No
+                </td>
+                <td>
+                    -
+                </td>
+                <td>
+                    Ukuran file (bytes)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        txtUploadedBy
+                    </strong>
+                </td>
+                <td>
+                    VARCHAR(50)
+                </td>
+                <td>
+                    No
+                </td>
+                <td>
+                    -
+                </td>
+                <td>
+                    User yang upload
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        dtUploadDate
+                    </strong>
+                </td>
+                <td>
+                    DATETIME
+                </td>
+                <td>
+                    No
+                </td>
+                <td>
+                    GETDATE()
+                </td>
+                <td>
+                    Tanggal upload
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <hr />
+    <h2>
+        4. API SPECIFICATIONS
+    </h2>
+    <h3>
+        4.1 Sample Management APIs
+    </h3>
+    <h4>
+        4.1.1 GET /api/rm-sample/list
+    </h4>
+    <p>
+        <strong>
+            Purpose:
+        </strong>
+        Retrieve list of RM Samples dengan filter dan pagination
+    </p>
+    <p>
+        <strong>
+            Method:
+        </strong>
+        GET
+    </p>
+    <p>
+        <strong>
+            Query Parameters:
+        </strong>
+    </p>
+    <table>
+        <thead>
+            <tr>
+                <th width="25%">
+                    Parameter
+                </th>
+                <th width="15%">
+                    Type
+                </th>
+                <th width="15%">
+                    Required
+                </th>
+                <th>
+                    Description
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    page
+                </td>
+                <td>
+                    Integer
+                </td>
+                <td>
+                    No
+                </td>
+                <td>
+                    Page number (default: 1)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    pageSize
+                </td>
+                <td>
+                    Integer
+                </td>
+                <td>
+                    No
+                </td>
+                <td>
+                    Items per page (default: 25)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    search
+                </td>
+                <td>
+                    String
+                </td>
+                <td>
+                    No
+                </td>
+                <td>
+                    Search keyword
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    workflowStage
+                </td>
+                <td>
+                    String
+                </td>
+                <td>
+                    No
+                </td>
+                <td>
+                    Filter by workflow stage
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    status
+                </td>
+                <td>
+                    String
+                </td>
+                <td>
+                    No
+                </td>
+                <td>
+                    Filter by status
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <p>
+        <strong>
+            Response:
+        </strong>
+    </p>
+    <pre><code>{
+  "success": true,
+  "data": [
+    {
+      "sampleId": 1,
+      "sampleNo": "001-R-RM-02-26",
+      "materialName": "ZINC SULPHATE",
+      "supplierName": "Givaudan",
+      "submissionDate": "2026-02-16T10:30:00",
+      "workflowStage": "Document",
+      "status": "Draft"
+    }
+  ],
+  "pagination": {
+    "currentPage": 1,
+    "totalPages": 10,
+    "totalRecords": 250
+  }
+}</code></pre>
+    <h4>
+        4.1.2 GET /api/rm-sample/{id}
+    </h4>
+    <p>
+        <strong>
+            Purpose:
+        </strong>
+        Retrieve detail RM Sample by ID
+    </p>
+    <p>
+        <strong>
+            Method:
+        </strong>
+        GET
+    </p>
+    <p>
+        <strong>
+            Response:
+        </strong>
+        Complete sample data including all steps
+    </p>
+    <h4>
+        4.1.3 POST /api/rm-sample/create
+    </h4>
+    <p>
+        <strong>
+            Purpose:
+        </strong>
+        Create new RM Sample
+    </p>
+    <p>
+        <strong>
+            Method:
+        </strong>
+        POST
+    </p>
+    <p>
+        <strong>
+            Request Body:
+        </strong>
+        Sample header data (Step 1)
+    </p>
+    <h4>
+        4.1.4 PUT /api/rm-sample/{id}/update-step
+    </h4>
+    <p>
+        <strong>
+            Purpose:
+        </strong>
+        Update specific step data
+    </p>
+    <p>
+        <strong>
+            Method:
+        </strong>
+        PUT
+    </p>
+    <p>
+        <strong>
+            Request Body:
+        </strong>
+        Step data + step number
+    </p>
+    <h4>
+        4.1.5 POST /api/rm-sample/{id}/submit
+    </h4>
+    <p>
+        <strong>
+            Purpose:
+        </strong>
+        Submit sample (change status to Completed)
+    </p>
+    <p>
+        <strong>
+            Method:
+        </strong>
+        POST
+    </p>
+    <h4>
+        4.1.6 DELETE /api/rm-sample/{id}
+    </h4>
+    <p>
+        <strong>
+            Purpose:
+        </strong>
+        Soft delete sample (only for Draft status)
+    </p>
+    <p>
+        <strong>
+            Method:
+        </strong>
+        DELETE
+    </p>
+    <h4>
+        4.1.7 POST /api/rm-sample/{id}/upload-attachment
+    </h4>
+    <p>
+        <strong>
+            Purpose:
+        </strong>
+        Upload document attachment
+    </p>
+    <p>
+        <strong>
+            Method:
+        </strong>
+        POST (multipart/form-data)
+    </p>
+    <h4>
+        4.1.8 GET /api/rm-sample/dashboard-summary
+    </h4>
+    <p>
+        <strong>
+            Purpose:
+        </strong>
+        Get dashboard summary statistics
+    </p>
+    <p>
+        <strong>
+            Method:
+        </strong>
+        GET
+    </p>
+    <p>
+        <strong>
+            Response:
+        </strong>
+    </p>
+    <pre><code>{
+  "success": true,
+  "data": {
+    "totalSamples": 100,
+    "step1Document": 25,
+    "step2Analysis": 30,
+    "step3Evaluation": 20,
+    "completed": 25
+  }
+}</code></pre>
+    <hr />
+    <h2>
+        5. BUSINESS RULES
+    </h2>
+    <h3>
+        5.1 Sample Number Generation
+    </h3>
+    <ul>
+        <li>
+            Format: XXX-R-RM-MM-YY
+        </li>
+        <li>
+            XXX = Running number (auto-increment per bulan)
+        </li>
+        <li>
+            R = Raw Material
+        </li>
+        <li>
+            RM = RM Sample
+        </li>
+        <li>
+            MM = Bulan (01-12)
+        </li>
+        <li>
+            YY = Tahun (2 digit)
+        </li>
+        <li>
+            Contoh: 001-R-RM-02-26, 002-R-RM-02-26
+        </li>
+    </ul>
+    <h3>
+        5.2 Workflow Rules
+    </h3>
+    <ul>
+        <li>
+            User harus menyelesaikan step secara sequential (1 → 2 → 3 → 4)
+        </li>
+        <li>
+            Tidak bisa skip step atau kembali ke step sebelumnya setelah Submit
+        </li>
+        <li>
+            Data auto-save saat pindah step
+        </li>
+        <li>
+            Status "Draft" bisa diedit kapan saja sebelum Submit Complete
+        </li>
+        <li>
+            Setelah Submit Complete, data menjadi read-only (kecuali untuk Admin)
+        </li>
+    </ul>
+    <h3>
+        5.3 Deletion Rules
+    </h3>
+    <ul>
+        <li>
+            Hanya sample dengan status "Draft" yang bisa dihapus
+        </li>
+        <li>
+            Soft delete: set bitActive = 0
+        </li>
+        <li>
+            Sample yang sudah Completed tidak bisa dihapus
+        </li>
+    </ul>
+    <h3>
+        5.4 Approval Rules
+    </h3>
+    <ul>
+        <li>
+            Jika Disposition Decision = "Approved" dan Approval Required = Yes, status berubah menjadi "Pending
+            Approval"
+        </li>
+        <li>
+            Approver akan menerima notifikasi untuk approval
+        </li>
+        <li>
+            Setelah Approver approve, status berubah menjadi "Completed"
+        </li>
+        <li>
+            Jika Approver reject, sample kembali ke Step 4 untuk revisi
+        </li>
+    </ul>
+    <h3>
+        5.5 Attachment Rules
+    </h3>
+    <ul>
+        <li>
+            Supported format: PDF, DOC, DOCX, XLS, XLSX, JPG, PNG
+        </li>
+        <li>
+            Max file size: 10 MB per file
+        </li>
+        <li>
+            Minimal 1 attachment wajib untuk Step 1 (COA atau MSDS)
+        </li>
+        <li>
+            File disimpan di server dengan naming: {SampleNo}_{DocType}_{Timestamp}.{ext}
+        </li>
+    </ul>
+    <h3>
+        5.6 Validation Rules
+    </h3>
+    <ul>
+        <li>
+            Semua field mandatory harus diisi sebelum bisa Next Step
+        </li>
+        <li>
+            Price Currency wajib diisi jika Price terisi
+        </li>
+        <li>
+            Approver wajib diisi jika Approval Required = Yes
+        </li>
+        <li>
+            Analysis Deadline harus &gt;= Current Date
+        </li>
+        <li>
+            Quality Score harus 0-100
+        </li>
+        <li>
+            Usage Percentage harus 0-100
+        </li>
+    </ul>
+    <hr />
+    <h2>
+        6. SECURITY &amp; AUTHORIZATION
+    </h2>
+    <h3>
+        6.1 Role-Based Access Control (RBAC)
+    </h3>
+    <table>
+        <thead>
+            <tr>
+                <th width="20%">
+                    Role
+                </th>
+                <th>
+                    Permissions
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <strong>
+                        Sample Requestor
+                    </strong>
+                </td>
+                <td>
+                    Create, View own samples, Edit Draft, Delete Draft
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        Sample Evaluator
+                    </strong>
+                </td>
+                <td>
+                    View all samples, Edit Step 3 (Evaluation)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        Sample Approver
+                    </strong>
+                </td>
+                <td>
+                    View all samples, Approve/Reject disposition
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>
+                        Admin
+                    </strong>
+                </td>
+                <td>
+                    Full access (Create, Edit, Delete, View all)
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <h3>
+        6.2 Security Measures
+    </h3>
+    <ul>
+        <li>
+            Authentication: JWT token-based authentication
+        </li>
+        <li>
+            Authorization: Role-based access control per API endpoint
+        </li>
+        <li>
+            Input Sanitization: Prevent SQL Injection dan XSS
+        </li>
+        <li>
+            File Upload Validation: Check file type dan size
+        </li>
+        <li>
+            Audit Trail: Log semua create, update, delete operations
+        </li>
+        <li>
+            CSRF Protection: CSRF token untuk form submission
+        </li>
+    </ul>
+    <hr />
+    <h2>
+        7. APPENDIX
+    </h2>
+    <h3>
+        7.1 Sample Workflow Diagram
+    </h3>
+    <p>
+        <strong>
+            Workflow Flow:
+        </strong>
+    </p>
+    <pre>
+    [Start] → [Step 1: Document] → [Step 2: Purpose] → [Step 3: Evaluation] → [Step 4: Disposition]
+                    ↓                    ↓                    ↓                         ↓
+                [Save Draft]        [Save Draft]        [Save Draft]            [Submit Complete]
+                                                                                        ↓
+                                                                            [Approval Required?]
+                                                                                   ↙        ↘
+                                                                              [Yes]        [No]
+                                                                                ↓            ↓
+                                                                        [Pending Approval] [Completed]
+                                                                                ↓
+                                                                        [Approver Review]
+                                                                           ↙        ↘
+                                                                    [Approved]  [Rejected]
+                                                                         ↓            ↓
+                                                                   [Completed]  [Back to Step 4]
+    </pre>
+    <h3>
+        7.2 Sample Data Examples
+    </h3>
+    <p>
+        <strong>
+            Example 1: New Material Sample
+        </strong>
+    </p>
+    <ul>
+        <li>
+            Sample No: 001-R-RM-02-26
+        </li>
+        <li>
+            Material: ZINC SULPHATE HEPTAHYDRATE
+        </li>
+        <li>
+            Supplier: Givaudan
+        </li>
+        <li>
+            Purpose: Cost Reduction
+        </li>
+        <li>
+            Decision: Approved
+        </li>
+    </ul>
+    <p>
+        <strong>
+            Example 2: Replacement Material Sample
+        </strong>
+    </p>
+    <ul>
+        <li>
+            Sample No: 002-R-RM-02-26
+        </li>
+        <li>
+            Material: XANTHAN GUM FOOD GRADE
+        </li>
+        <li>
+            Supplier: Cargill
+        </li>
+        <li>
+            Purpose: Quality Improvement
+        </li>
+        <li>
+            Replacement For: XANTHAN GUM 200M
+        </li>
+        <li>
+            Decision: On Hold (waiting for additional test)
+        </li>
+    </ul>
+    <h3>
+        7.3 Reference Documents
+    </h3>
+    <ul>
+        <li>
+            BRD - Business Requirement Document for RM Selection
+        </li>
+        <li>
+            Database Design Document - RM Selection Module
+        </li>
+        <li>
+            API Documentation - RM Selection APIs
+        </li>
+        <li>
+            User Manual - RM Sample Management
+        </li>
+    </ul>
+</body>
+
+</html>
