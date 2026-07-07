@@ -136,9 +136,8 @@ Output: `output/FSD_MyModule_v1.0.docx`
 
 1. Buka Word → **F9** (update TOC jika field belum ter-update otomatis)
 2. Cek halaman 1–2 cover Kalbe
-3. Cek **Daftar Gambar** / **Daftar Tabel** sebelum bab 1 (nomor halaman terisi)
-4. Cek caption gambar/tabel: center + italic
-5. Cek tabel header hijau `#D9EAD3`
+3. Cek caption gambar/tabel: center + italic, posisi di bawah elemen
+4. Cek tabel header hijau `#D9EAD3`
 
 ### Langkah 6 — Daftarkan modul
 

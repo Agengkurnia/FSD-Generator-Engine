@@ -37,7 +37,6 @@ from fsd_build import (
     postprocess_docx,
 )
 from fsd_captions import preprocess_captions
-from fsd_word_fields import update_word_fields
 
 
 @dataclass
@@ -164,8 +163,8 @@ def build_fsd_module(config: ModuleBuildConfig, script_file: str):
 
     text = re.sub(r'```plantuml\s*\n(.*?)```', replace_plantuml, text, flags=re.DOTALL)
 
-    text, _registry = preprocess_captions(text)
-    print(f'   [Caption] {len(_registry.figures)} gambar, {len(_registry.tables)} tabel')
+    text = preprocess_captions(text)
+    print('   [Caption] selesai')
 
     if has_swimlane:
         print('   [Swimlane] terdeteksi — lebar gambar max {:.0f} cm'.format(
@@ -178,7 +177,6 @@ def build_fsd_module(config: ModuleBuildConfig, script_file: str):
     merge_cover_and_content(docx_content, docx_out, meta)
     img_width = config.swimlane_image_width_cm if has_swimlane else config.default_image_width_cm
     postprocess_docx(docx_out, max_width_cm=img_width)
-    update_word_fields(docx_out)
 
     for tmp in (md_tmp, docx_content):
         if os.path.exists(tmp):

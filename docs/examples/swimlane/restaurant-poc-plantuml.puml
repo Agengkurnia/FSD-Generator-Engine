@@ -1,42 +1,38 @@
-@startuml
-skinparam partition {
-  BackgroundColor #D9EAD3
-  BorderColor #000000
-  FontStyle bold
-  BorderThickness 2
-}
-skinparam activity {
-  BackgroundColor #FFFFFF
-  BorderColor #000000
-  StartColor #C8E6C9
-  EndColor #B2DFDB
-}
-
-|Customer|
-start
-:Placing an Order;
-|Clerk|
-:Greet;
-:Taking an Order;
-:Recording the Order;
-|Point of Sale Terminal|
-:Storing the Order;
-|Kitchen|
-:Accessing the Order;
-:Making the Food;
-:Preparing the Order;
-|Clerk|
-:Confirming the Order;
-|Customer|
-:Paying for the Order;
-|Clerk|
-if (Do Myself?) then (yes)
-  |Point of Sale Terminal|
-  :Storing the Order;
-else (no)
-endif
-:Delivering the Food;
-|Customer|
-:Receiving the Food;
-stop
-@enduml
+@startuml
+skinparam SwimlaneBorderColor #000000
+skinparam SwimlaneBorderThickness 3
+skinparam SwimlaneTitleBackgroundColor #D9EAD3
+skinparam SwimlaneTitleFontStyle bold
+skinparam ActivityBackgroundColor #FFFFFF
+skinparam ActivityBorderColor #000000
+skinparam ActivityStartColor #C8E6C9
+skinparam ActivityEndColor #B2DFDB
+
+|Customer|
+start
+:Placing an Order;
+|Clerk|
+:Greet;
+:Taking an Order;
+:Recording the Order;
+|Point of Sale Terminal|
+:Storing the Order;
+|Kitchen|
+:Accessing the Order;
+:Making the Food;
+:Preparing the Order;
+|Clerk|
+:Confirming the Order;
+|Customer|
+:Paying for the Order;
+|Clerk|
+if (Do Myself?) then (yes)
+  |Point of Sale Terminal|
+  :Storing the Order;
+else (no)
+endif
+:Delivering the Food;
+|Customer|
+:Receiving the Food;
+stop
+@enduml

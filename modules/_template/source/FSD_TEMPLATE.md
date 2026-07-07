@@ -30,7 +30,7 @@
 
 ---
 
-> **Catatan build:** Daftar Gambar, Daftar Tabel, dan caption bernomor dihasilkan otomatis oleh pipeline — jangan tulis manual di MD sumber.
+> **Catatan build:** Caption bernomor (`Gambar 3.1`, `Tabel 6.2.1`) dihasilkan otomatis — jangan tulis manual di MD sumber.
 
 ## 1. Pendahuluan
 

@@ -161,7 +161,7 @@ Selain konten, dokumen **harus** mengikuti standar berikut agar MD dan DOCX hasi
 
 > **TOC di engine:** Modul standar memakai cover template Kalbe — TOC dihasilkan field Word di template (tekan **F9** di Word). Daftar Isi manual di MD opsional.
 
-**Daftar Gambar & Daftar Tabel (otomatis di build):** Jangan tulis manual di MD sumber. Pipeline `lib/fsd_captions.py` menghasilkan kedua section **sebelum** `## 1. Pendahuluan` pada MD processed, dengan kolom No. | Judul | Halaman. Nomor halaman diisi via field Word `PAGEREF` (di-update saat build jika `pywin32` tersedia, atau tekan **F9** di Word).
+**Caption otomatis di build:** Pipeline `lib/fsd_captions.py` menambahkan caption bernomor (`Gambar 3.1`, `Tabel 6.2.1`) — center + italic di DOCX. **Tidak** perlu Daftar Gambar/Daftar Tabel manual di MD sumber.
 
 ### C. Tabel Metadata & Riwayat Revisi
 
@@ -222,10 +222,10 @@ Selain konten, dokumen **harus** mengikuti standar berikut agar MD dan DOCX hasi
 | Aspek | Standar |
 |-------|---------|
 | Caption (`alt text`) | Bahasa Indonesia, deskriptif — **tanpa** prefix `Gambar N` (penomoran otomatis di build) |
-| Caption di DOCX | Baris terpisah **center + italic**: `Gambar 3.1 — Judul` di bawah gambar; `Tabel 6.2.1 — Judul` di atas tabel |
+| Caption di DOCX | Baris terpisah **center + italic**: `Gambar 3.1 — Judul` di bawah gambar; `Tabel 6.2.1 — Judul` di bawah tabel |
 | Penomoran | Per bab: `Gambar {bab}.{n}`; `Tabel {bab}.{sub}.{n}` jika di bawah `### N.M`, else `Tabel {bab}.{n}` |
 | Baris sebelum gambar | Bold label: `**Tampilan Halaman Index:**` |
-| Judul tabel (caption) | Baris bold tepat di atas tabel (`**Tabel Fields ...**`); fallback: header kolom pertama |
+| Judul tabel (sumber caption) | Baris bold tepat di atas tabel (`**Tabel Fields ...**`); fallback: header kolom pertama |
 | Path | Relatif dari folder modul, **bukan** path absolut |
 | Urutan | Narasi konteks → label tampilan → gambar → caption otomatis → tabel field |
 | Lebar di DOCX | Auto-scale max **15 cm** (17 cm untuk grid lebar / swimlane — diatur build script) |
@@ -340,18 +340,14 @@ PoC engine (`py scripts/render_swimlane_poc.py`) menunjukkan PlantUML menghasilk
 ````markdown
 ```plantuml
 @startuml
-skinparam partition {
-  BackgroundColor #D9EAD3
-  BorderColor #000000
-  FontStyle bold
-  BorderThickness 2
-}
-skinparam activity {
-  BackgroundColor #FFFFFF
-  BorderColor #000000
-  StartColor #C8E6C9
-  EndColor #B2DFDB
-}
+skinparam SwimlaneBorderColor #000000
+skinparam SwimlaneBorderThickness 3
+skinparam SwimlaneTitleBackgroundColor #D9EAD3
+skinparam SwimlaneTitleFontStyle bold
+skinparam ActivityBackgroundColor #FFFFFF
+skinparam ActivityBorderColor #000000
+skinparam ActivityStartColor #C8E6C9
+skinparam ActivityEndColor #B2DFDB
 |{Role A}|
 start
 :{Langkah 1};
@@ -367,7 +363,7 @@ stop
 ```
 ````
 
-> **Catatan PlantUML:** `skinparam partition` mewarnai seluruh kolom lane (bukan hanya baris header) — limitasi renderer PlantUML. Build otomatis menyisipkan blok skinparam ini jika belum ada (`inject_plantuml_swimlane_style` di `lib/fsd_build.py`).
+> **Catatan PlantUML:** Build otomatis menyisipkan `SwimlaneBorderColor` / `SwimlaneBorderThickness` + header hijau `#D9EAD3` via `inject_plantuml_swimlane_style` di `lib/fsd_build.py`.
 
 Acuan: `docs/examples/swimlane/restaurant-poc-plantuml.puml`
 
@@ -421,19 +417,17 @@ flowchart LR
     E --> F[Pandoc_no_TOC]
     F --> G[merge_cover]
     G --> H[postprocess]
-    H --> I[update_word_fields]
-    I --> J[DOCX_final]
+    H --> I[DOCX_final]
 ```
 
 **Langkah (`fsd_module_runner` / `modules/_template/build.py`):**
 
 1. **Preprocess:** `COVER_META = parse_md_cover_meta(raw)`; `text = strip_md_for_body(raw)`
-2. **Mermaid / PlantUML:** render blok diagram → PNG (Kroki); PlantUML swimlane otomatis dapat `skinparam partition`
-3. **Caption:** `preprocess_captions(text)` — nomor gambar/tabel + inject Daftar Gambar/Tabel
+2. **Mermaid / PlantUML:** render blok diagram → PNG (Kroki); PlantUML swimlane otomatis dapat border skinparam
+3. **Caption:** `preprocess_captions(text)` — nomor gambar/tabel + caption center+italic
 4. **Pandoc:** `MD_TMP` → `_tmp/{slug}_content.docx` — **tanpa** `--toc` (TOC dari cover template)
 5. **Cover:** `merge_cover_and_content(content, output, COVER_META)`
-6. **Post-process:** Calibri 11pt, tabel border hitam header `#D9EAD3`, gambar max 15cm, caption center+italic + bookmark
-7. **Fields:** `update_word_fields(output)` — nomor halaman Daftar Gambar/Tabel (Windows + pywin32)
+6. **Post-process:** Calibri 11pt, tabel border hitam header `#D9EAD3`, gambar max 15cm, caption center+italic
 
 **Perintah Pandoc (internal):**
 
@@ -469,9 +463,8 @@ Urutan operasi di `lib/fsd_build.py`:
    - Baris lain → font 9pt regular
    - Semua sel → border hitam semua sisi
 4. Loop semua inline images → scale max width 15cm
-5. `postprocess_captions` → caption center+italic, bookmark, PAGEREF di Daftar Gambar/Tabel
+5. `postprocess_captions` → caption center+italic
 6. Save DOCX final
-7. `update_word_fields` (opsional, Windows) → isi nomor halaman
 
 ### K. Penamaan File Output
 
@@ -557,15 +550,14 @@ Template lengkap: `modules/_template/source/FSD_TEMPLATE.md`
 - [ ] Heading hierarchy konsisten (tidak loncat level)
 - [ ] Metadata & riwayat revisi lengkap
 - [ ] Caption screenshot bahasa Indonesia (alt text); penomoran `Gambar N.M` otomatis di build
-- [ ] Caption DOCX: center + italic di bawah gambar / di atas tabel
-- [ ] **Daftar Gambar** dan **Daftar Tabel** ada sebelum bab 1, kolom Halaman terisi
+- [ ] Caption DOCX: center + italic di bawah gambar dan di bawah tabel
 - [ ] Rule ID, field ID, DB column konsisten formatnya
 - [ ] `py build.py` sukses tanpa error
 - [ ] Entry di `docs/MODULE-INDEX.md` (modul baru)
 - [ ] **Swimlane:** Bab 2/3/9 memakai cross-functional swimlane (bukan flowchart 1 kolom)
 - [ ] **Swimlane:** Ada tabel lane + sumber spec sebelum diagram
 - [ ] **Swimlane:** Tiap node di dalam lane; hand-off antar lane dijelaskan
-- [ ] **Swimlane:** PlantUML partition border hitam, background lane `#D9EAD3` (via build inject)
+- [ ] **Swimlane:** PlantUML border hitam (`SwimlaneBorderThickness`), header lane hijau `#D9EAD3`
 
 ---
 
