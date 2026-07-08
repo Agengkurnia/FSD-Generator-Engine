@@ -64,4 +64,5 @@ Ganti `item-spec` dengan slug modul di tabel atas.
 | Proyek | Acuan engine |
 |--------|--------------|
 | KICAO KDS Enhancement | `modules/item-spec/` + `docs/STANDARD-FSD-GENERATION.md` |
-| **Falcon FPRS Web Portal** | `Comsup/falcon/Prototype/wwwroot/document/FSD/FalconWebPortal/` — FSD mega doc v1.0 |
+| **Falcon FPRS Web Admin** | `Comsup/falcon/Prototype/wwwroot/document/FSD/FalconWebPortal/` — FSD Web v1.0 |
+| **Falcon FPRS Mobile SFA** | `Comsup/falcon/Prototype/wwwroot/document/FSD/FalconMobile/` — FSD Mobile v1.0 |

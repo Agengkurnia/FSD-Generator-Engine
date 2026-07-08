@@ -120,7 +120,30 @@ Lihat [STANDARD-FSD-GENERATION.md § Build Pipeline](STANDARD-FSD-GENERATION.md#
 ### Halaman 2
 
 - BRD No / PID Ref. No (header biru muda)
-- Revision history + Document approval (header abu-abu, border hitam)
+- Revision history + **Document Approval** (header abu-abu, border hitam)
+
+#### Document Approval (standar Falcon FPRS / SHP)
+
+Diisi otomatis oleh `update_document_approval()` di `lib/fsd_cover_merge.py` saat merge cover:
+
+| Full name | Job Title |
+|-----------|-----------|
+| Muhammad Rafi | SHP Channel & Customer Development |
+| Silvester Mario Nian Destrada | SHP Channel & Customer Development |
+| Ageng Kurniawan Sugianto | IT Product |
+| Albet | IT Product |
+
+Kolom **Signature** dan **Signature Date** dikosongkan untuk ditandatangani manual di Word.
+
+Override per proyek via metadata build:
+
+```python
+COVER_META = parse_md_cover_meta(raw, defaults={
+    'document_approval': [
+        {'name': '...', 'title': '...'},
+    ],
+})
+```
 
 ### Setelah Generate
 
