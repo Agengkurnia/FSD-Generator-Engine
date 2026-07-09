@@ -19,12 +19,17 @@ FSD Generator Engine/
 │   ├── FOLDER-STRUCTURE.md   ← file ini
 │   ├── COVER-STANDARD.md
 │   ├── PANDUAN_SCREENSHOT.md
+│   ├── deliverables/         # DOCX terbaru per proyek (tanpa timestamp)
 │   └── examples/swimlane/    ← template cross-functional swimlane
 │
 ├── lib/                      # Python shared
 │   ├── fsd_paths.py
 │   ├── fsd_cover_merge.py
-│   ├── fsd_build.py
+│   ├── fsd_build.py          # postprocess DOCX (+ page break antar bab)
+│   ├── fsd_captions.py
+│   ├── fsd_crud.py           # format tabel CRUD (omit opsi tidak tersedia)
+│   ├── fsd_ui_section.py     # standar penulisan section UI (Markdown)
+│   ├── fsd_deliver.py        # Project Log + salinan repo terbaru
 │   └── fsd_module_runner.py
 │
 ├── templates/                # Aset Word global

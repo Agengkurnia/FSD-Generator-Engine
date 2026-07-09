@@ -39,7 +39,7 @@ AI **dilarang** mengisi FSD dengan asumsi. Ikuti aturan ini:
 |---|--------|---------------------|
 | 1 | **Baca sumber dulu** — HTML/JS/BRD/spec sebelum menulis field | Tulis `> **[TBD]** — verifikasi di {path}` |
 | 2 | **Setiap field UI** harus dari kode atau spec — jangan invent ID elemen | Jangan buat `btnXxx` fiktif |
-| 3 | **Setiap section UI** wajib: narasi + screenshot **atau** placeholder eksplisit | `> *Screenshot belum tersedia: screenshots/ss_XX.png*` |
+| 3 | **Setiap section UI** wajib: narasi + screenshot **atau** placeholder eksplisit; **urutan interleaved** (screenshot→penjelasan per tampilan, bukan semua screenshot dulu) | `> *Screenshot belum tersedia: screenshots/ss_XX.png*` |
 | 4 | **Business Rules** — ID unik `BR-01`, `BR-02`… prefix modul jika gabungan (`BR-M01`) | Jangan tulis "dll." |
 | 5 | **Tabel** — gunakan kolom standar (lihat STANDARD §D) | Jangan pakai HTML table |
 | 6 | **Path gambar** — relatif `screenshots/...`, bukan `C:\Users\...` | — |
@@ -53,6 +53,8 @@ AI **dilarang** mengisi FSD dengan asumsi. Ikuti aturan ini:
 2. Dokumen spec proyek (`Docs/`, BRD, UReq)
 3. `FSD_ItemSpec_RM_v1.2.md` (format & kedalaman)
 4. `docs/STANDARD-FSD-GENERATION.md` (konvensi)
+
+**Standar penulisan UI (semua proyek):** urutan interleaved + page break + tabel Tombol Aksi — lihat `lib/fsd_ui_section.py` dan STANDARD § *Standar Penulisan FSD vs Database*. Bab Database/ERD/DDL **format** distandarkan, **isi** per proyek.
 
 ---
 
@@ -153,11 +155,14 @@ Untuk aplikasi lain (contoh: `kicaokds.kalbenutritionals`):
 
 ```
 YourProject/Docs/FSD/
-├── source atau {timestamp}__FSD_{KODE}.md
+├── source/FSD_{Modul}_v{x.y}.md
+├── output/FSD_{Modul}_v{x.y}.docx    ← terbaru, tanpa timestamp (git)
 ├── screenshots/
 ├── build.py
-├── reference.docx          ← salin dari engine/templates/
-└── output/
+└── reference.docx          ← salin dari engine/templates/
+
+Arsip ber-timestamp → `D:\Work\Documentation\SHP\Project Log\{tahun}\{NNN}. {proyek}\`
+(via `DeliverableConfig` di `lib/fsd_deliver.py` — bukan di folder git)
 ```
 
 ### Yang harus disalin dari engine

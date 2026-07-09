@@ -16,6 +16,7 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(SCRIPT_DIR)), 'lib'))
 
 from fsd_module_runner import build_fsd_module, ModuleBuildConfig, MermaidHandler
+from fsd_deliver import DeliverableConfig
 
 SCREENSHOTS = os.path.join(SCRIPT_DIR, 'screenshots')
 
@@ -56,6 +57,15 @@ MERMAID_HANDLERS = [
     # ),
 ]
 
+# Opsional: Project Log (arsip timestamp) + salinan terbaru di docs/deliverables/
+ENGINE_ROOT = os.path.dirname(os.path.dirname(SCRIPT_DIR))
+# DELIVERABLE = DeliverableConfig(
+#     project_log_name='NAMA PROYEK',
+#     deliverable_code='KODE_MODUL',
+#     include_md=True,
+#     repo_copy_path=os.path.join(ENGINE_ROOT, 'docs', 'deliverables', OUTPUT_DOCX),
+# )
+
 if __name__ == '__main__':
     build_fsd_module(ModuleBuildConfig(
         slug=SLUG,
@@ -64,4 +74,5 @@ if __name__ == '__main__':
         mermaid_handlers=MERMAID_HANDLERS,
         plantuml_handlers=PLANTUML_HANDLERS,
         cover_defaults=COVER_DEFAULTS or None,
+        # deliverable=DELIVERABLE,
     ), __file__)

@@ -44,7 +44,11 @@ Ganti `item-spec` dengan slug modul di tabel atas.
 | Modul | Fungsi |
 |-------|--------|
 | `lib/fsd_cover_merge.py` | Cover Kalbe 2 halaman |
-| `lib/fsd_build.py` | Kroki, Pandoc, post-process |
+| `lib/fsd_build.py` | Kroki, Pandoc, post-process (+ **page break** antar bab) |
+| `lib/fsd_captions.py` | Penomoran caption Gambar/Tabel otomatis |
+| `lib/fsd_crud.py` | Tabel CRUD — omit operasi tidak tersedia di UI |
+| `lib/fsd_ui_section.py` | **Standar penulisan section UI** (Markdown interleaved) |
+| `lib/fsd_deliver.py` | **Project Log** (arsip timestamp) + salinan repo terbaru |
 | `lib/fsd_module_runner.py` | Runner generik; deteksi swimlane + PlantUML |
 | `lib/fsd_paths.py` | Path template & engine root |
 
@@ -64,5 +68,5 @@ Ganti `item-spec` dengan slug modul di tabel atas.
 | Proyek | Acuan engine |
 |--------|--------------|
 | KICAO KDS Enhancement | `modules/item-spec/` + `docs/STANDARD-FSD-GENERATION.md` |
-| **Falcon FPRS Web Admin** | `Comsup/falcon/Prototype/wwwroot/document/FSD/FalconWebPortal/` — FSD Web v1.0 |
+| **Falcon FPRS Web Admin** | `Comsup/falcon/Prototype/wwwroot/document/FSD/FalconWebPortal/` — impor `lib/fsd_ui_section.py` dari Engine |
 | **Falcon FPRS Mobile SFA** | `Comsup/falcon/Prototype/wwwroot/document/FSD/FalconMobile/` — FSD Mobile v1.0 |

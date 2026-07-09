@@ -205,51 +205,8 @@ def apply_font(run, size_pt: int, bold=None):
 
 def step4_postprocess():
     print('\n[STEP 4] Post-process DOCX...')
-    doc = Document(DOCX_OUT)
-    content_start = content_start_index(doc)
-    try:
-        doc.styles['Normal'].font.name = FONT_NAME
-        doc.styles['Normal'].font.size = Pt(FONT_SIZE_BODY)
-    except Exception:
-        pass
-    for i, para in enumerate(doc.paragraphs):
-        if i < content_start:
-            continue
-        for run in para.runs:
-            apply_font(run, FONT_SIZE_BODY)
-    border_spec = {"sz": "8", "val": "single", "color": BORDER_COLOR}
-    bdr_all = dict(top=border_spec, bottom=border_spec, start=border_spec, end=border_spec,
-                   insideH=border_spec, insideV=border_spec)
-    for ti, table in enumerate(doc.tables):
-        if ti < COVER_TABLE_COUNT:
-            continue
-        try:
-            table.style = 'Table Grid'
-        except Exception:
-            pass
-        for row_idx, row in enumerate(table.rows):
-            is_header = row_idx == 0
-            for cell in row.cells:
-                set_cell_border(cell, **bdr_all)
-                if is_header:
-                    set_cell_bg(cell, HEADER_BG)
-                for para in cell.paragraphs:
-                    for run in para.runs:
-                        apply_font(run, FONT_SIZE_TABLE, bold=True if is_header else None)
-    max_w = Cm(15)
-    ns = '{http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing}'
-    for para in doc.paragraphs:
-        for run in para.runs:
-            for drawing in run._r.findall(f'.//{ns}inline'):
-                extent = drawing.find(f'{ns}extent')
-                if extent is not None:
-                    cx = int(extent.get('cx', 0))
-                    if cx > max_w.emu:
-                        ratio = max_w.emu / cx
-                        cy = int(int(extent.get('cy', 0)) * ratio)
-                        extent.set('cx', str(max_w.emu))
-                        extent.set('cy', str(cy))
-    doc.save(DOCX_OUT)
+    from fsd_build import postprocess_docx
+    postprocess_docx(DOCX_OUT)
     print(f'   OK -> {DOCX_OUT}')
 
 

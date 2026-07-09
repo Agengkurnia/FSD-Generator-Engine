@@ -192,62 +192,8 @@ def apply_font(run, size_pt, bold=None):
 
 def step5_postprocess():
     print('\n[STEP 5] Post-process...')
-    doc = Document(DOCX_OUT)
-    content_start = content_start_index(doc)
-    doc.styles['Normal'].font.name = FONT_NAME
-    doc.styles['Normal'].font.size = Pt(FONT_SIZE_BODY)
-    for i, para in enumerate(doc.paragraphs):
-        if i < content_start:
-            continue
-        for run in para.runs:
-            apply_font(run, FONT_SIZE_BODY)
-    border = {"sz": "8", "val": "single", "color": BORDER_COLOR}
-    bdr_all = dict(top=border, bottom=border, start=border, end=border, insideH=border, insideV=border)
-    for ti, table in enumerate(doc.tables):
-        if ti < COVER_TABLE_COUNT:
-            continue
-        try:
-            table.style = 'Table Grid'
-        except Exception:
-            pass
-        for row_idx, row in enumerate(table.rows):
-            is_header = row_idx == 0
-            for cell in row.cells:
-                tc = cell._tc
-                tcPr = tc.get_or_add_tcPr()
-                tcBorders = tcPr.find(qn('w:tcBorders'))
-                if tcBorders is None:
-                    tcBorders = OxmlElement('w:tcBorders')
-                    tcPr.append(tcBorders)
-                for edge in ('start', 'top', 'end', 'bottom', 'insideH', 'insideV'):
-                    element = tcBorders.find(qn(f'w:{edge}'))
-                    if element is None:
-                        element = OxmlElement(f'w:{edge}')
-                        tcBorders.append(element)
-                    for k, v in border.items():
-                        element.set(qn(f'w:{k}'), str(v))
-                if is_header:
-                    shd = OxmlElement('w:shd')
-                    shd.set(qn('w:val'), 'clear')
-                    shd.set(qn('w:fill'), HEADER_BG)
-                    tcPr.append(shd)
-                for para in cell.paragraphs:
-                    for run in para.runs:
-                        apply_font(run, FONT_SIZE_TABLE, bold=True if is_header else None)
-    max_w = Cm(15)
-    ns = '{http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing}'
-    for para in doc.paragraphs:
-        for run in para.runs:
-            for drawing in run._r.findall(f'.//{ns}inline'):
-                extent = drawing.find(f'{ns}extent')
-                if extent is not None:
-                    cx = int(extent.get('cx', 0))
-                    if cx > max_w.emu:
-                        ratio = max_w.emu / cx
-                        cy = int(int(extent.get('cy', 0)) * ratio)
-                        extent.set('cx', str(max_w.emu))
-                        extent.set('cy', str(cy))
-    doc.save(DOCX_OUT)
+    from fsd_build import postprocess_docx
+    postprocess_docx(DOCX_OUT)
     print(f'   OK -> {DOCX_OUT}')
 
 

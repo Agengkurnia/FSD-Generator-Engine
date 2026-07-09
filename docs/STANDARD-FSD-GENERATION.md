@@ -20,6 +20,36 @@ Dokumen terkait:
 
 ---
 
+## Standar Penulisan FSD (Umum) vs Sumber Data Database (Per Proyek)
+
+Standar di Engine dibagi dua lapisan. **Semua proyek** wajib mengikuti lapisan penulisan UI; **hanya format** bab database yang distandarkan — isinya mengikuti sistem target masing-masing.
+
+| Lapisan | Berlaku untuk | Distandarkan di Engine | Contoh |
+|---------|---------------|------------------------|--------|
+| **Penulisan UI** | Bab halaman/modal (§3–N) | **Ya — wajib** | Urutan screenshot→penjelasan, tabel Tombol Aksi 5 kolom, page break antar bab |
+| **Pipeline build** | Semua modul `build.py` → `fsd_module_runner` | **Ya — wajib** | `postprocess_page_breaks`, caption, styling tabel |
+| **Database / ERD / DDL / Mapping** | Bab infrastruktur data | **Format saja** | MAVEN PostgreSQL (Falcon), Oracle (KICAO), tabel berbeda tiap proyek |
+| **RBAC / LOV / Appendix** | Bab pendukung | **Format + struktur** | Isi role & kode status spesifik proyek |
+
+**Yang wajib sama di semua FSD:**
+
+1. **Urutan interleaved** per tampilan UI (lihat § Per Section UI di bawah)
+2. **Page break DOCX** otomatis: setelah Daftar Isi + sebelum bab utama `2.`, `3.`, …
+3. **Tabel Tombol Aksi** 5 kolom dengan screenshot per tombol
+4. **CRUD** — operasi tidak tersedia di UI **tidak ditulis** (`lib/fsd_crud.py`)
+5. **Helper bersama** — `lib/fsd_ui_section.py` (Markdown UI), `lib/fsd_build.py` (DOCX)
+
+**Yang TIDAK distandarkan isinya (per proyek):**
+
+- Skema tabel, nama kolom DB, mapping UI→database
+- ERD entity & relasi spesifik domain
+- Skrip DDL / connection string / API endpoint produksi
+- Enrichment arsitektur backend (mis. MAVEN EF Core di Falcon, berbeda di proyek lain)
+
+Skrip extract HTML→MD boleh tinggal di repo proyek (mis. Falcon `extract_module_spec.py`), tetapi **harus memakai** `lib/fsd_ui_section.py` dari Engine agar output Markdown selaras.
+
+---
+
 ## PROMPT EKSEKUSI (Copy-Paste untuk AI IDE)
 
 ```
@@ -44,6 +74,13 @@ Kamu adalah Technical Writer + Business Analyst senior. Buat Functional Specific
 ## Modul: {Nama Modul}
 ### Sistem: {Nama Sistem}
 ### Versi Dokumen: {x.y}
+
+## Aturan penulisan UI (WAJIB — semua proyek)
+
+- Urutan **interleaved**: screenshot dashboard list → kolom + tombol aksi → screenshot modal/detail → narasi form → field + tombol aksi konteks itu
+- Jangan kelompokkan semua screenshot di awal section
+- Page break antar bab utama otomatis saat build (`postprocess_page_breaks`)
+- Bab Database/ERD/DDL: ikuti format template, isi sesuai database proyek masing-masing
 
 | Atribut | Keterangan |
 |---------|------------|
@@ -188,8 +225,8 @@ Selain konten, dokumen **harus** mengikuti standar berikut agar MD dan DOCX hasi
 |-------------|------------------------------|
 | **Field form** | Field Name \| ID Elemen \| Tipe \| Mandatory \| Default \| Validasi \| Keterangan |
 | **Kolom grid** | Kolom \| Field Key / Entity Field \| Render \| Sortable \| Keterangan |
-| **Tombol** | Tombol \| ID \| Warna/Style \| Kondisi Aktif \| Fungsi |
-| **CRUD** | Operasi \| Cara \| Role \| Keterangan |
+| **Tombol** | Tampilan \| Tombol \| ID / Handler \| Warna/Style \| Fungsi (narasi, bukan kode) |
+| **CRUD** | Operasi \| Cara \| Role \| Keterangan — **hanya operasi yang ada**; jangan tampilkan baris `—` / "Tidak tersedia" |
 | **Business Rules** | Rule ID \| Aturan |
 | **Status** | Kode Status \| Label \| Warna Badge \| Keterangan |
 | **RBAC** | Bagian/Tab \| Role A \| Role B \| ... |
@@ -203,7 +240,7 @@ Selain konten, dokumen **harus** mengikuti standar berikut agar MD dan DOCX hasi
 | Mandatory | `Ya`, `Tidak`, `Ya (Auto)`, `Opsional` | `yes`, `optional` |
 | Tipe field | `Text`, `Dropdown/LOV`, `Date Picker`, `Checkbox`, `Text (readonly)` | `input`, `select` |
 | Nilai kosong | `—` atau `(kosong)` | `-`, `N/A` sembarang |
-| Operasi CRUD | `**Create**`, `**Read**`, `**Update**`, `**Delete**` (bold) | create, read |
+| Operasi CRUD | `**Create**`, `**Read**`, `**Update**`, `**Delete**` (bold) — **omit** baris jika operasi tidak ada di UI (helper: `lib/fsd_crud.py`) | create, read |
 | Rule ID | `BR-M01`, `BR-K12`, `BR-01` | Rule 1, BR1 |
 | Path file | dalam backtick di kolom Keterangan | tanpa backtick |
 
@@ -468,7 +505,12 @@ Urutan operasi di `lib/fsd_build.py`:
 
 ### K. Penamaan File Output
 
-**Dua pola** — pilih sesuai konteks:
+**Dua lokasi deliverable** — wajib untuk semua proyek FSD:
+
+| Lokasi | Isi | Timestamp | Git |
+|--------|-----|-----------|-----|
+| **Project Log** (arsip) | Semua versi build | **Ya** `YYYYMMDDHHmmss__` | **Tidak** (di luar repo) |
+| **Folder proyek** (terbaru) | Satu file per dokumen | **Tidak** | **Ya** (ditimpa tiap build) |
 
 #### K.1 Modul di dalam Engine (`modules/{slug}/`)
 
@@ -476,28 +518,58 @@ Urutan operasi di `lib/fsd_build.py`:
 |---------|------|--------|
 | Markdown sumber | `source/FSD_{Modul}_v{x.y}.md` | `FSD_ItemSpec_RM_v1.2.md` |
 | DOCX output | `output/FSD_{Modul}_v{x.y}.docx` | `FSD_ItemSpec_RM_v1.2.docx` |
+| DOCX terbaru (opsional) | `docs/deliverables/FSD_{Modul}_v{x.y}.docx` | Salinan stabil untuk referensi |
 | Build script | `build.py` | Stabil, tanpa timestamp |
 | Screenshot | `screenshots/ss_{NN}_{desc}.png` | `ss_01_index.png` |
 
+Aktifkan Project Log di `build.py`:
+
+```python
+from fsd_deliver import DeliverableConfig
+
+build_fsd_module(ModuleBuildConfig(
+    ...
+    deliverable=DeliverableConfig(
+        project_log_name='Item Registration',
+        deliverable_code='ITEM_REGISTRATION',
+        include_md=True,
+        repo_copy_path=os.path.join(engine_root, 'docs', 'deliverables', 'FSD_Item_Registration_v1.0.docx'),
+    ),
+), __file__)
+```
+
 #### K.2 Proyek eksternal (gabungan / multi-modul)
 
+Markdown sumber tetap di `source/` proyek. **Jangan** menumpuk file ber-timestamp di folder git.
+
+| Artefak repo (git) | Pola |
+|--------------------|------|
+| DOCX terbaru | `output/FSD_{Modul}_v{x.y}.docx` — **tanpa** timestamp |
+| Salinan pusat (opsional) | `FSD Generator Engine/docs/deliverables/FSD_{KODE}.docx` |
+
+#### K.3 Project Log (arsip — WAJIB)
+
 ```
-{TIMESTAMP}__FSD_{KODE_MODUL}.{ext}
+D:\Work\Documentation\SHP\Project Log\{TAHUN}\{NNN}. {NAMA_PROYEK}\
 ```
 
 | Komponen | Format | Contoh |
 |----------|--------|--------|
-| `{TIMESTAMP}` | `YYYYMMDDHHmmss` | `20260706111230` |
-| Pemisah | Double underscore `__` | `__` |
-| `{KODE_MODUL}` | UPPER_SNAKE_CASE | `KICAO_KDS`, `E_MATERAI` |
+| `{TAHUN}` | 4 digit | `2026` |
+| `{NNN}` | Urut 3 digit, auto | `001`, `002` |
+| `{NAMA_PROYEK}` | Nama proyek | `Falcon FPRS` |
+| File arsip | `{TIMESTAMP}__{nama}` | `20260709191006__FSD_FALCON_WEB_MASTERDATA.docx` |
+| Log build | `_build-log.txt` | Satu baris per arsip |
 
-Contoh: `20260706111230__FSD_KICAO_KDS.md` + `.docx`
+- Folder `{NNN}. {NAMA_PROYEK}` **reuse** jika proyek sama sudah ada di tahun tersebut.
+- Folder & file dibuat otomatis oleh `lib/fsd_deliver.py`.
+- **Alasan:** repo GitHub hanya menyimpan **satu** versi terbaru; riwayat lengkap ada di Project Log (hemat storage git).
 
-| Artefak | Pola |
-|---------|------|
-| Build script | `build_fsd_{kode_lower}.py` (stabil) |
-| Temp MD | `_tmp_{TIMESTAMP}__FSD_{KODE}_processed.md` (dihapus setelah build) |
-| `reference.docx` | Nama tetap — salin dari `templates/reference.docx` |
+Skrip: `lib/fsd_deliver.py` — `DeliverableConfig`, `deliver_fsd_outputs()`.
+
+#### K.4 Penamaan lama (deprecated di repo git)
+
+Pola `{TIMESTAMP}__FSD_{KODE}` **hanya** untuk Project Log, **bukan** untuk folder `Document/` atau `output/` di dalam git.
 
 Acuan proyek eksternal: `kicaokds.kalbenutritionals/Docs/FSD/PROMPT-STANDARD-FSD-GENERATION.md`
 
@@ -586,7 +658,43 @@ Setiap section halaman/modal wajib memiliki:
 3. **Tabel Fields** — kolom standar § D
 4. **Business Rules** — jika ada aturan khusus section
 5. **CRUD** — jika section mendukung operasi
-6. **Tombol** — tabel terpisah jika action bar kompleks
+6. **Tombol** — tabel terpisah jika action bar kompleks; kolom **Tampilan** berisi screenshot per-tombol (`ss_btn_{mod}_{slug}.png`), bukan teks saja
+
+**Urutan konten (WAJIB):** untuk modul dengan lebih dari satu tampilan (dashboard list + modal / detail), jangan kelompokkan semua screenshot di awal. Pola:
+
+1. Screenshot **dashboard list** → tabel kolom grid → tabel **Tombol Aksi — Dashboard List**
+2. Screenshot **modal** atau **halaman detail** → narasi form → tabel field → tabel **Tombol Aksi** konteks tersebut
+3. Business Rules → CRUD
+
+**Page break DOCX (otomatis di `postprocess_page_breaks`):**
+
+- Setelah **Daftar Isi** (sebelum bab `1.`)
+- Sebelum setiap bab utama berikutnya (`2.`, `3.`, …)
+
+Acuan implementasi:
+
+| Komponen | Lokasi |
+|----------|--------|
+| Helper Markdown UI | `lib/fsd_ui_section.py` |
+| Extract HTML→MD (contoh) | Prototipe Falcon `extract_module_spec.py` — impor `fsd_ui_section` |
+| Page break DOCX | `lib/fsd_build.py` → `postprocess_page_breaks()` |
+| Capture tombol | `scripts/capture/capture_action_buttons.py` |
+
+#### Standar Screenshot Tombol Aksi
+
+| Aspek | Standar |
+|-------|---------|
+| Capture | Playwright `locator.screenshot()` per elemen; dukung `title=`, `.btn-action-view`, `accordion-button`, selector baris DataTable |
+| Wajib | Setiap baris Tombol Aksi harus punya gambar di kolom Tampilan bila tombol terlihat saat capture |
+| Penamaan | `ss_btn_{modul}_{slug-label}.png` + manifest `screenshots/_btn_manifest.json` |
+| Tabel MD | `\| Tampilan \| Tombol \| ID / Handler \| Warna/Style \| Fungsi \|` |
+| Ukuran DOCX | `BUTTON_IMAGE_MAX_CM = 4.0`, kolom Tampilan 5.0 cm — hanya gambar di kolom Tampilan |
+| Fungsi (kolom) | Narasi bahasa Indonesia — jangan cantumkan `openModal()` / `editItem()` mentah |
+| Halaman modul | Maks. 1 screenshot index (+ 1 modal bila `type=modal`); hindari pasangan add/edit yang identik |
+| Shot modal | **Full-page** dengan modal terbuka (backdrop + form), bukan crop elemen modal saja |
+| Buka modal saat capture | Tunggu `layoutReady` / `#tblBody tr`, lalu **klik** tombol Tambah/Edit — jangan hanya `evaluate(openModal)` sebelum handler siap |
+
+Skrip acuan: `scripts/capture/capture_action_buttons.py` (engine) atau `FalconWebPortal/scripts/capture_action_buttons.py` (prototipe).
 
 ---
 

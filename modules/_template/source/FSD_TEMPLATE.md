@@ -104,88 +104,92 @@ flowchart LR
 
 ---
 
-## 3. Halaman Index — {NAMA_MODUL}
+## 3. Halaman UI — {NAMA_MODUL}
 
-### 3.1 Tampilan Umum
+{Narasi modul — tipe UI, path file sumber. Jangan gabungkan semua screenshot di awal.}
 
-**Tampilan Halaman Index:**
+### 3.1 Dashboard List
 
 ![Halaman Index {NAMA_MODUL}](screenshots/ss_01_index.png)
 
-{Paragraf deskripsi halaman index.}
+#### 3.1.1 Kolom DataTable Dashboard List
 
-#### 3.1.1 Fields / Kolom Grid
+| Kolom | Field Key | Render | Sortable | Keterangan |
+|-------|-----------|--------|----------|------------|
+| {Kolom} | `{FieldKey}` | Text | Ya | Kolom grid dashboard list |
+
+#### 3.1.2 Tombol Aksi — Dashboard List
+
+| Tampilan | Tombol | ID / Handler | Warna/Style | Fungsi |
+|----------|--------|--------------|-------------|--------|
+| ![](screenshots/ss_btn_{mod}_baru.png) | Baru | `btnNew` | btn-success | Membuka form tambah data baru. |
+| ![](screenshots/ss_btn_{mod}_edit.png) | Edit | `editItem()` | btn-outline-secondary | Membuka form ubah untuk baris terpilih. |
+
+### 3.2 Form Modal / Halaman Detail
+
+![Form Modal {NAMA_MODUL}](screenshots/ss_02_modal.png)
+
+{Narasi form — mode Tambah/Ubah, field wajib, perilaku khusus. Untuk halaman detail terpisah, ganti judul screenshot menjadi **Halaman Detail**.}
+
+#### 3.2.1 Form Modal (Tambah / Ubah)
 
 | Field Name | ID Elemen | Tipe | Mandatory | Default | Validasi | Keterangan |
 |------------|-----------|------|-----------|---------|----------|------------|
 | {Field} | `{idElemen}` | Text | Ya | (kosong) | — | {Keterangan} |
 
-#### 3.1.2 Tombol / Action Bar
+#### 3.2.2 Tombol Aksi — Form Modal
 
-| Tombol | ID | Warna/Style | Kondisi Aktif | Fungsi |
-|--------|-----|-------------|---------------|--------|
-| Baru | `btnNew` | Primary | Selalu | Buka form baru |
+| Tampilan | Tombol | ID / Handler | Warna/Style | Fungsi |
+|----------|--------|--------------|-------------|--------|
+| ![](screenshots/ss_btn_{mod}_simpan.png) | Simpan | `saveItem()` | btn-success | Menyimpan perubahan setelah validasi. |
 
-#### 3.1.3 Business Rules
+#### 3.2.3 Business Rules
 
 | Rule ID | Aturan |
 |---------|--------|
 | BR-01 | {Aturan bisnis eksplisit} |
 
-#### 3.1.4 CRUD
+#### 3.2.4 CRUD
 
 | Operasi | Cara | Role | Keterangan |
 |---------|------|------|------------|
-| **Create** | Klik Baru | {Role} | — |
-| **Read** | Buka halaman index | Semua | — |
-| **Update** | — | — | — |
-| **Delete** | — | — | — |
+| **Create** | Klik Baru → isi form → Simpan | {Role} | — |
+| **Read** | Buka dashboard list (DataTable) | Semua role | — |
+| **Update** | Klik Edit → ubah form → Simpan | {Role} | — |
+| **Delete** | — | — | Tidak tersedia (jika memang tidak ada di UI) |
+
+> **Urutan wajib:** screenshot → penjelasan (kolom / field / tombol) per tampilan. Lihat `docs/STANDARD-FSD-GENERATION.md` § Per Section UI.
+> Helper Markdown: `lib/fsd_ui_section.py`. Build otomatis menyisipkan page break antar bab utama.
 
 ---
 
-## 4. Halaman Detail — {NAMA_MODUL}
-
-**Tampilan Halaman Detail:**
-
-![Halaman Detail {NAMA_MODUL}](screenshots/ss_02_detail.png)
-
-### 4.1 Section Header
-
-#### 4.1.1 Fields – Header
-
-| Field Name | ID Elemen | Tipe | Mandatory | Default | Validasi | Keterangan |
-|------------|-----------|------|-----------|---------|----------|------------|
-| {Field} | `{id}` | Dropdown/LOV | Ya | (kosong) | — | — |
-
----
-
-## 5. Aturan Bisnis (Business Rules)
+## 4. Aturan Bisnis (Ringkasan Modul)
 
 | Rule ID | Aturan |
 |---------|--------|
-| BR-01 | {Ringkasan semua rules modul} |
+| BR-01 | {Ringkasan semua rules modul — boleh merujuk ke BR per section di bab 3} |
 
 ---
 
-## 6. Hak Akses & Peran Pengguna (RBAC)
+## 5. Hak Akses & Peran Pengguna (RBAC)
 
 | Bagian/Tab | {Role A} | {Role B} | Keterangan |
 |------------|----------|----------|------------|
-| Index | Read | Read | — |
-| Detail – Simpan | — | Write | — |
+| Dashboard list | Read | Read | — |
+| Detail / Form – Simpan | — | Write | — |
 
 ---
 
-## 7. Alur Persetujuan (jika ada)
+## 6. Alur Persetujuan (jika ada)
 
-### 7.1 Lane Swimlane
+### 6.1 Lane Swimlane
 
 | # | Lane ID | Label | Tipe | Sumber |
 |---|---------|-------|------|--------|
 | 1 | L1 | {Initiator} | User | `{path}` |
 | 2 | L2 | {Approver} | User | `{path}` |
 
-### 7.2 Swimlane — Workflow Approval
+### 6.2 Swimlane — Workflow Approval
 
 ```mermaid
 flowchart LR
@@ -212,7 +216,9 @@ flowchart LR
 
 ---
 
-## 8. Struktur Database & ERD
+## 7. Struktur Database & ERD
+
+> **Per proyek:** skema tabel, mapping UI→kolom DB, DDL, dan ERD **tidak distandarkan** isinya — hanya format penulisan bab ini. Isi dari database/sistem target masing-masing proyek (contoh: MAVEN PostgreSQL, Oracle, dll.).
 
 ```mermaid
 erDiagram
@@ -225,7 +231,7 @@ erDiagram
 
 ---
 
-## 9. List of Values (LOV)
+## 8. List of Values (LOV)
 
 | LOV | Sumber Data | Dipakai di |
 |-----|-------------|------------|
@@ -233,15 +239,15 @@ erDiagram
 
 ---
 
-## 10. Appendix
+## 9. Appendix
 
-### 10.1 Status Dokumen
+### 9.1 Status Dokumen
 
 | Kode Status | Label | Warna Badge | Keterangan |
 |-------------|-------|---------------|------------|
 | DRAFT | Draft | Abu-abu | — |
 
-### 10.2 Glosarium
+### 9.2 Glosarium
 
 | Istilah | Definisi |
 |---------|----------|
