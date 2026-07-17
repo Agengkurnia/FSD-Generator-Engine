@@ -1,0 +1,28 @@
+%%{init: {"theme":"base","themeVariables":{"fontSize":"14px"}}}%%
+flowchart LR
+  subgraph L1[Admin / User]
+    direction TB
+    A1[Buka modul]
+    A2[Isi form / upload]
+    A3[Tinjau data]
+  end
+  subgraph L2[Sistem Aplikasi]
+    direction TB
+    B1[Baca data dari database]
+    B2[Tampilkan daftar]
+    B3[Validasi via Client Side]
+    B4[Simpan ke database]
+  end
+  subgraph L3[API / Sistem Eksternal]
+    direction TB
+    C1[Sumber LOV / master]
+    C2[Input dari sistem luar]
+    C3[Sinkronisasi API]
+  end
+  A1 --> B1 --> B2 --> A2 --> B3 --> B4 --> A3
+  C1 -.-> A2
+  C2 -.-> B1
+  B4 -.-> C3
+  style L1 fill:#FFF9C4,stroke:#FBC02D,color:#333
+  style L2 fill:#E3F2FD,stroke:#1976D2,color:#333
+  style L3 fill:#F3E5F5,stroke:#7B1FA2,color:#333

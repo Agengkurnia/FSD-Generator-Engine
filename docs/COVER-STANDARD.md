@@ -130,6 +130,7 @@ Diisi otomatis oleh `update_document_approval()` di `lib/fsd_cover_merge.py` saa
 |-----------|-----------|
 | Muhammad Rafi | SHP Channel & Customer Development |
 | Silvester Mario Nian Destrada | SHP Channel & Customer Development |
+| Aldira Rahmania | SHP Channel & Customer Development |
 | Ageng Kurniawan Sugianto | IT Product |
 | Albet | IT Product |
 

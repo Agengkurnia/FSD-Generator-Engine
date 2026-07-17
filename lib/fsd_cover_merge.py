@@ -10,6 +10,7 @@ Digunakan oleh semua build_fsd_*.py di FSD Generator Engine.
 import os
 import re
 import shutil
+from copy import deepcopy
 
 from docx import Document
 from docx.enum.text import WD_ALIGN_PARAGRAPH
@@ -35,6 +36,7 @@ COVER_TABLE_COUNT = 2
 DEFAULT_DOCUMENT_APPROVAL = [
     {'name': 'Muhammad Rafi', 'title': 'SHP Channel & Customer Development'},
     {'name': 'Silvester Mario Nian Destrada', 'title': 'SHP Channel & Customer Development'},
+    {'name': 'Aldira Rahmania', 'title': 'SHP Channel & Customer Development'},
     {'name': 'Ageng Kurniawan Sugianto', 'title': 'IT Product'},
     {'name': 'Albet', 'title': 'IT Product'},
 ]
@@ -277,21 +279,27 @@ def _set_merged_row_text(row, start_col: int, end_col: int, text: str):
         row.cells[ci].text = text
 
 
+def _ensure_table_rows(table, target_count: int) -> None:
+    """Tambah baris (clone baris terakhir) sampai jumlah baris >= target_count."""
+    while len(table.rows) < target_count:
+        last_tr = table.rows[-1]._tr
+        table._tbl.append(deepcopy(last_tr))
+
+
 def update_document_approval(doc: Document, rows: list[dict] | None = None):
     """
     Isi tabel Document Approval (halaman 2) sesuai standar Kalbe/Falcon.
 
     Struktur template: table[1], baris 8+ — kolom 0-1 Full name, 2-5 Job Title,
-    6 Signature, 7 Signature Date.
+    6 Signature, 7 Signature Date. Baris ditambah otomatis jika daftar > template.
     """
     if len(doc.tables) <= APPROVAL_TABLE_INDEX:
         return
     approval = rows or DEFAULT_DOCUMENT_APPROVAL
     table = doc.tables[APPROVAL_TABLE_INDEX]
+    _ensure_table_rows(table, APPROVAL_DATA_START_ROW + len(approval))
     for i, person in enumerate(approval):
         ri = APPROVAL_DATA_START_ROW + i
-        if ri >= len(table.rows):
-            break
         row = table.rows[ri]
         name = person.get('name', '')
         title = person.get('title', '')

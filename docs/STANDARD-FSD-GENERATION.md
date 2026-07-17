@@ -258,7 +258,7 @@ Selain konten, dokumen **harus** mengikuti standar berikut agar MD dan DOCX hasi
 
 | Aspek | Standar |
 |-------|---------|
-| Caption (`alt text`) | Bahasa Indonesia, deskriptif — **tanpa** prefix `Gambar N` (penomoran otomatis di build) |
+| Caption (`alt text`) | Bahasa Indonesia, deskriptif — **tanpa** prefix `Gambar N` dan **tanpa** `Diagram 1/2/…` (penomoran otomatis di build) |
 | Caption di DOCX | Baris terpisah **center + italic**: `Gambar 3.1 — Judul` di bawah gambar; `Tabel 6.2.1 — Judul` di bawah tabel |
 | Penomoran | Per bab: `Gambar {bab}.{n}`; `Tabel {bab}.{sub}.{n}` jika di bawah `### N.M`, else `Tabel {bab}.{n}` |
 | Baris sebelum gambar | Bold label: `**Tampilan Halaman Index:**` |
@@ -266,7 +266,8 @@ Selain konten, dokumen **harus** mengikuti standar berikut agar MD dan DOCX hasi
 | Path | Relatif dari folder modul, **bukan** path absolut |
 | Urutan | Narasi konteks → label tampilan → gambar → caption otomatis → tabel field |
 | Lebar di DOCX | Auto-scale max **15 cm** (17 cm untuk grid lebar / swimlane — diatur build script) |
-| Diagram | Render PNG via Kroki; alt text = judul caption |
+| Diagram | Render PNG via Kroki; alt text = judul caption dari heading section / MermaidHandler |
+| Larangan | Alt `Diagram N` dilarang — diganti otomatis ke judul section; jangan duplikasi nomor |
 | Penamaan file | `ss_{2digit}_{deskripsi_snake}.png` |
 
 Detail capture: [PANDUAN_SCREENSHOT.md](PANDUAN_SCREENSHOT.md)
@@ -410,6 +411,20 @@ Acuan: `docs/examples/swimlane/restaurant-poc-plantuml.puml`
 - Jika swimlane terdeteksi (≥2 subgraph / ≥2 `|Role|`), build otomatis pakai lebar max **17 cm** (bukan 15 cm)
 - Handler diagram: [AI-START-HERE.md § Mermaid Handler](AI-START-HERE.md)
 - PoC visual: `py scripts/render_swimlane_poc.py`
+- Caption: **jangan** tulis alt `Diagram 1` — build memakai judul heading terdekat (`Gambar 2.1 — Business Flow`)
+
+#### F.7 Wording node konseptual (WAJIB)
+
+Swimlane Bab 2 menggambarkan **alur produksi dengan database**, bukan detail UI prototipe.
+
+| Hindari | Gunakan |
+|---------|---------|
+| Load seed JSON / localStorage | Baca data dari database |
+| Simpan ke localStorage | Simpan ke database |
+| Validasi client-side Swal | Validasi via Client Side |
+| DataTable / SweetAlert / dll. | Istilah konsep bisnis/sistem |
+
+Acuan template: `docs/examples/swimlane/swimlane-masterdata-db.mmd`
 
 ### G. Code Block & Pseudo-logic
 

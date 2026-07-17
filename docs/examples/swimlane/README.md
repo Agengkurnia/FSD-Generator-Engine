@@ -30,8 +30,24 @@ flowchart LR          ← lane = kolom (Customer | Clerk | Sistem | …)
 | `swimlane-4-role-template.mmd` | Template 4 role generik |
 | `swimlane-approval-template.mmd` | Template approval |
 | `swimlane-integration-template.mmd` | Template integrasi Master→Transaksi |
+| `swimlane-masterdata-db.mmd` | Template **konseptual + DB** (Admin / Sistem / API) — acuan Falcon Master Data |
 
-## Render PoC (bandingkan Mermaid vs PlantUML)
+## Standar wording node (konseptual)
+
+| Hindari (terlalu teknis UI) | Gunakan (konsep) |
+|-----------------------------|------------------|
+| Load seed JSON ke localStorage | Baca data dari database |
+| Simpan ke localStorage | Simpan ke database |
+| Validasi client-side Swal | Validasi via Client Side |
+| Tampilkan dashboard list DataTable | Tampilkan daftar |
+
+Alur Bab 2 harus menggambarkan **produksi dengan DB**, bukan langkah prototipe.
+
+## Caption gambar diagram
+
+- **Jangan** pakai alt text `Diagram 1`, `Diagram 2`, … — penomoran sudah `Gambar {bab}.{n}`
+- Alt / judul caption = nama section (mis. `Business Flow`, `ERD – Modul X`)
+- Pipeline build (`lib/fsd_module_runner.py`) otomatis mengganti alt `Diagram N` dengan judul heading terdekat
 
 ```powershell
 cd "D:\Work\Source\FSD Generator Engine"
