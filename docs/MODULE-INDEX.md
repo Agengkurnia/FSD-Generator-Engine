@@ -14,6 +14,7 @@ Katalog modul FSD Generator Engine. **Perbarui** saat menambah modul baru.
 | `oracle-registration` | `modules/oracle-registration/` | `source/FSD_Oracle_Registration_v1.1.md` | `py build.py` | active |
 | `item-code-trial` | `modules/item-code-trial/` | `source/FSD_ItemCodeTrial_v3.0.md` | `py build.py` | active |
 | `formulation-lab` | `modules/formulation-lab/` | `source/FSD_LaboratoryFormula_v1.1.md` | `py build.py` | active |
+| `sample-result-gvn-shp` | `modules/sample-result-gvn-shp/` | `source/FSD_Sample_Result_GVN_SHP_v1.0.md` | `py build.py` | active |
 
 ---
 

@@ -151,3 +151,4 @@ COVER_META = parse_md_cover_meta(raw, defaults={
 1. Buka DOCX di Microsoft Word
 2. Tekan **F9** untuk update field TOC
 3. Verifikasi halaman 1–2 sesuai template
+4. **Footer:** halaman cover & Document Approval **tidak** menampilkan nomor halaman (hanya teks *Company Confidential* bila ada). Nomor halaman dihapus otomatis saat `merge_cover_and_content()`.

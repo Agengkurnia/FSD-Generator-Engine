@@ -387,6 +387,54 @@ def trim_template_body(doc: Document, keep: int = FRONT_MATTER_KEEP):
         body.remove(child)
 
 
+def strip_page_number_from_footers(doc: Document):
+    """Hapus field PAGE di footer — halaman cover & approval tidak memakai nomor halaman."""
+    from docx.oxml.ns import qn
+
+    for section in doc.sections:
+        for footer in (section.footer, section.even_page_footer, section.first_page_footer):
+            if footer is None:
+                continue
+            try:
+                if not footer.is_linked_to_previous:
+                    pass
+            except Exception:
+                pass
+            for p in list(footer.paragraphs):
+                instr = ''.join(
+                    (node.text or '')
+                    for node in p._p.findall('.//' + qn('w:instrText'))
+                )
+                if 'PAGE' not in instr.upper():
+                    continue
+                visible = (p.text or '').strip()
+                # Hapus paragraf yang hanya berisi PAGE field
+                if not visible or visible.isdigit():
+                    p._element.getparent().remove(p._element)
+                    continue
+                # Sisakan teks non-PAGE (mis. Company Confidential): buang run field
+                in_field = False
+                for child in list(p._p):
+                    if child.tag == qn('w:pPr'):
+                        continue
+                    if child.tag != qn('w:r'):
+                        if in_field:
+                            p._p.remove(child)
+                        continue
+                    fld = child.find(qn('w:fldChar'))
+                    instr_el = child.find(qn('w:instrText'))
+                    if fld is not None:
+                        ftype = fld.get(qn('w:fldCharType'))
+                        if ftype == 'begin':
+                            in_field = True
+                        elif ftype == 'end':
+                            in_field = False
+                        p._p.remove(child)
+                        continue
+                    if instr_el is not None or in_field:
+                        p._p.remove(child)
+
+
 def merge_cover_and_content(
     content_path: str,
     output_path: str,
@@ -404,6 +452,7 @@ def merge_cover_and_content(
 
     set_cover_logo(master, logo_path)
     update_cover_pages(master, meta)
+    strip_page_number_from_footers(master)
     trim_template_body(master)
 
     composer = Composer(master)
