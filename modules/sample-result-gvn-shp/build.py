@@ -50,7 +50,7 @@ PLANTUML_HANDLERS = [
         'Swimlane – Business Flow Sample Result GVN-SHP',
     ),
     PlantumlHandler(
-        lambda c: '|Requestor / Lab Admin|' in c and 'Sync Result' in c,
+        lambda c: '|Requestor|' in c and 'Lakukan Sync?' in c,
         os.path.join(SCREENSHOTS, 'diagram_swimlane_result_sync.png'),
         'Swimlane-Sync',
         'Swimlane – Result Sync Disposition',
@@ -59,10 +59,10 @@ PLANTUML_HANDLERS = [
 
 MERMAID_HANDLERS = [
     MermaidHandler(
-        lambda c: 'erDiagram' in c and 'TR_SAMPLE_REQUEST' in c,
+        lambda c: 'erDiagram' in c and 'TrresultSampleGvn' in c,
         os.path.join(SCREENSHOTS, 'diagram_erd.png'),
         'ERD',
-        'ERD – Sample Result GVN-SHP (konseptual)',
+        'ERD – Sample Result GVN-SHP (standar DAL)',
     ),
 ]
 

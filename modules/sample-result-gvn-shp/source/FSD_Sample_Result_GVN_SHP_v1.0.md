@@ -1,14 +1,14 @@
 # FUNCTIONAL SPECIFICATION DOCUMENT (FSD)
 ## Modul: Sample Result GVN-SHP Integration
 ### Sistem: Analytical Central (KNAC) — PT. Sanghiang Perkasa
-### Versi Dokumen: 1.0
+### Versi Dokumen: 1.1
 
 ---
 
 | Atribut | Keterangan |
 |---------|------------|
 | **Nama Dokumen** | FSD Modul Sample Result GVN-SHP Integration |
-| **Versi** | 1.0 |
+| **Versi** | 1.1 |
 | **Tanggal** | 22 Juli 2026 |
 | **Divisi** | IT Digital Solution |
 | **Status** | Draft |
@@ -23,7 +23,8 @@
 
 | Versi | Tanggal | Diubah Oleh | Keterangan |
 |-------|---------|-------------|------------|
-| **1.0** | **22 Juli 2026** | **Tim IT Digital Solution** | Initial Document — proses otoritatif mockup + flowapps |
+| **1.1** | **22 Juli 2026** | **Tim IT Digital Solution** | Revisi: bullet flow, swimlane OSIR→SHP, status NEW, hapus ID Elemen, query Oracle, ERD DAL, screenshot LOV |
+| 1.0 | 22 Juli 2026 | Tim IT Digital Solution | Initial Document — proses otoritatif mockup + flowapps |
 
 ---
 
@@ -53,7 +54,7 @@ Pada kondisi as-is, codebase `analyticalcentralwebsite` sudah memiliki workflow 
 | Create / Edit / Submit Sample Request (Retest, Spec GVN, Manual) | Eksekusi analisa lab di aplikasi **OSIR** |
 | Generate Sample ke Oracle SHP (± GVN) setelah Submit | Full rebuild master data Oracle SHP/GVN |
 | List, Create, Edit, Sync Result Sample GVN | Fitur Master User & Total Capability (CMS existing / pelengkap mockup) |
-| Status board, Status History, Parameter & Sample tab | BRD proyek lain (`brd_text.txt` Formulation Revamp) |
+| Status board, Status History, Parameter & Sample tab | — |
 | Aturan numbering sample `GVN-MN…`, mutual exclusion Retest↔Spec | Hangfire / background job retry (keputusan terpisah) |
 
 ### 1.4 Stakeholder
@@ -63,7 +64,6 @@ Pada kondisi as-is, codebase `analyticalcentralwebsite` sudah memiliki workflow 
 | Document Approver | IT Digital Solution | Review & approval FSD (Hendi Hendrasta, Debby Tantika Ardi) |
 | Document Approver | Project Management | Review & approval FSD (Cut Shafira Salsabila, Andreas Kurnijanto) |
 | Requestor / Sampler | Lab / Business | Create request, submit, view result |
-| Lab Admin | Analytical Central Admin | Monitor request, pull/map result, Sync |
 | System Integrator | IT | Integrasi Oracle SHP, Oracle GVN, KN Global |
 | Client | Eksternal / internal | > **[TBD]** — alur Client Approved ada di BRD, tidak di mockup |
 
@@ -87,7 +87,17 @@ Lihat **Bab 9 — Glosarium** untuk daftar lengkap (KNAC, SHP, GVN, OSIR, Syncro
 
 ## 2. Ringkasan Business Flow
 
-Alur to-be (otoritatif mockup + flowapps) berlangsung dalam lima fase. User membuat **Sample Request** di KNAC dengan salah satu basis: **Retest**, **Get Spec (Spec GVN)**, atau **Manual**. Setelah data lengkap, user **Submit Request**. Sistem kemudian **Generate Sample**: jika Retest = No → Oracle SHP **dan** Oracle GVN; jika Retest = Yes → **hanya** Oracle SHP. Analisa lab berjalan di **OSIR** (di luar KNAC). Setelah hasil tersedia, user membuka menu **Result Sample GVN**, memetakan Sample SHP ↔ Sample GVN, lalu **Sync** (SYNC = YES) untuk Input Result ke Oracle GVN dengan Sample No. SHP sebagai source; atau berhenti di KNAC jika tidak di-Sync.
+Alur to-be (otoritatif mockup + flowapps) ringkas sebagai berikut:
+
+1. Requestor membuat **Sample Request** di KNAC dengan salah satu basis: **Retest**, **Get Spec (Spec GVN)**, atau **Manual**.
+2. Requestor melengkapi header, parameter, dan quantity sample, lalu **Save Draft** (opsional) atau langsung **Submit Request**.
+3. Sistem mengubah status menjadi **Submitted to Oracle** dan **Generate Sample**:
+   - Retest = **No** → generate di **Oracle SHP** dan **Oracle GVN**
+   - Retest = **Yes** → generate **hanya di Oracle SHP**
+4. Analisa lab dilakukan di **OSIR** (di luar KNAC) hingga result diinput.
+5. Setelah result diinput di OSIR, data **tersinkron ke Oracle SHP**.
+6. Requestor membuka menu **Result Sample GVN**, memetakan Sample SHP ↔ Sample GVN, lalu mereview parameter result.
+7. Requestor memilih **Sync** (SYNC = YES) untuk Input Result ke Oracle GVN (Sample No. SHP sebagai source) → status **Syncronized**; atau hanya Save → tetap **Draft** di KNAC.
 
 > **Gap BRD:** BRD memicu generate setelah **Client Approved**, disposisi **OK / NOT OK** + auto-retest, serta **Notify Sampler** dan **Failed Integration**. Fitur tersebut **belum** ada di mockup/flowapps — dicatat di Bab 5 & 9 sebagai **[TBD]**.
 
@@ -95,12 +105,12 @@ Alur to-be (otoritatif mockup + flowapps) berlangsung dalam lima fase. User memb
 
 **Lane (urutan kiri → kanan):**
 
-| # | Lane ID | Label | Tipe | Sumber |
-|---|---------|-------|------|--------|
-| 1 | L1 | Requestor / Sampler | User | `flowapps.txt` Fase 1–2; mockup create |
-| 2 | L2 | Analytical Central (KNAC) | System | `flowapps.txt` Fase 2–3, 5 |
-| 3 | L3 | Oracle SHP / GVN | ERP / Integrasi | `flowapps.txt` Fase 3, 5; BRD §2 |
-| 4 | L4 | OSIR Lab | External | `flowapps.txt` Fase 4 |
+| # | Lane ID | Label | Tipe |
+|---|---------|-------|------|
+| 1 | L1 | Requestor / Sampler | User |
+| 2 | L2 | Analytical Central (KNAC) | System |
+| 3 | L3 | Oracle SHP / GVN | ERP / Integrasi |
+| 4 | L4 | OSIR Lab | External |
 
 ### 2.2 Swimlane — Alur Sample Request hingga Result Sync
 
@@ -134,6 +144,10 @@ endif
 
 |OSIR Lab|
 :Analisa sample\n(as-is hingga result diinput);
+:Sinkronkan result\nke Oracle SHP;
+
+|Oracle SHP / GVN|
+:Result tersedia\ndi Oracle SHP;
 
 |Requestor / Sampler|
 :Buka menu Result Sample GVN;
@@ -156,8 +170,9 @@ stop
 
 1. Requestor → KNAC: Submit Request menyimpan data dan memicu generate.
 2. KNAC → Oracle: Generate Sample SHP (± GVN) sesuai flag Retest.
-3. Oracle/OSIR → Requestor: Hasil lab tersedia untuk ditarik di menu Result (tanpa UI OSIR di KNAC).
-4. Requestor → KNAC → Oracle GVN: Sync Result mengirim hasil terpetakan.
+3. OSIR → Oracle SHP: Setelah result diinput di OSIR, data tersinkron ke Oracle SHP.
+4. Requestor → KNAC: Buka Result Sample GVN setelah data tersedia di Oracle SHP.
+5. Requestor → KNAC → Oracle GVN: Sync Result mengirim hasil terpetakan.
 
 ### 2.3 Ringkasan Status Request (Mockup)
 
@@ -171,7 +186,8 @@ stop
 
 | Kode Status | Label | Transisi |
 |-------------|-------|----------|
-| `Draft` | Draft | Create / Save result |
+| `New` | New | Saat buka form create result |
+| `Draft` | Draft | Setelah `saveData()` pada result |
 | `Syncronized` | Syncronized | Setelah `syncResult()` sukses |
 
 ---
@@ -190,13 +206,11 @@ Halaman list menampilkan kartu ringkasan (Total / Draft / Submitted to Oracle) d
 
 #### 3.1.1 Dashboard Cards
 
-| Elemen | ID Elemen | Handler | Keterangan |
-|--------|-----------|---------|------------|
-| Total Requests | `countAll` | `filterTable('')` | Menampilkan semua baris |
-| Draft | `countDraft` | `filterTable('Draft')` | Filter status Draft |
-| Submitted to Oracle | `countSubmit` | `filterTable('Submitted to Oracle')` | Filter status Submitted |
-
-#### 3.1.2 Kolom DataTable List
+| Elemen | Handler | Keterangan |
+| -------- | --------- | ------------ |
+| Total Requests | `filterTable('')` | Menampilkan semua baris |
+| Draft | `filterTable('Draft')` | Filter status Draft |
+| Submitted to Oracle | `filterTable('Submitted to Oracle')` | Filter status Submitted |#### 3.1.2 Kolom DataTable List
 
 | Kolom | Field Key / Entity Field | Render | Sortable | Keterangan |
 |-------|--------------------------|--------|----------|------------|
@@ -218,9 +232,9 @@ Halaman list menampilkan kartu ringkasan (Total / Draft / Submitted to Oracle) d
 
 | Operasi | Cara | Role | Keterangan |
 |---------|------|------|------------|
-| **Create** | Klik + New | Requestor / Lab Admin (inferred) | Form create |
+| **Create** | Klik + New | Requestor / Admin (inferred) | Form create |
 | **Read** | Buka list / filter card | Semua role terautentikasi (inferred) | Filter via `filterTable` |
-| **Update** | Klik Edit pada baris | Requestor / Lab Admin (inferred) | Detail page |
+| **Update** | Klik Edit pada baris | Requestor / Admin (inferred) | Detail page |
 
 ### 3.2 Create Sample Request
 
@@ -230,43 +244,122 @@ Halaman create (`request_create_cms.html`) berisi Status Board (Alert `New`, Pro
 
 ![Halaman Create Sample Request](screenshots/ss_02_request_create.png)
 
+#### 3.2.0 Query Oracle — Sumber LOV Create Request
+
+Halaman Create Request memakai extract Oracle (mock file di `Mockup_AnalyticalCentral/Data/`). Query referensi:
+
+**Spec GVN** (`Spec_GVN.json`) — Spec = Yes:
+
+```sql
+SELECT gs.spec_id, gs.spec_name, gs.spec_vers, gs.spec_desc, gs.inventory_item_id,
+       msi.segment1 AS Item_Code, msi.description, msi.item_type,
+       svr.ORGANIZATION_CODE,
+       gst.test_id, gqt.test_code, gqt.test_desc AS Parameter, gqt.test_class,
+       gtm.test_method_id, gtm.test_method_desc AS Test_Method,
+       gqt.test_type, gqt.test_unit AS UOM,
+       NVL(TO_CHAR(gst.min_value_num), gst.min_value_char) AS combined_min,
+       NVL(TO_CHAR(gst.max_value_num), gst.max_value_char) AS combined_max,
+       NVL(TO_CHAR(gst.target_value_num), gst.target_value_char) AS combined_target
+FROM gmd_specifications gs
+INNER JOIN GMD_ALL_SPEC_VRS_VL svr ON gs.spec_id = svr.spec_id
+LEFT JOIN MTL_SYSTEM_ITEMS msi
+  ON msi.inventory_item_id = gs.inventory_item_id
+ AND gs.owner_organization_id = msi.organization_id
+LEFT JOIN gmd_spec_tests gst ON gs.spec_id = gst.spec_id
+LEFT JOIN GMD_QC_TESTS gqt ON gqt.test_id = gst.test_id
+LEFT JOIN GMD_TEST_METHODS gtm ON gqt.test_method_id = gtm.test_method_id
+WHERE svr.SPEC_VR_STATUS = 700
+```
+
+**Sample SHP Retest** (`Sample_SHP.json`) — Retest = Yes:
+
+```sql
+SELECT gs.sample_id, gs.sample_no, gs.sample_desc, gs.batch_id,
+       gs.inventory_item_id, msi.segment1, gs.lot_number, gs.creation_date,
+       gr.seq, gqt.test_code, gr.result_value_num, gqt.test_unit, gr.result_value_char
+FROM GMD_SAMPLES gs, mtl_system_items msi, gmd_results gr,
+     GMD_QC_TESTS gqt, Gmd_spec_results gsr
+WHERE gs.inventory_item_id = msi.inventory_item_id
+  AND gs.organization_id = msi.organization_id
+  AND gs.sample_id = gr.sample_id
+  AND gr.test_id = gqt.test_id
+  AND gr.result_id = gsr.result_id
+  AND gsr.evaluation_ind <> '5O'
+  AND gs.creation_date >= TO_DATE('2026-02-01', 'YYYY-MM-DD')
+  AND (msi.segment1 LIKE 'IBMIX%' OR msi.segment1 LIKE 'FGDUM%')
+ORDER BY gs.sample_no, gr.seq
+```
+
+**Item Lot GVN** (`Item Lot GVN.json`):
+
+```sql
+SELECT msi.segment1 AS item_code, msi.description AS item_description,
+       mln.lot_number,
+       mln.origination_date AS lot_creation_date,
+       mln.expiration_date AS lot_expired_date,
+       mln.status_id, msi.organization_id
+FROM mtl_lot_numbers mln
+JOIN mtl_system_items_b msi
+  ON mln.inventory_item_id = msi.inventory_item_id
+ AND mln.organization_id = msi.organization_id
+WHERE msi.organization_id = 84
+ORDER BY mln.origination_date DESC
+```
+
+**Test Code SHP** (`Test Code SHP.json`) — enrich Method/UOM/Test Class:
+
+```sql
+SELECT gqt.test_id, gqt.test_code AS PARAMETER, gqt.test_desc, gqt.test_class,
+       gtm.test_method_id, gtm.test_method_desc AS TEST_METHOD,
+       gqt.test_type, gqt.test_unit, gqt.delete_mark,
+       gqt.min_value_num, gqt.max_value_num
+FROM GMD_QC_TESTS gqt
+LEFT JOIN GMD_TEST_METHODS gtm ON gqt.test_method_id = gtm.test_method_id
+LEFT JOIN GMD_QC_TEST_VALUES gqtv ON gqt.test_id = gqtv.test_id
+```
+
+**Tampilan LOV / Popup Create Request:**
+
+![Modal + New Parameter](screenshots/ss_07_lov_modal_add_parameter.png)
+
+![LOV Spec GVN (Select2)](screenshots/ss_08_lov_spec_gvn.png)
+
+![LOV Retest Sample No. SHP](screenshots/ss_09_lov_retest_sample_shp.png)
+
+
 #### 3.2.1 Status Board & Status History
 
-| Elemen | ID Elemen | Keterangan |
-|--------|-----------|------------|
-| Status History Accordion | `statusHistoryAccordion` | Riwayat status dokumen |
-| Heading Status | `headingStatus` | Judul accordion |
-| Collapse Status | `collapseStatus` | Konten tabel history |
-
-Kolom history (mock): No, Status, Created By (role), Timestamp.
+| Elemen | Keterangan |
+| -------- | ------------ |
+| Status History Accordion | Riwayat status dokumen |
+| Heading Status | Judul accordion |
+| Collapse Status | Konten tabel history |Kolom history (mock): No, Status, Created By (role), Timestamp.
 
 #### 3.2.2 Fields – Header (Create)
 
-| Field Name | ID Elemen | Tipe | Mandatory | Default | Validasi | Keterangan |
-|------------|-----------|------|-----------|---------|----------|------------|
-| Request Number | > **[TBD]** — tanpa `id` di HTML | Text (readonly) | Ya (Auto) | `AUTOGENERATE` | — | Nomor request otomatis |
-| Requester | > **[TBD]** | Text (readonly) | Ya (Auto) | `AUTOGENERATE` | — | Dari sesi login |
-| Request Date | > **[TBD]** | Text (readonly) | Ya (Auto) | `AUTOGENERATE` | — | Tanggal pengajuan |
-| Objective | > **[TBD]** | Text | Opsional | (kosong) | — | Tujuan request |
-| Company Name | > **[TBD]** | Text | Ya | `PT. Global Vita Nutritech` | — | Nama perusahaan |
-| Priority | > **[TBD]** | Dropdown/LOV | Ya | Select Priority | Normal / Urgent / Top Urgent | Prioritas request |
-| Factory (Same with Company) | > **[TBD]** | Checkbox | Tidak | Checked | — | Salin nama/alamat perusahaan |
-| Factory Name | > **[TBD]** | Text | Ya | Sama Company Name | — | Nama pabrik |
-| Factory Address | > **[TBD]** | Textarea | Ya | Alamat demo mock | — | Alamat pabrik |
-| Retest | `retestYes` / `retestNo` (`name=retest`) | Radio | Ya | No | Mutual exclusive dengan Spec GVN | Handler `updateLogic()` |
-| Sample No. SHP | `retestSampleNoShp` (row `sampleNoShpRow`) | Dropdown/LOV | Ya jika Retest=Yes | (kosong) | Wajib pilih sample prior | Sumber `Sample_SHP.json` |
-| Spec GVN | `specGvnYes` / `specGvnNo` (`name=specGvn`) | Radio | Ya | No | Mutual exclusive dengan Retest | = Use Spec BRD |
-| Select Spec GVN | `specGvnSelect` (row `specGvnSelectRow`) | Dropdown/LOV | Ya jika Spec=Yes | (kosong) | `SPEC_NAME \| SPEC_VERS` | Sumber `Spec_GVN.json` |
-| Item GVN | `itemGvnInput` (row `itemGvnRow`) | Dropdown/LOV (Select2, tags) | Ya | (kosong) | — | Autofill dari Spec jika Spec=Yes |
-| Lot GVN | `lotGvnInput` (row `lotGvnRow`) | Dropdown/LOV | Opsional | (kosong) | Filter by Item | Sumber `Item Lot GVN.json` |
-| Sample Name | `headerSampleName` | Text | Ya | Auto Item atau Item-Lot | — | Diisi `updateSampleName()` |
-| Matrix Product | > **[TBD]** | Dropdown/LOV | Opsional | --Select Data-- | — | Placeholder mock |
-| Packaging | > **[TBD]** | Dropdown/LOV | Opsional | --Select Packaging-- | — | Placeholder mock |
-| Storage Condition | > **[TBD]** | Dropdown/LOV | Opsional | --Select Storage-- | — | Placeholder mock |
-| Reference Sample | > **[TBD]** | Text | Opsional | (kosong) | — | Referensi sample |
-| Remark | > **[TBD]** | Textarea | Opsional | (kosong) | — | Catatan |
-
-#### 3.2.3 Tab Parameter — Kolom Grid
+| Field Name | Tipe | Mandatory | Default | Validasi | Keterangan |
+| ------------ | ------ | ----------- | --------- | ---------- | ------------ |
+| Request Number | Text (readonly) | Ya (Auto) | `AUTOGENERATE` | — | Nomor request otomatis |
+| Requester | Text (readonly) | Ya (Auto) | `AUTOGENERATE` | — | Dari sesi login |
+| Request Date | Text (readonly) | Ya (Auto) | `AUTOGENERATE` | — | Tanggal pengajuan |
+| Objective | Text | Opsional | (kosong) | — | Tujuan request |
+| Company Name | Text | Ya | `PT. Global Vita Nutritech` | — | Nama perusahaan |
+| Priority | Dropdown/LOV | Ya | Select Priority | Normal / Urgent / Top Urgent | Prioritas request |
+| Factory (Same with Company) | Checkbox | Tidak | Checked | — | Salin nama/alamat perusahaan |
+| Factory Name | Text | Ya | Sama Company Name | — | Nama pabrik |
+| Factory Address | Textarea | Ya | Alamat demo mock | — | Alamat pabrik |
+| Retest | Radio | Ya | No | Mutual exclusive dengan Spec GVN | Handler `updateLogic()` |
+| Sample No. SHP | Dropdown/LOV | Ya jika Retest=Yes | (kosong) | Wajib pilih sample prior | Sumber `Sample_SHP.json` |
+| Spec GVN | Radio | Ya | No | Mutual exclusive dengan Retest | = Use Spec BRD |
+| Select Spec GVN | Dropdown/LOV | Ya jika Spec=Yes | (kosong) | `SPEC_NAME \ | SPEC_VERS` | Sumber `Spec_GVN.json` |
+| Item GVN | Dropdown/LOV (Select2, tags) | Ya | (kosong) | — | Autofill dari Spec jika Spec=Yes |
+| Lot GVN | Dropdown/LOV | Opsional | (kosong) | Filter by Item | Sumber `Item Lot GVN.json` |
+| Sample Name | Text | Ya | Auto Item atau Item-Lot | — | Diisi `updateSampleName()` |
+| Matrix Product | Dropdown/LOV | Opsional | --Select Data-- | — | Placeholder mock |
+| Packaging | Dropdown/LOV | Opsional | --Select Packaging-- | — | Placeholder mock |
+| Storage Condition | Dropdown/LOV | Opsional | --Select Storage-- | — | Placeholder mock |
+| Reference Sample | Text | Opsional | (kosong) | — | Referensi sample |
+| Remark | Textarea | Opsional | (kosong) | — | Catatan |#### 3.2.3 Tab Parameter — Kolom Grid
 
 Tab `pills-parameter` / `pills-parameter-tab`. Body: `parameterTableBody`.
 
@@ -290,31 +383,27 @@ Tab `pills-parameter` / `pills-parameter-tab`. Body: `parameterTableBody`.
 
 #### 3.2.4 Modal + New Parameter
 
-| Field Name | ID Elemen | Tipe | Mandatory | Default | Validasi | Keterangan |
-|------------|-----------|------|-----------|---------|----------|------------|
-| Parameter | `swal-param` | Dropdown/LOV (Select2) | Ya | (kosong) | Required (`alert` jika kosong) | Capability parameter |
-| Jumlah Baris | `qtyParam` | Number | Ya | 1 | ≥ 1 | Append N baris kosong |
-| + Tambah | `btnAddParameter` | Button | — | — | — | Menambah baris ke grid |
-
-#### 3.2.5 Tab Sample — Generate
+| Field Name | Tipe | Mandatory | Default | Validasi | Keterangan |
+| ------------ | ------ | ----------- | --------- | ---------- | ------------ |
+| Parameter | Dropdown/LOV (Select2) | Ya | (kosong) | Required (`alert` jika kosong) | Capability parameter |
+| Jumlah Baris | Number | Ya | 1 | ≥ 1 | Append N baris kosong |
+| + Tambah | Button | — | — | — | Menambah baris ke grid |#### 3.2.5 Tab Sample — Generate
 
 Tab `pills-sample` / `pills-sample-tab`. Body: `sampleTableBody`.
 
-| Field Name | ID Elemen | Tipe | Mandatory | Default | Validasi | Keterangan |
-|------------|-----------|------|-----------|---------|----------|------------|
-| Quantity Sample | `qtySample` | Number | Ya saat Submit (tooltip) | 0 | Tooltip: minimal 1 — **belum enforce di JS** | Jumlah sample yang digenerate |
-| Generate | `btnGenerateSample` | Button | — | — | — | Bangun N baris sample |
+| Field Name | Tipe | Mandatory | Default | Validasi | Keterangan |
+| ------------ | ------ | ----------- | --------- | ---------- | ------------ |
+| Quantity Sample | Number | Ya saat Submit (tooltip) | 0 | Tooltip: minimal 1 — **belum enforce di JS** | Jumlah sample yang digenerate |
+| Generate | Button | — | — | — | Bangun N baris sample |
 
-| Kolom Grid Sample | Keterangan |
-|-------------------|------------|
-| No | Urutan |
-| Sample No. SHP | Format baru `GVN-MN[MM][YY]-[XXXXX]`; retest `[NOMOR]-[XX]` (tooltip) |
-| Pooling No. SHP | Format tooltip `GVN-[YY]-[MM]-[XXX]` |
-| Sample No. GVN | Baru: sama konsep Sample SHP; retest: tanpa counter retest; data Oracle nyata: numerik |
-| Sample Description for (COA) | Default = Sample Name header |
-| Total Min Sample (g) | Mock hardcoded `125` |
-
-#### 3.2.6 Tombol Aksi — Create Request
+| Kolom Grid Sample |
+| ------------------- |
+| No |
+| Sample No. SHP |
+| Pooling No. SHP |
+| Sample No. GVN |
+| Sample Description for (COA) |
+| Total Min Sample (g) |#### 3.2.6 Tombol Aksi — Create Request
 
 | Tampilan | Tombol | ID / Handler | Warna/Style | Fungsi |
 |----------|--------|--------------|-------------|--------|
@@ -346,14 +435,12 @@ Halaman `request_detail_cms.html` menampilkan request yang sudah **Submitted to 
 
 #### 3.3.1 Fields – Detail (perbedaan vs Create)
 
-| Field Name | ID Elemen | Tipe | Mandatory | Default | Validasi | Keterangan |
-|------------|-----------|------|-----------|---------|----------|------------|
-| Sample Name | `headerSampleName` | Text (readonly) | Ya | Nilai tersimpan | — | Background readonly |
-| Quantity Sample | `qtySample` | Number (readonly) | Ya | Nilai tersimpan | — | Generate hidden |
-| Parameter Min/Max/Target | sel di `parameterTableBody` | Text | Opsional | Demo rows | — | Masih editable di mock |
-| Admin Review / Conclusion | > **[TBD]** — kolom **tidak ada** di HTML | — | — | — | — | Bertentangan dengan teks alert |
-
-#### 3.3.2 Tombol Aksi — Detail Request
+| Field Name | Tipe | Mandatory | Default | Validasi | Keterangan |
+| ------------ | ------ | ----------- | --------- | ---------- | ------------ |
+| Sample Name | Text (readonly) | Ya | Nilai tersimpan | — | Background readonly |
+| Quantity Sample | Number (readonly) | Ya | Nilai tersimpan | — | Generate hidden |
+| Parameter Min/Max/Target | Text | Opsional | Demo rows | — | Masih editable di mock |
+| Admin Review / Conclusion | — | — | — | — | Bertentangan dengan teks alert |#### 3.3.2 Tombol Aksi — Detail Request
 
 | Tampilan | Tombol | ID / Handler | Warna/Style | Fungsi |
 |----------|--------|--------------|-------------|--------|
@@ -366,8 +453,8 @@ Tidak ada tombol **Submit** pada halaman detail mockup.
 
 | Operasi | Cara | Role | Keterangan |
 |---------|------|------|------------|
-| **Read** | Buka dari list Edit | Requestor / Lab Admin | Status Submitted |
-| **Update** | Ubah field → Save | Lab Admin (inferred) | Parameter masih editable di mock |
+| **Read** | Buka dari list Edit | Requestor / Admin | Status Submitted |
+| **Update** | Ubah field → Save | Admin (inferred) | Parameter masih editable di mock |
 
 ---
 
@@ -385,13 +472,11 @@ Data list dimuat dari `fetch('./Data/Sample_GVN.json')`, distinct by `SAMPLE_NO`
 
 #### 4.1.1 Dashboard Cards
 
-| Elemen | ID Elemen | Handler | Keterangan |
-|--------|-----------|---------|------------|
-| Total | `countAll` | `filterStatus('')` | Semua result |
-| Draft | `countDraft` | `filterStatus('Draft')` | Belum Sync |
-| Syncronized | `countSync` | `filterStatus('Syncronized')` | Sudah Sync |
-
-#### 4.1.2 Kolom DataTable List Result
+| Elemen | Handler | Keterangan |
+| -------- | --------- | ------------ |
+| Total | `filterStatus('')` | Semua result |
+| Draft | `filterStatus('Draft')` | Belum Sync |
+| Syncronized | `filterStatus('Syncronized')` | Sudah Sync |#### 4.1.2 Kolom DataTable List Result
 
 | Kolom | Field Key | Render | Sortable | Keterangan |
 |-------|-----------|--------|----------|------------|
@@ -417,9 +502,9 @@ Tabel: `tableResultSample`, body `tableResultSampleBody`.
 
 | Operasi | Cara | Role | Keterangan |
 |---------|------|------|------------|
-| **Create** | + New | Lab Admin (inferred) | Mapping baru |
-| **Read** | List + filter | Requestor / Lab Admin | `filterStatus` |
-| **Update** | Input Result | Lab Admin | Edit + Sync |
+| **Create** | + New | Admin (inferred) | Mapping baru |
+| **Read** | List + filter | Requestor / Admin | `filterStatus` |
+| **Update** | Input Result | Admin | Edit + Sync |
 
 ---
 
@@ -431,25 +516,70 @@ Halaman `result_sample_gvn_create_cms.html`. Status **Draft**, Progress 50%. Sec
 
 ![Halaman Create Result Sample GVN](screenshots/ss_05_result_create.png)
 
+#### 4.2.0 Query Oracle — Sumber LOV Create Result
+
+**Sample SHP Ver2** (`Sample_SHP_Ver2.json`) — Sample No. SHP + disposition/dates:
+
+```sql
+SELECT gs.sample_id, gs.sample_no, gs.sample_desc, gs.batch_id,
+       gs.inventory_item_id, msi.segment1, gs.lot_number, gs.creation_date,
+       gs.last_update_date AS LAST_UPDATE_DATE,
+       gs.sample_disposition AS SAMPLE_DISPOSITION,
+       gr.seq, gqt.test_code, gr.result_value_num, gqt.test_unit, gr.result_value_char
+FROM GMD_SAMPLES gs, mtl_system_items msi, gmd_results gr,
+     GMD_QC_TESTS gqt, Gmd_spec_results gsr
+WHERE gs.inventory_item_id = msi.inventory_item_id
+  AND gs.organization_id = msi.organization_id
+  AND gs.sample_id = gr.sample_id
+  AND gr.test_id = gqt.test_id
+  AND gr.result_id = gsr.result_id
+  AND gsr.evaluation_ind <> '5O'
+  AND gs.creation_date >= TO_DATE('2026-02-01', 'YYYY-MM-DD')
+  AND (msi.segment1 LIKE 'IBMIX%' OR msi.segment1 LIKE 'FGDUM%')
+ORDER BY gs.sample_no, gr.seq
+```
+
+**Sample GVN** (`Sample_GVN.json`) — Sample No. GVN + list Result:
+
+```sql
+SELECT gs.sample_id, gs.sample_no, gs.sample_desc, gs.batch_id,
+       gs.inventory_item_id, msi.segment1, gs.lot_number, gs.creation_date,
+       gr.seq, gqt.test_code, gr.result_value_num, gqt.test_unit, gr.result_value_char
+FROM GMD_SAMPLES gs, mtl_system_items msi, gmd_results gr,
+     GMD_QC_TESTS gqt, Gmd_spec_results gsr
+WHERE gs.inventory_item_id = msi.inventory_item_id
+  AND gs.organization_id = msi.organization_id
+  AND gs.sample_id = gr.sample_id
+  AND gr.test_id = gqt.test_id
+  AND gr.result_id = gsr.result_id
+  AND gsr.evaluation_ind <> '5O'
+  AND gs.creation_date >= TO_DATE('2026-02-01', 'YYYY-MM-DD')
+  AND (msi.segment1 LIKE 'IBMIX%' OR msi.segment1 LIKE 'FGDUM%')
+ORDER BY gs.sample_no, gr.seq
+```
+
+**Tampilan LOV Create Result:**
+
+![LOV Sample No. SHP (Result)](screenshots/ss_10_lov_result_sample_shp.png)
+
+![LOV Sample No. GVN (Result)](screenshots/ss_11_lov_result_sample_gvn.png)
+
+
 #### 4.2.1 Fields – SHP Information
 
-| Field Name | ID Elemen | Tipe | Mandatory | Default | Validasi | Keterangan |
-|------------|-----------|------|-----------|---------|----------|------------|
-| Sample No. SHP | `sampleNoShpSelectResult` | Dropdown/LOV | Ya | (kosong) | Tooltip: nomor sudah dipakai tidak bisa reuse — **belum enforce** | Pilih sample SHP sumber result |
-| Item | `itemShpInputResult` | Text (readonly) | Ya (Auto) | (kosong) | — | Autofill dari sample SHP |
-| Lot | `lotShpInputResult` | Text (readonly) | Opsional | (kosong) | — | Autofill |
-| Request Date | `reqDateInputResult` | Text (readonly) | Ya (Auto) | (kosong) | — | Tanggal request |
-| Analysis Completion Date | `compDateInputResult` | Text (readonly) | Opsional | (kosong) | — | Tanggal selesai |
+| Field Name | Tipe | Mandatory | Default | Validasi | Keterangan |
+| ------------ | ------ | ----------- | --------- | ---------- | ------------ |
+| Sample No. SHP | Dropdown/LOV | Ya | (kosong) | Tooltip: nomor sudah dipakai tidak bisa reuse — **belum enforce** | Pilih sample SHP sumber result |
+| Item | Text (readonly) | Ya (Auto) | (kosong) | — | Autofill dari sample SHP |
+| Lot | Text (readonly) | Opsional | (kosong) | — | Autofill |
+| Request Date | Text (readonly) | Ya (Auto) | (kosong) | — | Tanggal request |
+| Analysis Completion Date | Text (readonly) | Opsional | (kosong) | — | Tanggal selesai |#### 4.2.2 Fields – GVN Information
 
-#### 4.2.2 Fields – GVN Information
-
-| Field Name | ID Elemen | Tipe | Mandatory | Default | Validasi | Keterangan |
-|------------|-----------|------|-----------|---------|----------|------------|
-| Sample No. GVN | `sampleNoGvnSelectResult` | Dropdown/LOV | Ya | (kosong) | Tooltip: exclude disposition Accept (`4A`) / Accept with Variance (`5AV`) — **belum difilter di JS** | Target sample GVN |
-| Item | `itemGvnInputResult` | Text (readonly) | Ya (Auto) | (kosong) | — | Autofill |
-| Lot | `lotGvnInputResult` | Text (readonly) | Opsional | (kosong) | — | Autofill |
-
-#### 4.2.3 Kolom Grid Parameter Result (Create)
+| Field Name | Tipe | Mandatory | Default | Validasi | Keterangan |
+| ------------ | ------ | ----------- | --------- | ---------- | ------------ |
+| Sample No. GVN | Dropdown/LOV | Ya | (kosong) | Tooltip: exclude disposition Accept (`4A`) / Accept with Variance (`5AV`) — **belum difilter di JS** | Target sample GVN |
+| Item | Text (readonly) | Ya (Auto) | (kosong) | — | Autofill |
+| Lot | Text (readonly) | Opsional | (kosong) | — | Autofill |#### 4.2.3 Kolom Grid Parameter Result (Create)
 
 Body: `parameterTableBody`. Saat Sample GVN berubah, grid diisi dari `TEST_CODE` / `RESULT_VALUE_*`.
 
@@ -486,14 +616,12 @@ Halaman `result_sample_gvn_cms.html`. Status **Syncronized**, Progress 100%. Map
 
 #### 4.3.1 Fields – Edit Result
 
-| Field Name | ID Elemen | Tipe | Mandatory | Default | Validasi | Keterangan |
-|------------|-----------|------|-----------|---------|----------|------------|
-| Sample No. SHP | `sampleNoShpSelectResult` | Dropdown/LOV | Ya | Nilai tersimpan | — | Mapping SHP |
-| Sample No. GVN | `sampleNoGvnInputResult` | Text | Ya | Nilai tersimpan | — | Input/teks di edit (bukan select create) |
-| Conclusion (baris) | > **[TBD]** per-row select | Dropdown/LOV | Ya | Accept / Retest | Override → Remarks wajib (mock) | **Bukan** loop Create Sample BRD |
-| Parameter grid | `parameterTableBody` | Grid | — | Demo mismatch nama | — | Dokumentasi kebutuhan mapping asimetrik |
-
-Modal tambah parameter sama: `addParameterModal`, `swal-param`, `qtyParam`, `btnAddParameter`.
+| Field Name | Tipe | Mandatory | Default | Validasi | Keterangan |
+| ------------ | ------ | ----------- | --------- | ---------- | ------------ |
+| Sample No. SHP | Dropdown/LOV | Ya | Nilai tersimpan | — | Mapping SHP |
+| Sample No. GVN | Text | Ya | Nilai tersimpan | — | Input/teks di edit (bukan select create) |
+| Conclusion (baris) | Dropdown/LOV | Ya | Accept / Retest | Override → Remarks wajib (mock) | **Bukan** loop Create Sample BRD |
+| Parameter grid | Grid | — | Demo mismatch nama | — | Dokumentasi kebutuhan mapping asimetrik |Modal tambah parameter sama: `addParameterModal`, `swal-param`, `qtyParam`, `btnAddParameter`.
 
 #### 4.3.2 Tombol Aksi — Edit Result
 
@@ -506,9 +634,9 @@ Modal tambah parameter sama: `addParameterModal`, `swal-param`, `qtyParam`, `btn
 
 | Operasi | Cara | Role | Keterangan |
 |---------|------|------|------------|
-| **Create** | Form create → Save / Sync | Lab Admin | Draft atau Syncronized |
-| **Read** | List / Edit | Requestor / Lab Admin | — |
-| **Update** | Edit conclusion / remarks → Save / Sync | Lab Admin | Override logic mock |
+| **Create** | Form create → Save / Sync | Admin | Draft atau Syncronized |
+| **Read** | List / Edit | Requestor / Admin | — |
+| **Update** | Edit conclusion / remarks → Save / Sync | Admin | Override logic mock |
 
 ---
 
@@ -545,20 +673,20 @@ Modal tambah parameter sama: `addParameterModal`, `swal-param`, `qtyParam`, `btn
 
 ## 6. RBAC
 
-BRD tidak mendefinisikan matriks RBAC formal. Matriks berikut **inferred** dari label UI mockup + role existing KNAC (`REQ`, `ADMIN_LAB`, `ADMIN`, `eksternal`). Semua sel bertanda **?** atau catatan TBD wajib dikonfirmasi stakeholder.
+BRD tidak mendefinisikan matriks RBAC formal. Matriks berikut **inferred** dari label UI mockup + role existing KNAC (`REQ`, `ADMIN`). Semua sel bertanda catatan TBD wajib dikonfirmasi stakeholder.
 
 ### 6.1 Matriks Akses Modul
 
-| Bagian / Operasi | Requestor (`REQ`) | Lab Admin (`ADMIN_LAB`) | Admin (`ADMIN`) | Client (`eksternal`) | System |
-|------------------|-------------------|-------------------------|-----------------|----------------------|--------|
-| List Transaction | R | R | R | > **[TBD]** | — |
-| Create / Save Draft Request | C/U | C/U | C/U | > **[TBD]** | — |
-| Submit Request | U | U | U | N | Trigger generate |
-| Detail Request (post-submit) | R | R/U | R/U | > **[TBD]** Client approve BRD | — |
-| List Result | R | R | R | N | — |
-| Create / Edit Result | > **[TBD]** | C/U | C/U | N | — |
-| Sync Result ke GVN | > **[TBD]** | U | U | N | Input Result API |
-| Master Capability / User | N | > **[TBD]** | Y (inferred) | N | — |
+| Bagian / Operasi | Requestor (`REQ`) | Admin (`ADMIN`) | System |
+|------------------|-------------------|-----------------|--------|
+| List Transaction | R | R | — |
+| Create / Save Draft Request | C/U | C/U | — |
+| Submit Request | U | U | Trigger generate |
+| Detail Request (post-submit) | R | R/U | — |
+| List Result | R | R | — |
+| Create / Edit Result | > **[TBD]** | C/U | — |
+| Sync Result ke GVN | > **[TBD]** | U | Input Result API |
+| Master Capability / User | N | Y (inferred) | — |
 
 Keterangan: **C**=Create, **R**=Read, **U**=Update, **N**=No, **Y**=Yes.
 
@@ -583,11 +711,11 @@ Disposisi hasil lab di KNAC diwakili oleh aksi **Sync**:
 
 **Lane (urutan kiri → kanan):**
 
-| # | Lane ID | Label | Tipe | Sumber |
-|---|---------|-------|------|--------|
-| 1 | L1 | Requestor / Lab Admin | User | mockup result create/edit |
-| 2 | L2 | Analytical Central (KNAC) | System | `syncResult()`, `saveData()` |
-| 3 | L3 | Oracle GVN | ERP | `flowapps.txt` Fase 5 |
+| # | Lane ID | Label | Tipe |
+|---|---------|-------|------|
+| 1 | L1 | Requestor | User |
+| 2 | L2 | Analytical Central (KNAC) | System |
+| 3 | L3 | Oracle GVN | ERP |
 
 ```plantuml
 @startuml
@@ -600,7 +728,7 @@ skinparam ActivityBorderColor #000000
 skinparam ActivityStartColor #C8E6C9
 skinparam ActivityEndColor #B2DFDB
 
-|Requestor / Lab Admin|
+|Requestor|
 start
 :Narik / pilih Sample SHP &\nSample GVN;
 :Review parameter result &\nconclusion baris;
@@ -633,122 +761,171 @@ stop
 
 ## 8. Database & ERD
 
-### 8.1 Catatan Sumber Data
+### 8.1 Standarisasi Kolom (AnalyticalCentral.DAL)
 
-Integrasi GVN **belum** memiliki tabel PostgreSQL khusus di `analyticalcentralwebsite`. Entity as-is terkait request: `TrrequestAnalysis`, `TrrequestDParameter`, `TrrequestDSample`, `TrstatusHistory`. Oracle as-is: `XxshpKnAwcStg`, package `XXSHP_GMD_CRTSMPL_KNAC_PKG.run_create_sample`.
+Pola entity transaction existing (`TrrequestAnalysis`, `TrrequestDParameter`, `TrrequestDSample`, `TrstatusHistory`) di `AnalyticalCentral.Common\Entity\Transaction`:
 
-Berikut model **konseptual** untuk modul baru. Nama tabel fisik PostgreSQL ditandai **[TBD]** hingga desain DAL dikunci.
+| Kolom wajib | Tipe | Keterangan |
+|-------------|------|------------|
+| `Id` | string (GUID) | Primary key |
+| `IdHeader` | string | FK ke header (untuk tabel detail) |
+| `BitActive` | bool / bool? | Soft active flag |
+| `CreatedBy` | string? | User pembuat |
+| `CreatedDate` | DateTime? | Waktu buat |
+| `UpdatedBy` | string? | User pengubah |
+| `UpdatedDate` | DateTime? | Waktu ubah |
 
-### 8.2 Entitas Konseptual
+Naming: prefix **`Tr*`** untuk transaction, **`M*`** untuk master. DbSet di `AnalyticalCenterContext`: `TrrequestAnalyses`, `TrrequestDParameters`, `TrrequestDSamples`, `TrstatusHistories`.
 
-| Entitas | Deskripsi | Catatan fisik |
-|---------|-----------|---------------|
-| `TR_SAMPLE_REQUEST` | Header request sample GVN-SHP | > **[TBD]** — bisa ekstensi `TrrequestAnalysis` atau tabel baru |
-| `TR_SAMPLE_REQUEST_PARAM` | Baris parameter uji | > **[TBD]** |
-| `TR_SAMPLE_REQUEST_SAMPLE` | Baris sample / pooling | > **[TBD]** |
-| `TR_STATUS_HISTORY` | Histori status request/result | Pola as-is `TrstatusHistory` |
-| `TR_RESULT_HEADER` | Header mapping result SHP↔GVN | > **[TBD]** |
-| `TR_RESULT_LINE` | Baris result + conclusion | > **[TBD]** |
-| `TR_INTEGRATION_LOG` | Log generate / sync / error | > **[TBD]** — terkait Failed Integration BRD |
-| Spec / Sample Oracle | Sumber LOV & result | View/API Oracle GVN/SHP — bukan PG |
+### 8.2 Strategi Desain Tabel Modul GVN-SHP
 
-### 8.3 ERD Konseptual
+1. **Ekstensi** entity request existing (`TrrequestAnalysis` + detail) untuk field Retest / Spec GVN / Item / Lot / Sample No. SHP–GVN.
+2. **Tabel baru** untuk Result Sample GVN: header + detail parameter, mengikuti pola audit di atas.
+3. **Reuse** `TrstatusHistory` dengan `Type` = `REQUEST` / `RESULT` dan `ContraintId` = Id header.
+4. LOV Spec/Sample Oracle **tidak** disimpan sebagai master PG penuh — di-query ke Oracle (lihat §3.2.0 / §4.2.0); snapshot boleh disimpan di baris transaksi jika diperlukan.
+
+### 8.3 Entitas Usulan
+
+| Entitas | Peran | Catatan |
+|---------|-------|---------|
+| `TrrequestAnalysis` *(extend)* | Header request | Tambah `BitRetest`, `RetestSampleNoShp`, `BitSpecGvn`, `SpecIdGvn`, `SpecNameGvn`, `SpecVers`, `ItemGvn`, `LotGvn` |
+| `TrrequestDParameter` *(extend)* | Parameter grid | Tambah `ParameterGvn`, `ParameterShp`, `MethodShp`, `UomShp`, `TestClassShp`, `MinSpec`, `MaxSpec`, `TargetSpec` |
+| `TrrequestDSample` *(extend)* | Sample/pooling | Map `NoSample`/`NoPolling` ke Sample No. SHP / Pooling; tambah `SampleNoGvn` |
+| `TrstatusHistory` *(reuse)* | Histori status | `ContraintId`, `Type`, `StatusCode` + audit |
+| `TrresultSampleGvn` *(baru)* | Header result | Mapping SHP↔GVN + `SyncStatus` |
+| `TrresultDParameter` *(baru)* | Baris result | Result value, conclusion, remarks, override |
+| `TrintegrationLog` *(baru, opsional)* | Log generate/sync | Mendukung Failed Integration **[TBD]** |
+
+### 8.4 Kolom Usulan — `TrresultSampleGvn` & Detail
+
+**Header `TrresultSampleGvn`:** `Id`, `IdRequest` (opsional), `SampleNoShp`, `SampleIdShp`, `ItemShp`, `LotShp`, `RequestDate`, `AnalysisCompletionDate`, `SampleNoGvn`, `SampleIdGvn`, `ItemGvn`, `LotGvn`, `SyncStatus`, `StatusCode`, `BitActive`, `CreatedBy`, `CreatedDate`, `UpdatedBy`, `UpdatedDate`.
+
+**Detail `TrresultDParameter`:** `Id`, `IdHeader`, `Seq`, `ParameterShp`, `ParameterGvn`, `UomShp`, `UomGvn`, `MinSpecGvn`, `MaxSpecGvn`, `ResultValue`, `Conclusion`, `Remarks`, `OverrideBy`, `BitActive`, `CreatedBy`, `CreatedDate`, `UpdatedBy`, `UpdatedDate`.
+
+### 8.5 ERD
 
 ```mermaid
 erDiagram
-    TR_SAMPLE_REQUEST ||--o{ TR_SAMPLE_REQUEST_PARAM : has
-    TR_SAMPLE_REQUEST ||--o{ TR_SAMPLE_REQUEST_SAMPLE : has
-    TR_SAMPLE_REQUEST ||--o{ TR_STATUS_HISTORY : tracks
-    TR_SAMPLE_REQUEST ||--o| TR_RESULT_HEADER : may_produce
-    TR_RESULT_HEADER ||--o{ TR_RESULT_LINE : has
-    TR_SAMPLE_REQUEST ||--o{ TR_INTEGRATION_LOG : logs
-    TR_RESULT_HEADER ||--o{ TR_INTEGRATION_LOG : logs
+    TrrequestAnalysis ||--o{ TrrequestDParameter : IdHeader
+    TrrequestAnalysis ||--o{ TrrequestDSample : IdHeader
+    TrrequestAnalysis ||--o{ TrstatusHistory : ContraintId
+    TrrequestAnalysis ||--o| TrresultSampleGvn : IdRequest
+    TrresultSampleGvn ||--o{ TrresultDParameter : IdHeader
+    TrresultSampleGvn ||--o{ TrstatusHistory : ContraintId
+    TrresultSampleGvn ||--o{ TrintegrationLog : optional
+    TrrequestAnalysis ||--o{ TrintegrationLog : optional
 
-    TR_SAMPLE_REQUEST {
-        string request_no
-        string status
-        string retest_flag
-        string spec_gvn_flag
-        string sample_no_shp_retest
-        string spec_name
-        string spec_vers
-        string item_gvn
-        string lot_gvn
-        string sample_name
-        string priority
+    TrrequestAnalysis {
+        string Id PK
+        string RequestNo
+        string StatusCode
+        bool BitRetest
+        string RetestSampleNoShp
+        bool BitSpecGvn
+        string SpecNameGvn
+        string SpecVers
+        string ItemGvn
+        string LotGvn
+        bool BitActive
+        string CreatedBy
+        datetime CreatedDate
+        string UpdatedBy
+        datetime UpdatedDate
     }
-    TR_SAMPLE_REQUEST_PARAM {
-        string param_gvn
-        string param_shp
-        string method_shp
-        string uom_shp
-        string test_class
-        string min_spec
-        string max_spec
-        string target_spec
+    TrrequestDParameter {
+        string Id PK
+        string IdHeader FK
+        string ParameterGvn
+        string ParameterShp
+        string MethodShp
+        string UomShp
+        string MinSpec
+        string MaxSpec
+        string TargetSpec
+        bool BitActive
     }
-    TR_SAMPLE_REQUEST_SAMPLE {
-        string sample_no_shp
-        string pooling_no_shp
-        string sample_no_gvn
-        string description_coa
-        decimal total_min_sample
+    TrrequestDSample {
+        string Id PK
+        string IdHeader FK
+        string NoSample
+        string NoPolling
+        string SampleNoGvn
+        string SampleDesc
+        decimal TotalMinQty
+        bool BitActive
     }
-    TR_RESULT_HEADER {
-        string sample_no_shp
-        string sample_no_gvn
-        string sync_status
-        date request_date
-        date completion_date
+    TrresultSampleGvn {
+        string Id PK
+        string IdRequest FK
+        string SampleNoShp
+        string SampleNoGvn
+        string SyncStatus
+        string StatusCode
+        bool BitActive
+        string CreatedBy
+        datetime CreatedDate
+        string UpdatedBy
+        datetime UpdatedDate
     }
-    TR_RESULT_LINE {
-        string param_shp
-        string param_gvn
-        string uom
-        string result_value
-        string conclusion
-        string remarks
-        string override_by
+    TrresultDParameter {
+        string Id PK
+        string IdHeader FK
+        int Seq
+        string ParameterShp
+        string ParameterGvn
+        string ResultValue
+        string Conclusion
+        string Remarks
+        string OverrideBy
+        bool BitActive
     }
-    TR_INTEGRATION_LOG {
-        string integration_type
-        string direction
-        string status
-        string correlation_id
-        string error_message
+    TrstatusHistory {
+        string Id PK
+        string ContraintId
+        string Type
+        string StatusCode
+        bool BitActive
+        string CreatedBy
+        datetime CreatedDate
     }
-    TR_STATUS_HISTORY {
-        string status_code
-        string created_by
-        datetime created_at
+    TrintegrationLog {
+        string Id PK
+        string IntegrationType
+        string Direction
+        string Status
+        string CorrelationId
+        string ErrorMessage
+        bool BitActive
     }
 ```
 
-### 8.4 Mapping UI → Data (Konseptual)
+### 8.6 Mapping UI → Entity
 
-| Field UI | Entitas / Kolom Konseptual | Tipe Data | Keterangan |
-|----------|----------------------------|-----------|------------|
-| Request Number | `TR_SAMPLE_REQUEST.request_no` | string | Autogenerate |
-| Retest | `retest_flag` | string Yes/No | Mutual exclusion |
-| Spec GVN | `spec_gvn_flag` | string Yes/No | — |
-| Sample No. SHP (retest) | `sample_no_shp_retest` | string | LOV Sample_SHP |
-| Select Spec GVN | `spec_name` + `spec_vers` | string | LOV Spec_GVN |
-| Sample No. SHP (result) | `TR_RESULT_HEADER.sample_no_shp` | string | — |
-| Sample No. GVN (result) | `TR_RESULT_HEADER.sample_no_gvn` | string | — |
-| Sync Status | `sync_status` | string | Draft / Syncronized |
+| Field UI | Entity / Kolom | Keterangan |
+|----------|----------------|------------|
+| Request Number | `TrrequestAnalysis.RequestNo` | Autogenerate |
+| Retest | `BitRetest` | Mutual exclusion |
+| Spec GVN | `BitSpecGvn` | — |
+| Sample No. SHP (retest) | `RetestSampleNoShp` | LOV Sample_SHP |
+| Select Spec GVN | `SpecNameGvn` + `SpecVers` | LOV Spec_GVN |
+| Sample No. SHP (result) | `TrresultSampleGvn.SampleNoShp` | — |
+| Sample No. GVN (result) | `TrresultSampleGvn.SampleNoGvn` | — |
+| Sync Status | `TrresultSampleGvn.SyncStatus` | New / Draft / Syncronized |
 
-### 8.5 Integrasi Oracle (Konseptual)
+### 8.7 Integrasi Oracle
 
 | Integrasi | Arah | Trigger | Catatan teknis |
 |-----------|------|---------|----------------|
-| Get Specification | GVN → KNAC | Spec GVN = Yes | Validity Rule / Spec tests |
-| Generate Sample SHP | KNAC → SHP | Setelah Submit (FSD) | Dummy `FGDUM001`; fondasi as-is staging + `run_create_sample` |
+| Get Specification | GVN → KNAC | Spec GVN = Yes | Query Spec_GVN (§3.2.0) |
+| Generate Sample SHP | KNAC → SHP | Setelah Submit | Dummy `FGDUM001`; fondasi as-is staging + `run_create_sample` |
 | Generate Sample GVN | KNAC → GVN | Retest = No | > **[TBD]** package/API |
-| Pull Result | Oracle/OSIR → KNAC | Menu Result | Sumber `GMD_RESULTS` mock |
+| Sync result OSIR → SHP | OSIR → SHP | Setelah input di OSIR | Di luar UI KNAC; prasyarat menu Result |
+| Pull Result | Oracle SHP → KNAC | Menu Result | Query Sample_SHP_Ver2 / Sample_GVN (§4.2.0) |
 | Input Result / Sync | KNAC → GVN | `syncResult()` | Sertakan Sample SHP sebagai source |
 | Failed Integration | Internal | Error generate | > **[TBD]** BRD only |
 
 ---
+
 
 ## 9. LOV, Appendix & Gap
 
@@ -764,6 +941,7 @@ erDiagram
 
 | Kode Status | Label | Warna Badge | Keterangan |
 |-------------|-------|-------------|------------|
+| New | New | > **[TBD]** | Form create result baru |
 | Draft | Draft | Warning | Belum Sync |
 | Syncronized | Syncronized | Success | Setelah Sync sukses |
 
